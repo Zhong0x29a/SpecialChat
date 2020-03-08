@@ -44,10 +44,17 @@ public class LoginActivity extends AppCompatActivity{
 				EditText ET_user_id=findViewById(R.id.text_user_id);
 				EditText ET_password=findViewById(R.id.text_password);
 				
-				// start login
 				final String user_id=ET_user_id.getText().toString();
 				final String password=MyTools.md5(ET_password.getText().toString()+user_id);
 				
+				if(user_id.equals("") ||
+						password==null || ET_password.getText().toString().equals("")){
+					Toast.makeText(LoginActivity.this,
+							"Please input your ID and password!",Toast.LENGTH_SHORT).show();
+					return;
+				}
+				
+				// start login
 				final String msg="{" +
 						"\"client\":\"SCC-1.0\"," +
 						"\"action\":\"0002\"," +
@@ -69,8 +76,7 @@ public class LoginActivity extends AppCompatActivity{
 				try{
 					if(SWS.DataJsonReturn==null){
 						Toast.makeText(LoginActivity.this,"Login failed! \n" +
-								"Please check your Network setting. \n",Toast.LENGTH_LONG).show();
-						finish();
+								"Please check your Network setting. ",Toast.LENGTH_LONG).show();
 					}else if(SWS.DataJsonReturn.getString("status").equals("true")){
 						SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 						SharedPreferences.Editor editor=preferences.edit();

@@ -41,18 +41,10 @@ public class MainActivity extends AppCompatActivity{
 		// todo: this can set a lunch page !!
 		setContentView(R.layout.activity_main);
 	
-		/*
-		  test code
-		  */
-		showToast("aaaa",Toast.LENGTH_SHORT);
+		//test code
 		
-		/*
-		  test code
-		  **/
-
-		//  init.
-		//init();
-		//  init end.
+		//test code
+		
 	}
 	
 	//todo what about this??
@@ -81,6 +73,7 @@ public class MainActivity extends AppCompatActivity{
 	@Override
 	protected void onStart(){
 		super.onStart();
+		init();
 	}
 	
 	@Override
@@ -160,7 +153,7 @@ public class MainActivity extends AppCompatActivity{
 			}
 		},1700,5888);
 		
-		loadChatList();
+		//loadChatList();
 	}
 	
 	//todo little menu
