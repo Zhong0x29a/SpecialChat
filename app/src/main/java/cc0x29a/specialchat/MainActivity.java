@@ -35,14 +35,11 @@ public class MainActivity extends AppCompatActivity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-		
-		//requestWindowFeature(Window.FEATURE_NO_TITLE);
-		
 		// todo: this can set a lunch page !!
 		setContentView(R.layout.activity_main);
 	
 		//test code
-		
+
 		//test code
 		
 	}
@@ -74,6 +71,7 @@ public class MainActivity extends AppCompatActivity{
 	protected void onStart(){
 		super.onStart();
 		init();
+		//changeView(1);
 	}
 	
 	@Override

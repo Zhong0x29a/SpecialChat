@@ -36,7 +36,6 @@
         android:visibility="gone"
         android:orientation="vertical">
         <ImageView
-            android:id="@+id/logo_img"
             android:layout_width="488px"
             android:layout_height="488px"
             android:background="@mipmap/logo"

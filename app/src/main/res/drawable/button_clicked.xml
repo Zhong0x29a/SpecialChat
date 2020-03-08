@@ -5,12 +5,12 @@
     <corners android:radius="17dp"/>
 
     <!-- 填充颜色 -->
-    <solid android:color="#aaa"/>
+    <solid android:color="#9a9a9a"/>
 
     <stroke
         android:width="2dp"
-        android:dashWidth="6dp"
-        android:dashGap="6dp"
+        android:dashWidth="0dp"
+        android:dashGap="0dp"
         android:color="#333" />
 
 </shape>

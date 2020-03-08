@@ -81,11 +81,11 @@ public class LoginActivity extends AppCompatActivity{
 						SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 						SharedPreferences.Editor editor=preferences.edit();
 						
-						editor.putString("user_id",SWS.DataJsonReturn.getString("user_id"));
+						editor.putString("user_id",SWS.DataJsonReturn.getString("user_id")+"");
 						//editor.putString("user_index",SWS.DataJsonReturn.getString("user_index"));
-						editor.putString("user_name",SWS.DataJsonReturn.getString("user_name"));
-						editor.putString("token_key",SWS.DataJsonReturn.getString("token_key"));
-						editor.putString("login_time",SWS.DataJsonReturn.getString("login_time"));
+						editor.putString("user_name",SWS.DataJsonReturn.getString("user_name")+"");
+						editor.putString("token_key",SWS.DataJsonReturn.getString("token_key")+"");
+						editor.putString("login_time",SWS.DataJsonReturn.getString("login_time")+"");
 						editor.putInt("is_login",1);
 						editor.apply();
 						

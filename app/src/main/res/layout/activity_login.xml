@@ -7,14 +7,15 @@
     android:background="#333">
 
     <TextView
-        android:id="@+id/textView4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=" Login Page "
         android:textSize="66px"
         android:textColor="#eee"
         android:gravity="center"
-        android:layout_margin="30px"/>
+        android:layout_margin="30px"
+        android:paddingHorizontal="18dp"
+        android:paddingVertical="8px"/>
 
     <EditText
         android:id="@+id/text_user_id"
@@ -27,8 +28,9 @@
         android:hint="User ID"
         android:textColor="#222"
         android:background="@drawable/set_button_selector"
-        android:layout_margin="10px"
-        android:padding="6px"/>
+        android:paddingHorizontal="18dp"
+        android:paddingVertical="10px"
+        android:layout_marginVertical="8dp"/>
 
     <EditText
         android:id="@+id/text_password"
@@ -40,8 +42,8 @@
         android:hint="Password"
         android:textColor="#222"
         android:background="@drawable/set_button_selector"
-        android:layout_margin="10px"
-        android:padding="6px"/>
+        android:paddingHorizontal="18dp"
+        android:paddingVertical="10px"/>
 
     <Button
         android:id="@+id/btn_login"
