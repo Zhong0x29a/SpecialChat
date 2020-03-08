@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#333">
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=" Login Page "
+        android:textSize="66px"
+        android:textColor="#eee"
+        android:gravity="center"
+        android:layout_margin="30px"/>
+
+    <EditText
+        android:id="@+id/text_user_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text=""
+        android:textSize="50px"
+        android:hint="User ID"
+        android:textColor="#222"
+        android:background="@drawable/set_button_selector"
+        android:layout_margin="10px"
+        android:padding="6px"/>
+
+    <EditText
+        android:id="@+id/text_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:textSize="50px"
+        android:hint="Password"
+        android:textColor="#222"
+        android:background="@drawable/set_button_selector"
+        android:layout_margin="10px"
+        android:padding="6px"/>
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:textSize="46px"
+        android:layout_margin="66px"
+        android:background="@drawable/set_button_selector"/>
+
+</LinearLayout>
+
+
+<!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    tools:context=".LoginActivity"-->
+<!--    android:background="#333">-->
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:orientation="vertical">-->
+
+<!--
+
+   </LinearLayout>-->
+<!--</androidx.constraintlayout.widget.ConstraintLayout>-->
