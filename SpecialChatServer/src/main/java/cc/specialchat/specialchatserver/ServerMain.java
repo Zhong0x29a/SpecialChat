@@ -13,14 +13,18 @@ public class ServerMain{
 	
 	public static void main(String[] args) throws SQLException, ClassNotFoundException{
 		// test code.
-//		JSONObject doo=JSONObject.parseObject("{\"client\":\"SCC-1.0\",\"action\":\"0003\",\"user_id\":\"12414\",\"token_key\":\"trufdse\",\"timestamp\":\"1583751115\"}");
-//		System.out.println(doo.getString("action"));
+//		int c;
+//		for(int i=1;i<1000;i++){
+//			c=MyTools.getRandomNum(15,1);
+//			System.out.println(c);
+//		}
+//		String a=MyTools.createANewTokenKey();
 //		exit(0);
 		// start program.
 		try{
 			ServerSocket serverSocket = new ServerSocket(21027);
 			if(args.length>0 && args[0].equals("e")){
-				System.out.println("--- Just happened a Error... ---\n---- Special Chat Server restart ----\n");
+				System.out.println("--- Just happened a Error... ---\n---- Special Chat Server restarted ----\n");
 			}else{
 				System.out.println("---- Special Chat Server started ----\n");
 			}

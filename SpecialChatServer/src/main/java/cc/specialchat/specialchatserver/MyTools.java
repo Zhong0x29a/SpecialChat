@@ -12,13 +12,23 @@ import java.security.NoSuchAlgorithmException;
 
 public class MyTools{
 	
+	static String createANewTokenKey(){
+		StringBuffer stringBuffer=new StringBuffer();
+		String[] charSets=new String[]{"0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"};
+		stringBuffer.append(charSets[getRandomNum(15,1)]);
+		for(int i=1;i<=15;i++){
+			stringBuffer.append(charSets[getRandomNum(16,1)-1]);
+		}
+		return stringBuffer.toString();
+	}
+	
 	/**
 	 * Get a random number between max and min
 	 * @param max max number
-	 * @param min min number
+	 * @param min min number SHOULD NOT BE 0!!!
 	 * @return a integer
 	 */
-	public static int getRandomNum(int max,int min){
+	static int getRandomNum(int max,int min){
 		return (int)(1+Math.random()*(max-min+1));
 	}
 	

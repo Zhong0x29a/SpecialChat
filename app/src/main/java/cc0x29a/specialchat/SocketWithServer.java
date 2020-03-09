@@ -29,11 +29,11 @@ class SocketWithServer{
 			public void run() {
 				try {
 //todo					Socket socket = new Socket("specialchat.0x29a.cc", 21027);
-					Socket socket = new Socket("192.168.1.18", 21027);
+					Socket socket = new Socket("192.168.1.18", 21027); // test
 					
 					// Output, send data to server.
 					OutputStream os = socket.getOutputStream();
-					os.write(DataSend.getBytes(StandardCharsets.UTF_8));
+					os.write(DataSend.getBytes(StandardCharsets.UTF_8)); //todo: filter some special char
 					os.flush();
 					socket.shutdownOutput();
 					
@@ -61,7 +61,8 @@ class SocketWithServer{
 }
 
 
-/* Code End Here */
+
+/* ------ Code End Here ------ */
 
 
 

@@ -24,7 +24,6 @@ import org.json.JSONException;
  * get:{
  *     status:      true|false,
  *     user_id:     [user_id],
- *     // user_index:  [user_index],
  *     user_name:   [user_name],
  *     token_key:   [token_key],
  *     login_time:  [login_time],
@@ -47,8 +46,8 @@ public class LoginActivity extends AppCompatActivity{
 				final String user_id=ET_user_id.getText().toString();
 				final String password=MyTools.md5(ET_password.getText().toString()+user_id);
 				
-				if(user_id.equals("") ||
-						password==null || ET_password.getText().toString().equals("")){
+				if(user_id.equals("") || password==null
+						|| ET_password.getText().toString().equals("")){
 					Toast.makeText(LoginActivity.this,
 							"Please input your ID and password!",Toast.LENGTH_SHORT).show();
 					return;
@@ -82,7 +81,6 @@ public class LoginActivity extends AppCompatActivity{
 						SharedPreferences.Editor editor=preferences.edit();
 						
 						editor.putString("user_id",SWS.DataJsonReturn.getString("user_id")+"");
-						//editor.putString("user_index",SWS.DataJsonReturn.getString("user_index"));
 						editor.putString("user_name",SWS.DataJsonReturn.getString("user_name")+"");
 						editor.putString("token_key",SWS.DataJsonReturn.getString("token_key")+"");
 						editor.putString("login_time",SWS.DataJsonReturn.getString("login_time")+"");

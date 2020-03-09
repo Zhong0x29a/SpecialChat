@@ -21,6 +21,17 @@ import java.sql.Statement;
 
 class UserInfoSQLite{
 	
+	private static Connection getConnection() throws SQLException, ClassNotFoundException{
+		Class.forName("org.sqlite.JDBC");
+		//c.setAutoCommit(false);
+		return DriverManager.getConnection("jdbc:sqlite:user_info.db");
+	}
+	
+	/**
+	 * Table init method, create table user_info
+	 * @throws SQLException ...
+	 * @throws ClassNotFoundException ...
+	 */
 	static void init() throws SQLException, ClassNotFoundException{
 		Connection c=getConnection();
 		Statement st=c.createStatement();
@@ -33,19 +44,84 @@ class UserInfoSQLite{
 						"login_time INTEGER," +
 						"token_key TEXT" +
 						")";
-						
+		
 		st.executeUpdate(CREATE_TABLE_SQL);
 		st.close();
 		c.close();
 		System.out.println("init table user_info done! \n");
 	}
 	
-	private static Connection getConnection() throws SQLException, ClassNotFoundException{
-		Class.forName("org.sqlite.JDBC");
-		//c.setAutoCommit(false);
-		return DriverManager.getConnection("jdbc:sqlite:user_info.db");
+	/**
+	 * Start Login use user_id , password
+	 * @param user_id String
+	 * @param password String
+	 * @return token_key, String
+	 * @throws SQLException ...
+	 * @throws ClassNotFoundException ...
+	 */
+	static String[] goLogin(String user_id,String password) throws SQLException,
+			ClassNotFoundException{
+		Connection connection=getConnection();
+		Statement statement=connection.createStatement();
+		String QUERY_SQL="select * from user_info where user_id="+user_id+";";
+		ResultSet resultSet=statement.executeQuery(QUERY_SQL);
+		if(resultSet.next() && resultSet.getString("password").equals(password)){
+			String[] user_info=new String[4];
+			user_info[0]=resultSet.getInt("user_id")+"";
+			user_info[1]=resultSet.getString("user_name");
+			user_info[2]=MyTools.createANewTokenKey();
+			user_info[3]=MyTools.getCurrentTime()+"";
+			String UPDATE_INFO_SQL="update user_info set " +
+					"token_key='"+user_info[2]+"', " +
+					"login_time="+user_info[3]+" "+
+					"where user_id="+user_id+";";
+			statement.executeUpdate(UPDATE_INFO_SQL);
+			resultSet.close();
+			statement.close();
+			connection.close();
+			return user_info;
+		}
+		resultSet.close();
+		statement.close();
+		connection.close();
+		return new String[]{""};
 	}
 	
+	/**
+	 * Verify User's token_key
+	 * @param user_id String user_id
+	 * @param token_key String token_key
+	 * @return A boolean value
+	 * @throws SQLException ...
+	 * @throws ClassNotFoundException ...
+	 */
+	static boolean verifyUserTokenKey(String user_id,String token_key) throws SQLException,
+			ClassNotFoundException{
+		Connection connection=getConnection();
+		Statement statement=connection.createStatement();
+		String QUERY_SQL="select token_key from user_info where user_id="+user_id+";";
+		ResultSet resultSet=statement.executeQuery(QUERY_SQL);
+		if(resultSet.next() && resultSet.getString("token_key").equals(token_key)){
+			resultSet.close();
+			statement.close();
+			connection.close();
+			return true;
+		}else{
+			resultSet.close();
+			statement.close();
+			connection.close();
+			return false;
+		}
+	}
+	
+	/**
+	 * Add a new user into user_info
+	 * @param user_id integer, user_id
+	 * @param user_name String, user_name
+	 * @param password String, user password
+	 * @throws SQLException ...
+	 * @throws ClassNotFoundException ...
+	 */
 	static void addNewUser(int user_id,String user_name,String password)
 			throws SQLException, ClassNotFoundException{
 		Connection connection=getConnection();
