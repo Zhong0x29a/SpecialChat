@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  *  database    :msg_[user_id].db3
  *  table       :msg
  *  column      :
- *      msg_index       INTEGER,primary key,autoincrement   index
+ *      msg_index       INTEGER,primary key,autoincrement   //index
  *      msg_by          INTEGER,NOT NULL
  *      is_read         INTEGER,NOT NULL
  *      send_time       INTEGER,NOT NULL
