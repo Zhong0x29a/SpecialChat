@@ -11,25 +11,25 @@ import java.sql.Statement;
  * table:       user_info
  * columns:
  *      user_index      INTEGER,primary key,autoincrement   //index
- *      user_id         INTEGER
- *      user_name       TEXT
- *      password        TEXT
+ *      user_id         INTEGER,NOT NULL,UNIQUE
+ *      user_name       TEXT,NOT NULL
+ *      password        TEXT,NOT NULL
  *      login_time      INTEGER
  *      token_key       TEXT
  *
  * */
 
-public class UserInfoSQLite{
+class UserInfoSQLite{
 	
-	public static void init() throws SQLException, ClassNotFoundException{
+	static void init() throws SQLException, ClassNotFoundException{
 		Connection c=getConnection();
 		Statement st=c.createStatement();
 		String CREATE_TABLE_SQL=
 				"create table user_info (" +
 						"user_index INTEGER primary key autoincrement," +
-						"user_id INTEGER NOT NULL," +
-						"user_name TEXT," +
-						"password TEXT," +
+						"user_id INTEGER NOT NULL UNIQUE," +
+						"user_name TEXT NOT NULL," +
+						"password TEXT NOT NULL," +
 						"login_time INTEGER," +
 						"token_key TEXT" +
 						")";
@@ -37,18 +37,31 @@ public class UserInfoSQLite{
 		st.executeUpdate(CREATE_TABLE_SQL);
 		st.close();
 		c.close();
-		System.out.println("done");
+		System.out.println("init table user_info done! \n");
 	}
 	
-	public static Connection getConnection() throws SQLException, ClassNotFoundException{
+	private static Connection getConnection() throws SQLException, ClassNotFoundException{
 		Class.forName("org.sqlite.JDBC");
-		Connection c=DriverManager.getConnection("jdbc:sqlite:user_info.db");
 		//c.setAutoCommit(false);
-		return c;
+		return DriverManager.getConnection("jdbc:sqlite:user_info.db");
 	}
 	
-	public void addNewUser(){
-		//todo: complete this
+	static void addNewUser(int user_id,String user_name,String password)
+			throws SQLException, ClassNotFoundException{
+		Connection connection=getConnection();
+		Statement statement=connection.createStatement();
+		String ADD_NEW_USER_SQL="insert into user_info " +
+				"(user_index,user_id,user_name,password,login_time,token_key) " +
+				"values (null," +
+						user_id+"," +
+						"'"+user_name+"'," +
+						"'"+password+"'," +
+						MyTools.getCurrentTime()+"," +
+						"null" +
+						")";
+		statement.executeUpdate(ADD_NEW_USER_SQL);
+		statement.close();
+		connection.close();
 	}
 	
 	/**
@@ -58,13 +71,13 @@ public class UserInfoSQLite{
 	 * @throws SQLException ...
 	 * @throws ClassNotFoundException ...
 	 */
-	public String[] fetchUserInfo(String user_id) throws SQLException, ClassNotFoundException{
+	static String[] fetchUserInfo(String user_id) throws SQLException, ClassNotFoundException{
 		Connection connection=getConnection();
 		Statement statement=connection.createStatement();
 		String QUERY_SQL="select * from user_info where user_id="+user_id+";";
 		ResultSet resultSet=statement.executeQuery(QUERY_SQL);
-		String userInfo[]=new String[6];
-		if(resultSet.first()){
+		String[] userInfo=new String[6];
+		if(resultSet.next()){
 			userInfo[0]=resultSet.getInt("user_index")+"";
 			userInfo[1]=resultSet.getInt("user_id")+"";
 			userInfo[2]=resultSet.getString("user_name");
@@ -86,7 +99,7 @@ public class UserInfoSQLite{
 	 * @throws SQLException ..
 	 * @throws ClassNotFoundException ..
 	 */
-	public String[][] fetchAllUsersInfo() throws SQLException, ClassNotFoundException{
+	static String[][] fetchAllUsersInfo() throws SQLException, ClassNotFoundException{
 		Connection connection=getConnection();
 		Statement statement=connection.createStatement();
 		String QUERY_SQL="select * from user_info;";

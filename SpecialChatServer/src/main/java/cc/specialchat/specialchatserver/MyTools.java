@@ -1,6 +1,4 @@
-package cc0x29a.specialchat;
-
-import android.text.TextUtils;
+package cc.specialchat.specialchatserver;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -18,7 +16,7 @@ public class MyTools{
 	 * Get a random number between max and min
 	 * @param max max number
 	 * @param min min number
-	 * @return an integer
+	 * @return a integer
 	 */
 	public static int getRandomNum(int max,int min){
 		return (int)(1+Math.random()*(max-min+1));
@@ -26,7 +24,7 @@ public class MyTools{
 	
 	/**
 	 * Get current timestamp
-	 * @return current timestamp (integer)
+	 * @return current timestamp (integer) , 10 bits
 	 * **/
 	static int getCurrentTime(){
 		return (int)(System.currentTimeMillis()/1000);
@@ -37,8 +35,8 @@ public class MyTools{
 	 * @param string to be encrypt
 	 * @return String
 	 * **/
-	static String md5(String string){
-		if(TextUtils.isEmpty(string)){
+	public static String md5(String string){
+		if(string==null || string.isEmpty()){
 			return null;
 		}
 		try{

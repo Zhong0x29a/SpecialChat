@@ -22,8 +22,12 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static java.lang.System.exit;
 
 public class MainActivity extends AppCompatActivity{
 	
@@ -37,9 +41,22 @@ public class MainActivity extends AppCompatActivity{
 		super.onCreate(savedInstanceState);
 		// todo: this can set a lunch page !!
 		setContentView(R.layout.activity_main);
-	
+		
+		
 		//test code
-
+//		SocketWithServer socketWithServer=new SocketWithServer();
+//		socketWithServer.DataSend="{\"a\":\"ha pi\"}";
+//		socketWithServer.startSocket();
+//		JSONObject a=socketWithServer.DataJsonReturn;
+//		if(socketWithServer.DataJsonReturn!=null){
+//			try{
+//				String b=a.getString("status");
+//			}catch(JSONException e){
+//				e.printStackTrace();
+//			}
+//		}
+//		System.out.println("end");
+//		exit(0);
 		//test code
 		
 	}
@@ -71,7 +88,6 @@ public class MainActivity extends AppCompatActivity{
 	protected void onStart(){
 		super.onStart();
 		init();
-		//changeView(1);
 	}
 	
 	@Override

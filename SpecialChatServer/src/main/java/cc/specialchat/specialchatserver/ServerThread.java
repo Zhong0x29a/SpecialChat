@@ -1,13 +1,15 @@
 package cc.specialchat.specialchatserver;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 /**
  * Created by Administrator on 2018/5/3.
@@ -15,8 +17,10 @@ import java.nio.charset.StandardCharsets;
 public class ServerThread extends Thread {
 	
 	private Socket socket;
+	private StringBuffer DataReturn=new StringBuffer();
+	JSONObject DataJsonReturn=null;
 	
-	public ServerThread(Socket socket) {
+	ServerThread(Socket socket) {
 		this.socket = socket;
 	}
 	
@@ -27,7 +31,6 @@ public class ServerThread extends Thread {
 		InputStreamReader inputStreamReader = null;
 		BufferedReader bufferedReader = null;
 		OutputStream outputStream = null;
-		PrintWriter printWriter = null;
 		
 		try {
 			// get data
@@ -35,11 +38,17 @@ public class ServerThread extends Thread {
 			inputStreamReader = new InputStreamReader(inputStream);
 			bufferedReader = new BufferedReader(inputStreamReader);
 			
-			String str;
-			if ((str = bufferedReader.readLine()) != null) {
-				System.out.println("I am Server, now get message from Client: " + str);
+			String temp;
+			while((temp=bufferedReader.readLine())!=null){
+				DataReturn.append("\n").append(temp);
 			}
 			socket.shutdownInput();
+			
+			DataJsonReturn=JSONObject.parseObject(DataReturn.toString());
+			//todo : do action.
+			System.out.println(DataJsonReturn.getString("action"));
+			System.out.println(DataReturn);
+			
 			
 			// send
 			String msg="{" +
@@ -49,22 +58,18 @@ public class ServerThread extends Thread {
 					"\"token_key\":\"trufdse\"," +
 					"\"login_time\":\"trfdue\"" +
 					"}";
-			System.out.println(msg);
 			
-			OutputStream os = socket.getOutputStream();
-			os.write(msg.getBytes(StandardCharsets.UTF_8));
-			os.flush();
+			outputStream = socket.getOutputStream();
+			outputStream.write(msg.getBytes(StandardCharsets.UTF_8));
+			outputStream.flush();
+			
 			socket.shutdownOutput();
-
 			
 		}catch(IOException e){
 			e.printStackTrace();
 		}finally{
 			// release resource
 			try{
-				if(printWriter != null){
-					printWriter.close();
-				}
 				if(outputStream != null){
 					outputStream.close();
 				}
