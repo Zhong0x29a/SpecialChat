@@ -19,7 +19,7 @@ public class ServerMain{
 				System.out.println("New connection: " + socket.getInetAddress().getHostAddress() );
 				serverThread.start();
 				count++;
-				System.out.println(count+" connections till now! ");
+				System.out.println(count+" connections untill now! ");
 			}
 		}catch(IOException e){
 			e.printStackTrace();

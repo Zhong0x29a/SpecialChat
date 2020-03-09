@@ -55,10 +55,7 @@ public class ServerThread extends Thread {
 			os.write(msg.getBytes(StandardCharsets.UTF_8));
 			os.flush();
 			socket.shutdownOutput();
-//			outputStream = socket.getOutputStream();
-//			printWriter = new PrintWriter(outputStream);
-//			printWriter.write(msg);
-//			printWriter.flush();
+
 			
 		}catch(IOException e){
 			e.printStackTrace();

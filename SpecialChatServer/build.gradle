@@ -1,8 +1,9 @@
 apply plugin: 'java-library'
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation files('src/main/java/cc/specialchat/specialchatserver/mysql-connector-java-5.1.39-bin.jar')
+    implementation files('src/main/java/cc/specialchat/specialchatserver/lib/sqlite-jdbc-3.30.1.jar')
 }
 
 sourceCompatibility = "7"
