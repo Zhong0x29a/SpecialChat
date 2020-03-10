@@ -68,7 +68,7 @@ public class ServerThread extends Thread {
 					}else if(user_id!=null){
 						msg="{\"status\":\"true\"," +
 								"\"user_id\":\""+user_info[0]+"\"," +
-								"\"user_name\":\""+user_info[1]+"\"," +
+								"\"user_name\":\""+MyTools.filterSpecialChar(user_info[1])+"\"," +
 								"\"token_key\":\""+user_info[2]+"\"," +
 								"\"login_time\":\""+user_info[3]+"\"" +
 								"}";
@@ -81,7 +81,12 @@ public class ServerThread extends Thread {
 					token_key=DataJsonReturn.getString("token_key");
 					if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
 						//todo : ...complete
-						String[][] msg_temp=MsgCacheSQLite.fetchMsg(user_id);
+						String[][] msg_temp;
+						if((msg_temp=MsgCacheSQLite.fetchMsg(user_id)).length>0){
+						
+						}else{
+							msg="{\"is_new_msg\":\"false\"}";
+						}
 					}
 					break;
 				default:

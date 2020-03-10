@@ -13,13 +13,9 @@ public class ServerMain{
 	
 	public static void main(String[] args) throws SQLException, ClassNotFoundException{
 		// test code.
-//		int c;
-//		for(int i=1;i<1000;i++){
-//			c=MyTools.getRandomNum(15,1);
-//			System.out.println(c);
-//		}
-//		String a=MyTools.createANewTokenKey();
-//		exit(0);
+		String a="*&%\"''?//{!@$%#@^$#&%*$^&}(fgfd):;\\sggf\"\"";
+		System.out.println(MyTools.filterSpecialChar(a));
+		exit(0);
 		// start program.
 		try{
 			ServerSocket serverSocket = new ServerSocket(21027);

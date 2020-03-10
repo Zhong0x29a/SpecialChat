@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity{
 			public void run(){
 				try{
 					if(refreshNewMsg()==1){
-						// if network is not so ok...
+						// if network is not so fine...
 						// 套娃就很皮..哈哈
 						showToast("!Poor Network... :(",Toast.LENGTH_SHORT);
 						refreshMsgTimer.cancel();
@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity{
 			}
 		},1700,5888);
 		
-		//loadChatList();
+		loadChatList();
 	}
 	
 	//todo little menu
@@ -187,14 +187,14 @@ public class MainActivity extends AppCompatActivity{
 			lastMsg[i]=msgSQLiteHelper.getLastMsg(msgSQLiteHelper.getReadableDatabase());
 		}
 		
-		ListView main_list_view=findViewById(R.id.main_list_view);
-		ChatListItemAdapter chatListItemAdapter=new ChatListItemAdapter(MainActivity.this);
-		chatListItemAdapter.chatListInfo=chatList;
-		chatListItemAdapter.lastMsg=lastMsg;
-		chatListItemAdapter.count=Integer.parseInt(chatList[0][0]); // item 数量
-		main_list_view.setAdapter(chatListItemAdapter);
+		ListView ml_view=findViewById(R.id.main_list_view);
+		ChatListItemAdapter cli_adapter=new ChatListItemAdapter(MainActivity.this);
+		cli_adapter.chatListInfo=chatList;
+		cli_adapter.lastMsg=lastMsg;
+		cli_adapter.count=Integer.parseInt(chatList[0][0]); // item 数量
+		ml_view.setAdapter(cli_adapter);
 		
-		main_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+		ml_view.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 			@Override
 			public void onItemClick(AdapterView<?> parent,View view,int position,long id){
 				Intent intent=new Intent(MainActivity.this,ChatActivity.class);
@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity{
 				startActivity(intent);
 			}
 		});
-		main_list_view.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+		ml_view.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent,View view,int position,long id){
 				// todo: position (int) ,open a little menu,to delete chat or so on.
@@ -226,7 +226,7 @@ public class MainActivity extends AppCompatActivity{
 	 *     is_new_msg:[true|false],
 	 *     new_msg_num:[new_message_number],    // 50 pieces MAX !
 	 *     // below data sort by time, the oldest on top !!
-	 *     index_[1]:{
+	 *     index_[1]:{      //里面用单引号！！
 	 *         user_id:[user_id],
 	 *         send_time:[send_time]
 	 *         msg_content:[msg_content]
@@ -246,8 +246,9 @@ public class MainActivity extends AppCompatActivity{
 	 *      0->Have new msg
 	 *      1->Network error
 	 *      2->No new msg
+	 *      3->Unknown Error..
 	 *
-	 * Todo: this can be optimized !! (1.combine msg)
+	 * Todo: this can be optimized !! (1.combine msg, 2. filter some char!)
  	 */
 	private int refreshNewMsg() throws JSONException{
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
@@ -272,24 +273,21 @@ public class MainActivity extends AppCompatActivity{
 			int new_msg_num=Integer.parseInt(SWS.DataJsonReturn.getString("new_msg_num"));
 			for(int i=1;i<=new_msg_num;i++){
 				JSONObject jsonTemp=SWS.DataJsonReturn.getJSONObject(SWS.DataJsonReturn.getString("index_"+i));
-				int friend_id=jsonTemp.getInt("user_id");
-				int send_time=jsonTemp.getInt("send_time");
+				int friend_id=Integer.parseInt(jsonTemp.getString("user_id"));
+				int send_time=Integer.parseInt(jsonTemp.getString("send_time"));
 				
-				MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(MainActivity.this,
-						"msg_"+friend_id+".db3",1);
-				msgSQLiteHelper.insertNewMsg(msgSQLiteHelper.getReadableDatabase(),
-						friend_id,0,
-						send_time,jsonTemp.getString("msg_content"));
+				MsgSQLiteHelper mh=new MsgSQLiteHelper(MainActivity.this,"msg_"+friend_id+".db3",1);
+				mh.insertNewMsg(mh.getReadableDatabase(),friend_id,0,send_time,jsonTemp.getString("msg_content"));
 				
-				ChatListSQLiteHelper chatListSQLiteHelper=new ChatListSQLiteHelper(
-						MainActivity.this,"chat_list.db3",1);
-				chatListSQLiteHelper.refreshChatList(chatListSQLiteHelper.getReadableDatabase(),
-						friend_id,"",send_time);
+				ChatListSQLiteHelper clh=new ChatListSQLiteHelper(MainActivity.this,"chat_list.db3",1);
+				clh.refreshChatList(clh.getReadableDatabase(),friend_id,send_time);
 			}
 			loadChatList();
 			return 0;
-		}else{
+		}else if(SWS.DataJsonReturn.getString("is_new_msg").equals("false")){
 			return 2;
+		}else{
+			return 3;
 		}
 	}
 	

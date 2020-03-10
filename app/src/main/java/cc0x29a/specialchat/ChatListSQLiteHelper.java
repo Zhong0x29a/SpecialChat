@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
  *          user_id         INTEGER,NOT NULL,UNIQUE
  *          nickname        TEXT
  *          last_chat_time  INTEGER,NOT NULL
- *          status          INTEGER,(def: 0)
+ *          status          INTEGER,(def: 0)    // new msg num?
  *
  */
 
@@ -38,10 +38,9 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 	 * Refresh chat list
 	 * @param db    writeable SQLiteDatabase
 	 * @param user_id   user_id(friend_id)
-	 * @param nickname  nickname can be ""(null) (if null, should use "" !!)
 	 * @param last_chat_time    last chat time with this friend
 	 */
-	void refreshChatList(@NotNull SQLiteDatabase db,int user_id,String nickname,int last_chat_time){
+	void refreshChatList(@NotNull SQLiteDatabase db,int user_id,int last_chat_time){
 		Cursor cursor=db.query("chat_list",new String[]{"user_id"},
 				"user_id="+user_id+"",null,null,null,null);
 		if(cursor.moveToFirst()){
@@ -51,7 +50,7 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 					"where user_id="+user_id;
 			db.execSQL(SQL);
 		}else{
-			insertNewChatListItem(db,user_id,nickname,last_chat_time);
+			insertNewChatListItem(db,user_id,user_id+"",last_chat_time);
 		}
 	}
 	

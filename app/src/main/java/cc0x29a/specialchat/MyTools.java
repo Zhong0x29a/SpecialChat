@@ -15,12 +15,36 @@ import java.security.NoSuchAlgorithmException;
 public class MyTools{
 	
 	/**
+	 * Filter Some not good chars
+	 * @param toBeFilter String to bu filter
+	 * @return a String
+	 */
+	static String filterSpecialChar(String toBeFilter){
+		return toBeFilter.replaceAll("\"","&#34;")
+				.replaceAll("'","&#39;")
+				.replaceAll("&","&#38;")
+				.replaceAll(" ","&#32;")
+				.replaceAll("%","&#37;")
+				.replaceAll("\\(","&#40;")
+				.replaceAll("\\)","&#41;")
+				.replaceAll("\\{","&#123;")
+				.replaceAll("}","&#123;")
+				.replaceAll("\\*","&#42;")
+				.replaceAll("/","&#47;")
+				.replaceAll("\\\\","&#92;")
+				.replaceAll("\\.","&#46;")
+				.replaceAll(",","&#44;")
+				.replaceAll("#","&#35;")
+				.replaceAll("!","&#33;");
+	}
+	
+	/**
 	 * Get a random number between max and min
 	 * @param max max number
 	 * @param min min number
 	 * @return an integer
 	 */
-	public static int getRandomNum(int max,int min){
+	static int getRandomNum(int max,int min){
 		return (int)(1+Math.random()*(max-min+1));
 	}
 	

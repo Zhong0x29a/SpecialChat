@@ -12,6 +12,34 @@ import java.security.NoSuchAlgorithmException;
 
 public class MyTools{
 	
+	/**
+	 * Filter Some not good chars
+	 * @param toBeFilter String to bu filter
+	 * @return a String
+	 */
+	static String filterSpecialChar(String toBeFilter){
+		return toBeFilter.replaceAll("\"","&#34;")
+				.replaceAll("'","&#39;")
+				.replaceAll("&","&#38;")
+				.replaceAll(" ","&#32;")
+				.replaceAll("%","&#37;")
+				.replaceAll("\\(","&#40;")
+				.replaceAll("\\)","&#41;")
+				.replaceAll("\\{","&#123;")
+				.replaceAll("}","&#123;")
+				.replaceAll("\\*","&#42;")
+				.replaceAll("/","&#47;")
+				.replaceAll("\\\\","&#92;")
+				.replaceAll("\\.","&#46;")
+				.replaceAll(",","&#44;")
+				.replaceAll("#","&#35;")
+				.replaceAll("!","&#33;");
+	}
+	
+	/**
+	 * Create a new token key
+	 * @return new created token key
+	 */
 	static String createANewTokenKey(){
 		StringBuffer stringBuffer=new StringBuffer();
 		String[] charSets=new String[]{"0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"};
@@ -45,7 +73,7 @@ public class MyTools{
 	 * @param string to be encrypt
 	 * @return String
 	 * **/
-	public static String md5(String string){
+	static String md5(String string){
 		if(string==null || string.isEmpty()){
 			return null;
 		}
