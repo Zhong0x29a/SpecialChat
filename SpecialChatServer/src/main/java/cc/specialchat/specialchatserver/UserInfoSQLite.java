@@ -12,7 +12,7 @@ import java.sql.Statement;
  * columns:
  *      user_index      INTEGER,primary key,autoincrement   //index
  *      user_id         INTEGER,NOT NULL,UNIQUE
- *      user_name       TEXT,NOT NULL
+ *      user_name       TEXT,NOT NULL   // string filtered by MyTools.filterSpecialChar()
  *      password        TEXT,NOT NULL
  *      login_time      INTEGER
  *      token_key       TEXT

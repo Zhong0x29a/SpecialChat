@@ -91,7 +91,7 @@ public class MsgCacheSQLite{
 				msg[index][1]=resultSet.getInt("from_id")+"";
 				msg[index][2]=resultSet.getString("msg_content");
 				msg[index][3]=resultSet.getInt("send_time")+"";
-				//todo: update is_read;
+				//todo: next ver. , update is_read;
 			}
 			msg[0][0]=index+"";
 			return msg;

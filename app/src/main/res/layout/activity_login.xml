@@ -9,28 +9,29 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text=" Login Page "
-        android:textSize="66px"
+        android:text="@string/login_page"
+        android:textSize="36sp"
         android:textColor="#eee"
         android:gravity="center"
-        android:layout_margin="30px"
+        android:layout_margin="24dp"
         android:paddingHorizontal="18dp"
-        android:paddingVertical="8px"/>
+        android:paddingVertical="6dp"/>
 
     <EditText
         android:id="@+id/text_user_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textPersonName"
+        android:inputType="number"
         android:text=""
-        android:textSize="50px"
-        android:hint="User ID"
+        android:textSize="20sp"
+        android:hint="@string/User_ID"
         android:textColor="#222"
         android:background="@drawable/set_button_selector"
         android:paddingHorizontal="18dp"
-        android:paddingVertical="10px"
-        android:layout_marginVertical="8dp"/>
+        android:paddingVertical="8dp"
+        android:layout_marginVertical="8dp"
+        android:autofillHints="user_id" />
 
     <EditText
         android:id="@+id/text_password"
@@ -38,26 +39,27 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPassword"
-        android:textSize="50px"
-        android:hint="Password"
+        android:textSize="20sp"
+        android:hint="@string/password"
         android:textColor="#222"
         android:background="@drawable/set_button_selector"
         android:paddingHorizontal="18dp"
-        android:paddingVertical="10px"/>
+        android:paddingVertical="8dp"
+        android:autofillHints="password" />
 
     <Button
         android:id="@+id/btn_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login"
-        android:textSize="46px"
-        android:layout_margin="66px"
+        android:text="@string/login"
+        android:textSize="33sp"
+        android:layout_margin="48dp"
         android:background="@drawable/set_button_selector"/>
 
 </LinearLayout>
 
 
-<!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--<androidx.constraint layout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
 <!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
 <!--    xmlns:tools="http://schemas.android.com/tools"-->
 <!--    android:layout_width="match_parent"-->
@@ -73,4 +75,4 @@
 <!--
 
    </LinearLayout>-->
-<!--</androidx.constraintlayout.widget.ConstraintLayout>-->
+<!--</androidx.constraint layout.widget.ConstraintLayout>-->

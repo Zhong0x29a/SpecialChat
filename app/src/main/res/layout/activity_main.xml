@@ -7,24 +7,96 @@
     android:background="#333">
 
     <LinearLayout
-        android:id="@+id/main_linear_chat_list"
+        android:id="@+id/main_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:visibility="visible">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="53dp"
+            android:orientation="horizontal">
+            <Button
+                android:layout_width="88dp"
+                android:layout_height="match_parent"
+                android:id="@+id/menu_btn_chats"
+                android:text="@string/chats"
+                android:textSize="12sp"
+                android:background="@drawable/set_button_selector">
+            </Button>
+            <Button
+                android:layout_width="88dp"
+                android:layout_height="match_parent"
+                android:id="@+id/menu_btn_contacts"
+                android:text="@string/contacts"
+                android:textSize="12sp"
+                android:background="@drawable/set_button_selector">
+            </Button>
+            <Button
+                android:layout_width="88dp"
+                android:layout_height="match_parent"
+                android:id="@+id/menu_btn_moments"
+                android:text="@string/moments"
+                android:textSize="12sp"
+                android:background="@drawable/set_button_selector">
+            </Button>
+            <Button
+                android:layout_width="88dp"
+                android:layout_height="match_parent"
+                android:id="@+id/menu_btn_me"
+                android:text="@string/me"
+                android:textSize="12sp"
+                android:background="@drawable/set_button_selector">
+            </Button>
+        </LinearLayout>
+
+        <!-- Chats page -->
         <ListView
             android:id="@+id/main_list_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
         </ListView>
+
+        <!-- todo complete below codes !!-->
+        <!-- contacts page -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="66dp">
+            android:layout_height="wrap_content"
+            android:id="@+id/main_contacts"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="contacts">
+            </TextView>
+        </LinearLayout>
 
+        <!-- moments page -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/main_moments"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="moments">
+            </TextView>
+        </LinearLayout>
+
+        <!--  me page -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/main_me"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="me">
+            </TextView>
         </LinearLayout>
     </LinearLayout>
-
 
     <!-- Font login page -->
     <LinearLayout
@@ -36,18 +108,19 @@
         android:visibility="gone"
         android:orientation="vertical">
         <ImageView
-            android:layout_width="488px"
-            android:layout_height="488px"
+            android:layout_width="233dp"
+            android:layout_height="233dp"
             android:background="@mipmap/logo"
             android:layout_gravity="center"
-            android:layout_marginBottom="233dp"/>
+            android:layout_marginBottom="233dp"
+            android:contentDescription="@string/font_login_page_pic" />
         <Button
             android:id="@+id/btn_front_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:layout_marginHorizontal="30dp"
-            android:text="Login"
+            android:text="@string/login"
             android:background="@drawable/set_button_selector"/>
 
     </LinearLayout>
@@ -56,7 +129,7 @@
 
 <!-- layout end -->
 
-<!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--<androidx.constraint layout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
 <!--    xmlns:tools="http://schemas.android.com/tools"-->
 <!--    android:layout_width="match_parent"-->
 <!--    android:layout_height="match_parent"-->
@@ -88,4 +161,4 @@
 
 <!--    -->
 
-<!--</androidx.constraintlayout.widget.ConstraintLayout>-->
+<!--</androidx.constraint layout.widget.ConstraintLayout>-->

@@ -22,12 +22,8 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static java.lang.System.exit;
 
 public class MainActivity extends AppCompatActivity{
 	
@@ -44,19 +40,7 @@ public class MainActivity extends AppCompatActivity{
 		
 		
 		//test code
-//		SocketWithServer socketWithServer=new SocketWithServer();
-//		socketWithServer.DataSend="{\"a\":\"ha pi\"}";
-//		socketWithServer.startSocket();
-//		JSONObject a=socketWithServer.DataJsonReturn;
-//		if(socketWithServer.DataJsonReturn!=null){
-//			try{
-//				String b=a.getString("status");
-//			}catch(JSONException e){
-//				e.printStackTrace();
-//			}
-//		}
-//		System.out.println("end");
-//		exit(0);
+		
 		//test code
 		
 	}
@@ -87,7 +71,7 @@ public class MainActivity extends AppCompatActivity{
 	@Override
 	protected void onStart(){
 		super.onStart();
-		init();
+		//init();
 	}
 	
 	@Override
@@ -104,10 +88,53 @@ public class MainActivity extends AppCompatActivity{
 	
 	// todo : edit the text on the right(完善注释)    next method -> normalMode()
 	private void init(){
+		
+		
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 		if(preferences.getInt("is_login",0)!=1){
 			changeView(1);
 		}else if(preferences.getInt("is_login",0)==1){
+			findViewById(R.id.menu_btn_chats).setOnClickListener(new View.OnClickListener(){
+				@Override
+				public void onClick(View v){
+					findViewById(R.id.main_list_view).setVisibility(View.VISIBLE);
+					findViewById(R.id.main_contacts).setVisibility(View.GONE);
+					findViewById(R.id.main_moments).setVisibility(View.GONE);
+					findViewById(R.id.main_me).setVisibility(View.GONE);
+					
+				}
+			});
+			findViewById(R.id.menu_btn_contacts).setOnClickListener(new View.OnClickListener(){
+				@Override
+				public void onClick(View v){
+					findViewById(R.id.main_list_view).setVisibility(View.GONE);
+					findViewById(R.id.main_contacts).setVisibility(View.VISIBLE);
+					findViewById(R.id.main_moments).setVisibility(View.GONE);
+					findViewById(R.id.main_me).setVisibility(View.GONE);
+					
+				}
+			});
+			findViewById(R.id.menu_btn_moments).setOnClickListener(new View.OnClickListener(){
+				@Override
+				public void onClick(View v){
+					findViewById(R.id.main_list_view).setVisibility(View.GONE);
+					findViewById(R.id.main_contacts).setVisibility(View.GONE);
+					findViewById(R.id.main_moments).setVisibility(View.VISIBLE);
+					findViewById(R.id.main_me).setVisibility(View.GONE);
+					
+				}
+			});
+			findViewById(R.id.menu_btn_me).setOnClickListener(new View.OnClickListener(){
+				@Override
+				public void onClick(View v){
+					findViewById(R.id.main_list_view).setVisibility(View.GONE);
+					findViewById(R.id.main_contacts).setVisibility(View.GONE);
+					findViewById(R.id.main_moments).setVisibility(View.GONE);
+					findViewById(R.id.main_me).setVisibility(View.VISIBLE);
+					
+				}
+			});
+			
 			normalMode();
 		}
 	}
@@ -167,10 +194,11 @@ public class MainActivity extends AppCompatActivity{
 			}
 		},1700,5888);
 		
+		//todo: may have bug to not willy stop here , so test this!! (is cause by sqlite)
 		loadChatList();
 	}
 	
-	//todo add a little menu
+	//todo add a little menu && need test!!!
 	/**
 	 * Load ListView by Adapter
 	 * */
@@ -350,10 +378,10 @@ public class MainActivity extends AppCompatActivity{
 			public void run() {
 				if(toPage==0){ //main page
 					findViewById(R.id.font_login_linear_layout).setVisibility(View.GONE);
-					findViewById(R.id.main_linear_chat_list).setVisibility(View.VISIBLE);
+					findViewById(R.id.main_linear_layout).setVisibility(View.VISIBLE);
 				}else if(toPage==1){ //login
 					findViewById(R.id.font_login_linear_layout).setVisibility(View.VISIBLE);
-					findViewById(R.id.main_linear_chat_list).setVisibility(View.GONE);
+					findViewById(R.id.main_linear_layout).setVisibility(View.GONE);
 					findViewById(R.id.btn_front_login).setOnClickListener(new View.OnClickListener(){
 						@Override
 						public void onClick(View v){

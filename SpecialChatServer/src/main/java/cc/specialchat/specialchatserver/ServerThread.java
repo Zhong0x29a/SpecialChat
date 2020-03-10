@@ -9,8 +9,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
-import java.util.Base64;
 
 /**
  * Created by Administrator on 2018/5/3.
@@ -19,8 +17,7 @@ public class ServerThread extends Thread {
 	
 	private Socket socket;
 	private StringBuffer DataReturn=new StringBuffer();
-	JSONObject DataJsonReturn=null;
-	static String msg;
+	private static String msg;
 	
 	ServerThread(Socket socket) {
 		this.socket = socket;
@@ -46,22 +43,21 @@ public class ServerThread extends Thread {
 			}
 			socket.shutdownInput();
 			
-			DataJsonReturn=JSONObject.parseObject(DataReturn.toString());
-			//todo : do action.
-			System.out.println(DataJsonReturn.getString("action"));
+			JSONObject dataJsonReturn=JSONObject.parseObject(DataReturn.toString());
 			String user_id,password,token_key;
 			
-			switch(DataJsonReturn.getString("action")){
+			System.out.println(dataJsonReturn.getString("action"));
+			switch(dataJsonReturn.getString("action")){
 				case "0001": // check login status
-					user_id=DataJsonReturn.getString("user_id");
-					token_key=DataJsonReturn.getString("token_key");
+					user_id=dataJsonReturn.getString("user_id");
+					token_key=dataJsonReturn.getString("token_key");
 					if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
 						msg="{\"status\":\"true\"}";
 					}
 					break;
 				case "0002": // go login
-				user_id=DataJsonReturn.getString("user_id");
-					password=DataJsonReturn.getString("password");
+				user_id=dataJsonReturn.getString("user_id");
+					password=dataJsonReturn.getString("password");
 					String[] user_info=UserInfoSQLite.goLogin(user_id,password);
 					if(user_info[0].equals("")){
 						msg="{\"status\":\"false\"}";
@@ -77,18 +73,19 @@ public class ServerThread extends Thread {
 					}
 					break;
 				case "0003": // client refresh message
-					user_id=DataJsonReturn.getString("user_id");
-					token_key=DataJsonReturn.getString("token_key");
+					user_id=dataJsonReturn.getString("user_id");
+					token_key=dataJsonReturn.getString("token_key");
 					if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
 						String[][] msg_temp;
 						if((msg_temp=MsgCacheSQLite.fetchMsg(user_id)).length>0){
-							//todo: ...
 							StringBuffer p;
 							if(msg_temp != null){
-								p=new StringBuffer("{\"is_new_msg\":\"true\",\"new_msg_num\":\""+msg_temp[0][0]+"\",");
-								for(int i=0;i<msg_temp.length;i++){
-									p.append("\"index_"+(i+1)+"\":\"{'user_id':'"+msg_temp[1]+"',");//todo here!!
+								p=new StringBuffer("{\"new_msg_num\":\""+msg_temp[0][0]+"\",");
+								for(int i=0;i<Integer.parseInt(msg_temp[0][0]);i++){
+									p.append("\"index_").append((i+1)).append("\":\"{'user_id':'").append(msg_temp[i][1]).append("','send_time':'").append(msg_temp[i][3]).append("','msg_content':'").append(msg_temp[i][2]).append("'}\",");
 								}
+								p.append("\"is_new_msg\":\"true\"}");
+								msg=p.toString();
 							}
 						}else{
 							msg="{\"is_new_msg\":\"false\"}";

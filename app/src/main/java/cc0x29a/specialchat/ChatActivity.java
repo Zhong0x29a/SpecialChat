@@ -16,12 +16,15 @@ public class ChatActivity extends AppCompatActivity{
 		String user_id = bundle.getString("user_id");
 		
 		if(!user_id.isEmpty()){
-			// todo fetch chat record by user_id !!
+			// todo: fetch chat record by user_id !!
 			MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,
 					"msg_"+user_id,1);
 			String[][] record=msgSQLiteHelper.getChatRecord(msgSQLiteHelper.getReadableDatabase(),0);
+			
+			// todo: show views, show record, use adapter!!
+			
 		}else{
-			Toast.makeText(ChatActivity.this,"ERROOR! ",Toast.LENGTH_LONG);
+			Toast.makeText(ChatActivity.this,"ERROR! ",Toast.LENGTH_LONG);
 			finish();
 		}
 	}

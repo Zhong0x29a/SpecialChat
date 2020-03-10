@@ -92,7 +92,7 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 	 * @param nickname  nickname, String
 	 * @param last_chat_time last chat time , integer
 	 */
-	private void insertNewChatListItem(@NotNull SQLiteDatabase db,int user_id,String nickname,
+	void insertNewChatListItem(@NotNull SQLiteDatabase db,int user_id,String nickname,
 	                                   int last_chat_time){
 		String INSERT_NEW_CHAT_LIST_ITEM_SQL=
 				"insert into chat_list (index_num,user_id,nickname,last_chat_time) values(" +
