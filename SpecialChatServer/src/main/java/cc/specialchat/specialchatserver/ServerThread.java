@@ -76,14 +76,20 @@ public class ServerThread extends Thread {
 						msg="{\"msg\":\"What's Wrong?? (1002)\"}";
 					}
 					break;
-				case "0003":
+				case "0003": // client refresh message
 					user_id=DataJsonReturn.getString("user_id");
 					token_key=DataJsonReturn.getString("token_key");
 					if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
-						//todo : ...complete
 						String[][] msg_temp;
 						if((msg_temp=MsgCacheSQLite.fetchMsg(user_id)).length>0){
-						
+							//todo: ...
+							StringBuffer p;
+							if(msg_temp != null){
+								p=new StringBuffer("{\"is_new_msg\":\"true\",\"new_msg_num\":\""+msg_temp[0][0]+"\",");
+								for(int i=0;i<msg_temp.length;i++){
+									p.append("\"index_"+(i+1)+"\":\"{'user_id':'"+msg_temp[1]+"',");//todo here!!
+								}
+							}
 						}else{
 							msg="{\"is_new_msg\":\"false\"}";
 						}

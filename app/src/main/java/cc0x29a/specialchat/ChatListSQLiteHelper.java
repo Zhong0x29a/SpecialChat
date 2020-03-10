@@ -71,14 +71,13 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 				new String[]{"index_num","user_id","nickname","last_chat_time",},
 				null,null,null,null,
 				"last_chat_time desc");
-		if(cursor.moveToFirst()){
-			do{
-				index++;
-				chatList[index][0]=cursor.getInt(cursor.getColumnIndex("index_num"))+"";
-				chatList[index][1]=cursor.getInt(cursor.getColumnIndex("user_id"))+"";
-				chatList[index][2]=cursor.getString(cursor.getColumnIndex("nickname"));
-				chatList[index][3]=cursor.getInt(cursor.getColumnIndex("last_chat_time"))+"";
-			}while(cursor.moveToNext());
+		
+		while(cursor.moveToNext()){
+			index++;
+			chatList[index][0]=cursor.getInt(cursor.getColumnIndex("index_num"))+"";
+			chatList[index][1]=cursor.getInt(cursor.getColumnIndex("user_id"))+"";
+			chatList[index][2]=cursor.getString(cursor.getColumnIndex("nickname"));
+			chatList[index][3]=cursor.getInt(cursor.getColumnIndex("last_chat_time"))+"";
 		}
 		chatList[0][0]=index+"";
 		

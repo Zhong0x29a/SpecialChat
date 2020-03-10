@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity{
 		loadChatList();
 	}
 	
-	//todo little menu
+	//todo add a little menu
 	/**
 	 * Load ListView by Adapter
 	 * */
@@ -226,17 +226,17 @@ public class MainActivity extends AppCompatActivity{
 	 *     is_new_msg:[true|false],
 	 *     new_msg_num:[new_message_number],    // 50 pieces MAX !
 	 *     // below data sort by time, the oldest on top !!
-	 *     index_[1]:{      //里面用单引号！！
+	 *     index_1:{      //里面用单引号！！
 	 *         user_id:[user_id],
-	 *         send_time:[send_time]
+	 *         send_time:[send_time],
 	 *         msg_content:[msg_content]
 	 *     }
-	 *     index_[2]:{
+	 *     index_2:{
 	 *         user_id:[user_id],
-	 *         send_time:[send_time]
+	 *         send_time:[send_time],
 	 *         msg_content:[msg_content]
 	 *     }
-	 *     index_[...]:{
+	 *     index_...:{
 	 *         ...
 	 *     }
 	 *     ...

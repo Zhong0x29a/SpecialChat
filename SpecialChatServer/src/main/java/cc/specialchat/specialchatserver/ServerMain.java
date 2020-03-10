@@ -1,5 +1,6 @@
 package cc.specialchat.specialchatserver;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.IOException;
@@ -13,8 +14,10 @@ public class ServerMain{
 	
 	public static void main(String[] args) throws SQLException, ClassNotFoundException{
 		// test code.
-		String a="*&%\"''?//{!@$%#@^$#&%*$^&}(fgfd):;\\sggf\"\"";
-		System.out.println(MyTools.filterSpecialChar(a));
+		for(int i=1;i<=10;i++){
+			System.out.println(i);
+		}
+		
 		exit(0);
 		// start program.
 		try{

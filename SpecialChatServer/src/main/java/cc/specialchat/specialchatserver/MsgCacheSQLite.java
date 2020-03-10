@@ -52,10 +52,18 @@ public class MsgCacheSQLite{
 	
 	//todo: insert new message
 	static int[] insertNewMsg(String from_id,String to_id,String msg_content){
-		int send_time=MyTools.getCurrentTime();
-		int[] msg_info=new int[2];
-		
-		return msg_info;
+		try{
+			int[] msg_info=new int[2];
+			msg_info[0]=MyTools.getCurrentTime();
+			Connection con=getConnection();
+			Statement st=con.createStatement();
+			String INSERT_SQL="insert into msg_cache" +
+					"";
+			return msg_info;
+		}catch(SQLException|ClassNotFoundException e){
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	//todo: check whether msg is read by msg_index
@@ -77,14 +85,15 @@ public class MsgCacheSQLite{
 			ResultSet resultSet=statement.executeQuery(QUERY_SQL);
 			String[][] msg=new String[50][4]; // 50 pieces for max each time.
 			int index=0;
-			while(resultSet.next()&&index<50){
-				msg[index][0]=resultSet.getInt("msg_index")+"";
-				msg[index][0]=resultSet.getInt("from_id")+"";
-				msg[index][0]=resultSet.getString("msg_content");
-				msg[index][0]=resultSet.getInt("Send_time")+"";
-				//todo: update is_read;
+			while(resultSet.next() && index<50){
 				index++;
+				msg[index][0]=resultSet.getInt("msg_index")+"";
+				msg[index][1]=resultSet.getInt("from_id")+"";
+				msg[index][2]=resultSet.getString("msg_content");
+				msg[index][3]=resultSet.getInt("send_time")+"";
+				//todo: update is_read;
 			}
+			msg[0][0]=index+"";
 			return msg;
 		}catch(SQLException|ClassNotFoundException e){
 			e.printStackTrace();
