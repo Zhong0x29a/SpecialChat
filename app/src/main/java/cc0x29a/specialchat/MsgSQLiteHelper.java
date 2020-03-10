@@ -34,6 +34,7 @@ public class MsgSQLiteHelper extends SQLiteOpenHelper{
 		db.execSQL(CREATE_TABLE_SQL);
 	}
 	
+	//todo: a warning here
 	/**
 	 * Get chat record, 20 pieces is max each time.
 	 * @param db , the database.

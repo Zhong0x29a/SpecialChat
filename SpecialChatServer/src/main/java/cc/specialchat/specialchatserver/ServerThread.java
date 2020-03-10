@@ -51,7 +51,6 @@ public class ServerThread extends Thread {
 			System.out.println(DataJsonReturn.getString("action"));
 			String user_id,password,token_key;
 			
-			
 			switch(DataJsonReturn.getString("action")){
 				case "0001": // check login status
 					user_id=DataJsonReturn.getString("user_id");
@@ -61,7 +60,7 @@ public class ServerThread extends Thread {
 					}
 					break;
 				case "0002": // go login
-					user_id=DataJsonReturn.getString("user_id");
+				user_id=DataJsonReturn.getString("user_id");
 					password=DataJsonReturn.getString("password");
 					String[] user_info=UserInfoSQLite.goLogin(user_id,password);
 					if(user_info[0].equals("")){
@@ -82,6 +81,7 @@ public class ServerThread extends Thread {
 					token_key=DataJsonReturn.getString("token_key");
 					if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
 						//todo : ...complete
+						String[][] msg_temp=MsgCacheSQLite.fetchMsg(user_id);
 					}
 					break;
 				default:
@@ -90,26 +90,13 @@ public class ServerThread extends Thread {
 			}
 			System.out.println(DataReturn);
 			
-			
 			// send
-//			String msg="{" +
-//					"\"status\":\"true\"," +
-//					"\"user_id\":\"12414\"," +
-//					"\"user_name\":\"Hello world\"," +
-//					"\"token_key\":\"trufdse\"," +
-//					"\"login_time\":\"trfdue\"" +
-//					"}";
-			
 			outputStream = socket.getOutputStream();
 			outputStream.write(msg.getBytes(StandardCharsets.UTF_8));
 			outputStream.flush();
 			
 			socket.shutdownOutput();
 		}catch(IOException e){
-			e.printStackTrace();
-		}catch(SQLException e){
-			e.printStackTrace();
-		}catch(ClassNotFoundException e){
 			e.printStackTrace();
 		}finally{
 			// release resource
