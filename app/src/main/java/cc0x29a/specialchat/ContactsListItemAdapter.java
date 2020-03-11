@@ -47,11 +47,8 @@ public class ContactsListItemAdapter extends BaseAdapter{
 			convertView = layoutInflater.inflate(R.layout.chat_list_item,null);
 			
 			holder = new ViewHolder();
-//			holder.item_profile_pic=convertView.findViewById(R.id.chatListItem_profile_pic);
-//			holder.nickname=convertView.findViewById(R.id.chatList_item_nickname);
-//			holder.lastChatTime=convertView.findViewById(R.id.chatListItem_last_chat_time);
-//			holder.lastChatMsg=convertView.findViewById(R.id.chatListItem_last_msg);
-			
+			holder.profile_pic=convertView.findViewById(R.id.contactsListItem_profile_pic);
+			holder.nickname=convertView.findViewById(R.id.contactsListItem_nickname);
 			
 			convertView.setTag(holder);
 		}else{

@@ -2,6 +2,7 @@ package cc0x29a.specialchat;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -31,17 +32,20 @@ public class ContactsListSQLiteHelper extends SQLiteOpenHelper{
 	String[][] fetchContactsList(SQLiteDatabase db){
 		String[][] contactsList=new String[50][3];
 		int index=0;
-		Cursor cursor=db.query("contacts_list",new String[]{"user_id","user_name","nickname"},
-				null,null,null,null,"user_name asc");
-		while(cursor.moveToNext()){
-			index++;
-			contactsList[index][0]=cursor.getInt(cursor.getColumnIndex("user_id"))+"";
-			contactsList[index][0]=cursor.getString(cursor.getColumnIndex("user_name"));
-			contactsList[index][0]=cursor.getString(cursor.getColumnIndex("nickname"));
+		try{
+			Cursor cursor=db.query("contacts_list",new String[]{"user_id","user_name","nickname"},null,null,null,null,"user_name asc");
+			while(cursor.moveToNext()){
+				index++;
+				contactsList[index][0]=cursor.getInt(cursor.getColumnIndex("user_id"))+"";
+				contactsList[index][0]=cursor.getString(cursor.getColumnIndex("user_name"));
+				contactsList[index][0]=cursor.getString(cursor.getColumnIndex("nickname"));
+			}
+			cursor.close();
+		}catch(SQLException e){
+			e.printStackTrace();
 		}
 		contactsList[0][0]=index+"";
 		
-		cursor.close();
 		return contactsList;
 	}
 	

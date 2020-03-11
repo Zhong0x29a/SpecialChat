@@ -14,6 +14,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -71,7 +74,7 @@ public class MainActivity extends AppCompatActivity{
 	@Override
 	protected void onStart(){
 		super.onStart();
-		init();
+		//redirect();
 	}
 	
 	@Override
@@ -86,58 +89,88 @@ public class MainActivity extends AppCompatActivity{
 		cancelRefreshTimers();
 	}
 	
+	//todo
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main_top_bar, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+	
+	//todo
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.app_bar_search:
+				Toast.makeText(this, "Search! ", Toast.LENGTH_SHORT).show();
+				return true;
+			case R.id.app_bar_settings:
+				Toast.makeText(this,"Settings",Toast.LENGTH_SHORT).show();
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
+	}
+	
 	// todo : edit the text on the right(完善注释)    next method -> normalMode()
-	private void init(){
+	private void redirect(){
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 		if(preferences.getInt("is_login",0)!=1){
 			changeView(1);
 		}else if(preferences.getInt("is_login",0)==1){
-			findViewById(R.id.menu_btn_chats).setOnClickListener(new View.OnClickListener(){
-				@Override
-				public void onClick(View v){
-					findViewById(R.id.main_chats_list_view).setVisibility(View.VISIBLE);
-					findViewById(R.id.main_contacts).setVisibility(View.GONE);
-					findViewById(R.id.main_moments).setVisibility(View.GONE);
-					findViewById(R.id.main_me).setVisibility(View.GONE);
-					
-				}
-			});
-			findViewById(R.id.menu_btn_contacts).setOnClickListener(new View.OnClickListener(){
-				@Override
-				public void onClick(View v){
-					findViewById(R.id.main_chats_list_view).setVisibility(View.GONE);
-					findViewById(R.id.main_contacts).setVisibility(View.VISIBLE);
-					findViewById(R.id.main_moments).setVisibility(View.GONE);
-					findViewById(R.id.main_me).setVisibility(View.GONE);
-					//todo load contacts
-				}
-			});
-			findViewById(R.id.menu_btn_moments).setOnClickListener(new View.OnClickListener(){
-				@Override
-				public void onClick(View v){
-					findViewById(R.id.main_chats_list_view).setVisibility(View.GONE);
-					findViewById(R.id.main_contacts).setVisibility(View.GONE);
-					findViewById(R.id.main_moments).setVisibility(View.VISIBLE);
-					findViewById(R.id.main_me).setVisibility(View.GONE);
-					//todo load moments
-				}
-			});
-			findViewById(R.id.menu_btn_me).setOnClickListener(new View.OnClickListener(){
-				@Override
-				public void onClick(View v){
-					findViewById(R.id.main_chats_list_view).setVisibility(View.GONE);
-					findViewById(R.id.main_contacts).setVisibility(View.GONE);
-					findViewById(R.id.main_moments).setVisibility(View.GONE);
-					findViewById(R.id.main_me).setVisibility(View.VISIBLE);
-					//todo load 'me'
-				}
-			});
 			normalMode();
 		}
 	}
 	
+	/**
+	 * init views
+	 */
+	private void init(){
+		findViewById(R.id.menu_btn_chats).setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v){
+				findViewById(R.id.main_chats_list_view).setVisibility(View.VISIBLE);
+				findViewById(R.id.main_contacts).setVisibility(View.GONE);
+				findViewById(R.id.main_moments).setVisibility(View.GONE);
+				findViewById(R.id.main_me).setVisibility(View.GONE);
+				
+			}
+		});
+		findViewById(R.id.menu_btn_contacts).setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v){
+				findViewById(R.id.main_chats_list_view).setVisibility(View.GONE);
+				findViewById(R.id.main_contacts).setVisibility(View.VISIBLE);
+				findViewById(R.id.main_moments).setVisibility(View.GONE);
+				findViewById(R.id.main_me).setVisibility(View.GONE);
+				//todo load contacts
+			}
+		});
+		findViewById(R.id.menu_btn_moments).setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v){
+				findViewById(R.id.main_chats_list_view).setVisibility(View.GONE);
+				findViewById(R.id.main_contacts).setVisibility(View.GONE);
+				findViewById(R.id.main_moments).setVisibility(View.VISIBLE);
+				findViewById(R.id.main_me).setVisibility(View.GONE);
+				//todo load moments
+			}
+		});
+		findViewById(R.id.menu_btn_me).setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v){
+				findViewById(R.id.main_chats_list_view).setVisibility(View.GONE);
+				findViewById(R.id.main_contacts).setVisibility(View.GONE);
+				findViewById(R.id.main_moments).setVisibility(View.GONE);
+				findViewById(R.id.main_me).setVisibility(View.VISIBLE);
+				//todo load 'me'
+			}
+		});
+	}
+	
 	// todo complete
 	private void normalMode(){
+		init();
 		cancelRefreshTimers();
 		
 		// set timer tasks
@@ -191,7 +224,6 @@ public class MainActivity extends AppCompatActivity{
 			}
 		},1700,5888);
 		
-		//todo: may have bug to not willy stop here , so test this!! (is cause by sqlite)
 		loadChatList();
 	}
 	

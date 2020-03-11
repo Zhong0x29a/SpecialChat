@@ -2,6 +2,7 @@ package cc0x29a.specialchat;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -66,22 +67,22 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 	String[][] fetchChatList(@NotNull SQLiteDatabase db){
 		String[][] chatList=new String[50][4];
 		int index=0;
-		
-		Cursor cursor=db.query("chat_list",
-				new String[]{"index_num","user_id","nickname","last_chat_time",},
-				null,null,null,null,
-				"last_chat_time desc");
-		
-		while(cursor.moveToNext()){
-			index++;
-			chatList[index][0]=cursor.getInt(cursor.getColumnIndex("index_num"))+"";
-			chatList[index][1]=cursor.getInt(cursor.getColumnIndex("user_id"))+"";
-			chatList[index][2]=cursor.getString(cursor.getColumnIndex("nickname"));
-			chatList[index][3]=cursor.getInt(cursor.getColumnIndex("last_chat_time"))+"";
+		try{
+			Cursor cursor=db.query("chat_list",new String[]{"index_num","user_id","nickname","last_chat_time",},null,null,null,null,"last_chat_time desc");
+			while(cursor.moveToNext()){
+				index++;
+				chatList[index][0]=cursor.getInt(cursor.getColumnIndex("index_num"))+"";
+				chatList[index][1]=cursor.getInt(cursor.getColumnIndex("user_id"))+"";
+				chatList[index][2]=cursor.getString(cursor.getColumnIndex("nickname"));
+				chatList[index][3]=cursor.getInt(cursor.getColumnIndex("last_chat_time"))+"";
+			}
+			cursor.close();
+		}catch(SQLException e){
+			e.printStackTrace();
 		}
 		chatList[0][0]=index+"";
 		
-		cursor.close();
+		
 		return chatList;
 	}
 	

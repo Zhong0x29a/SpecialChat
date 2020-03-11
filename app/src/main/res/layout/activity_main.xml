@@ -57,13 +57,16 @@
             android:layout_height="wrap_content">
         </ListView>
 
-        <!-- todo complete below codes !! -->
         <!-- contacts page -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/main_contacts"
             android:visibility="gone">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/contacts"/>
             <ListView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
