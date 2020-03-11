@@ -17,7 +17,7 @@ public class ServerThread extends Thread {
 	
 	private Socket socket;
 	private StringBuffer DataReturn=new StringBuffer();
-	private static String msg;
+	private static String msgSend;
 	
 	ServerThread(Socket socket) {
 		this.socket = socket;
@@ -52,24 +52,24 @@ public class ServerThread extends Thread {
 					user_id=dataJsonReturn.getString("user_id");
 					token_key=dataJsonReturn.getString("token_key");
 					if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
-						msg="{\"status\":\"true\"}";
+						msgSend="{\"status\":\"true\"}";
 					}
 					break;
-				case "0002": // go login
-				user_id=dataJsonReturn.getString("user_id");
+				case "0002": // perform login
+					user_id=dataJsonReturn.getString("user_id");
 					password=dataJsonReturn.getString("password");
 					String[] user_info=UserInfoSQLite.goLogin(user_id,password);
 					if(user_info[0].equals("")){
-						msg="{\"status\":\"false\"}";
+						msgSend="{\"status\":\"false\"}";
 					}else if(user_id!=null){
-						msg="{\"status\":\"true\"," +
+						msgSend="{\"status\":\"true\"," +
 								"\"user_id\":\""+user_info[0]+"\"," +
-								"\"user_name\":\""+MyTools.filterSpecialChar(user_info[1])+"\"," +
+								"\"user_name\":\""+user_info[1]+"\"," +
 								"\"token_key\":\""+user_info[2]+"\"," +
 								"\"login_time\":\""+user_info[3]+"\"" +
 								"}";
 					}else{
-						msg="{\"msg\":\"What's Wrong?? (1002)\"}";
+						msgSend="{\"msg\":\"What's Wrong?? (1002)\"}";
 					}
 					break;
 				case "0003": // client refresh message
@@ -85,22 +85,22 @@ public class ServerThread extends Thread {
 									p.append("\"index_").append((i+1)).append("\":\"{'user_id':'").append(msg_temp[i][1]).append("','send_time':'").append(msg_temp[i][3]).append("','msg_content':'").append(msg_temp[i][2]).append("'}\",");
 								}
 								p.append("\"is_new_msg\":\"true\"}");
-								msg=p.toString();
+								msgSend=p.toString();
 							}
 						}else{
-							msg="{\"is_new_msg\":\"false\"}";
+							msgSend="{\"is_new_msg\":\"false\"}";
 						}
 					}
 					break;
 				default:
-					msg="{\"msg\":\"ERROR!! (1000)\"}";
+					msgSend="{\"msg\":\"ERROR!! (1000)\"}";
 					break;
 			}
 			System.out.println(DataReturn);
 			
 			// send
 			outputStream = socket.getOutputStream();
-			outputStream.write(msg.getBytes(StandardCharsets.UTF_8));
+			outputStream.write(msgSend.getBytes(StandardCharsets.UTF_8));
 			outputStream.flush();
 			
 			socket.shutdownOutput();

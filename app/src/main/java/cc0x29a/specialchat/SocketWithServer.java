@@ -12,6 +12,8 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * Start a Socket With Server
+ * Data in DataSend should be filter special chars to avoid problems !!
+ *
  * @author Zhong Wenliang
  * @version 1.0
  * date: 20.03.05
@@ -33,7 +35,7 @@ class SocketWithServer{
 					
 					// Output, send data to server.
 					OutputStream os = socket.getOutputStream();
-					os.write(DataSend.getBytes(StandardCharsets.UTF_8)); //todo: filter some special char
+					os.write(DataSend.getBytes(StandardCharsets.UTF_8));
 					os.flush();
 					socket.shutdownOutput();
 					

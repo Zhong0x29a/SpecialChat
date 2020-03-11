@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:background="#efefef">
+
+    <ImageView
+        android:id="@+id/contactsListItem_profile_pic"
+        android:background="#333"
+        android:src="@mipmap/logo"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:layout_marginVertical="5dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="2dp"
+        android:contentDescription="user profile pic" />
+    <TextView
+        android:id="@+id/contactsListItem_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:text="Zhong Wenliang"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginStart="20dp"
+        android:paddingVertical="8dp"/>
+
+</LinearLayout>

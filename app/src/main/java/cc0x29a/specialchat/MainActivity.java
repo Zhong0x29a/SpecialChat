@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity{
 			findViewById(R.id.menu_btn_chats).setOnClickListener(new View.OnClickListener(){
 				@Override
 				public void onClick(View v){
-					findViewById(R.id.main_list_view).setVisibility(View.VISIBLE);
+					findViewById(R.id.main_chats_list_view).setVisibility(View.VISIBLE);
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.GONE);
 					findViewById(R.id.main_me).setVisibility(View.GONE);
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity{
 			findViewById(R.id.menu_btn_contacts).setOnClickListener(new View.OnClickListener(){
 				@Override
 				public void onClick(View v){
-					findViewById(R.id.main_list_view).setVisibility(View.GONE);
+					findViewById(R.id.main_chats_list_view).setVisibility(View.GONE);
 					findViewById(R.id.main_contacts).setVisibility(View.VISIBLE);
 					findViewById(R.id.main_moments).setVisibility(View.GONE);
 					findViewById(R.id.main_me).setVisibility(View.GONE);
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity{
 			findViewById(R.id.menu_btn_moments).setOnClickListener(new View.OnClickListener(){
 				@Override
 				public void onClick(View v){
-					findViewById(R.id.main_list_view).setVisibility(View.GONE);
+					findViewById(R.id.main_chats_list_view).setVisibility(View.GONE);
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.VISIBLE);
 					findViewById(R.id.main_me).setVisibility(View.GONE);
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity{
 			findViewById(R.id.menu_btn_me).setOnClickListener(new View.OnClickListener(){
 				@Override
 				public void onClick(View v){
-					findViewById(R.id.main_list_view).setVisibility(View.GONE);
+					findViewById(R.id.main_chats_list_view).setVisibility(View.GONE);
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.GONE);
 					findViewById(R.id.main_me).setVisibility(View.VISIBLE);
@@ -195,24 +195,24 @@ public class MainActivity extends AppCompatActivity{
 		loadChatList();
 	}
 	
-	//todo add a little menu && need test!!!
+	//todo add a little menu .
 	/**
 	 * Load ListView by Adapter
 	 * */
 	private void loadChatList(){
 		ChatListSQLiteHelper chatListSQLiteHelper=
 				new ChatListSQLiteHelper(MainActivity.this,"chat_list.db3",1);
-		final String[][] chatList=chatListSQLiteHelper.getChatList(chatListSQLiteHelper.getReadableDatabase());
+		final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase());
 		
 		// Fetch last one message.
 		String[] lastMsg=new String[50];
-		for(int i=1;i<= (Integer.parseInt(chatList[0][0])) ;i++){
+		for(int i=1;i<= (Integer.parseInt(chatList[0][0])) && i<=50;i++){
 			MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(MainActivity.this,
 					"msg_"+chatList[i][1]+".db3",1);
 			lastMsg[i]=msgSQLiteHelper.getLastMsg(msgSQLiteHelper.getReadableDatabase());
 		}
 		
-		ListView ml_view=findViewById(R.id.main_list_view);
+		ListView ml_view=findViewById(R.id.main_chats_list_view);
 		ChatListItemAdapter cli_adapter=new ChatListItemAdapter(MainActivity.this);
 		cli_adapter.chatListInfo=chatList;
 		cli_adapter.lastMsg=lastMsg;
@@ -229,6 +229,7 @@ public class MainActivity extends AppCompatActivity{
 				startActivity(intent);
 			}
 		});
+		
 		
 		ml_view.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
 			@Override
@@ -281,13 +282,18 @@ public class MainActivity extends AppCompatActivity{
 		String user_id=preferences.getString("user_id",null);
 		String token_key=preferences.getString("token_key",null);
 		
-		String jsonMsg="{" +
-				"\"client\":\"SCC-1.0\"," +
-				"\"action\":\"0003\"," +
-				"\"user_id\":\""+user_id+"\"," +
-				"\"token_key\":\""+token_key+"\"," +
-				"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
-				"}";
+		String jsonMsg;
+		if(user_id != null && token_key != null){
+			jsonMsg="{" +
+					"\"client\":\"SCC-1.0\"," +
+					"\"action\":\"0003\"," +
+					"\"user_id\":\""+MyTools.filterSpecialChar(user_id)+"\"," +
+					"\"token_key\":\""+MyTools.filterSpecialChar(token_key)+"\"," +
+					"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
+					"}";
+		}else{
+			jsonMsg="{}";
+		}
 		SocketWithServer SWS=new SocketWithServer();
 		SWS.DataSend=jsonMsg;
 		SWS.startSocket();

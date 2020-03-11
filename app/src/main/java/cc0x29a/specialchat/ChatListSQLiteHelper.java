@@ -55,7 +55,7 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 	}
 	
 	/**
-	 * Fetch chat list items.
+	 * Fetch chat list items. 49 for max each time. //todo: but total just 49,need complete!!
 	 * @param db SQLiteDataBase
 	 * @return chat list, String[item number][4]
 	 *         [0]->index_num
@@ -63,7 +63,7 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 	 *         [2]->nickname
 	 *         [3]->last_chat_time
 	 */
-	String[][] getChatList(@NotNull SQLiteDatabase db){
+	String[][] fetchChatList(@NotNull SQLiteDatabase db){
 		String[][] chatList=new String[50][4];
 		int index=0;
 		

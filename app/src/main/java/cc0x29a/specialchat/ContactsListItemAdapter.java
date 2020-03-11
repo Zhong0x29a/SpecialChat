@@ -9,19 +9,15 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-/**
- * Class for ListView of chat list.
- */
-
-public class ChatListItemAdapter extends BaseAdapter{
+public class ContactsListItemAdapter extends BaseAdapter{
 	private LayoutInflater layoutInflater;
-	String[][] chatListInfo;
-	String[] lastMsg=null;
+	String[][] contactsInfo;
 	int count=0;
 	
-	ChatListItemAdapter(Context context){
+	ContactsListItemAdapter(Context context){
 		layoutInflater=LayoutInflater.from(context);
 	}
+	
 	@Override
 	public int getCount() {
 		return this.count;
@@ -38,43 +34,38 @@ public class ChatListItemAdapter extends BaseAdapter{
 	}
 	
 	static class ViewHolder{
-		ImageView item_profile_pic;
-		TextView nickname, lastChatMsg,lastChatTime;
+		ImageView profile_pic;
+		TextView nickname;
 	}
-
+	
 	@SuppressLint("InflateParams")
 	@Override
 	public View getView(int position,View convertView,ViewGroup parent) {
 		ViewHolder holder;
-
+		
 		if (convertView == null){
 			convertView = layoutInflater.inflate(R.layout.chat_list_item,null);
-
+			
 			holder = new ViewHolder();
-			holder.item_profile_pic=convertView.findViewById(R.id.chatListItem_profile_pic);
-			holder.nickname=convertView.findViewById(R.id.chatListItem_nickname);
-			holder.lastChatTime=convertView.findViewById(R.id.chatListItem_last_chat_time);
-			holder.lastChatMsg=convertView.findViewById(R.id.chatListItem_last_msg);
+//			holder.item_profile_pic=convertView.findViewById(R.id.chatListItem_profile_pic);
+//			holder.nickname=convertView.findViewById(R.id.chatList_item_nickname);
+//			holder.lastChatTime=convertView.findViewById(R.id.chatListItem_last_chat_time);
+//			holder.lastChatMsg=convertView.findViewById(R.id.chatListItem_last_msg);
+			
 			
 			convertView.setTag(holder);
 		}else{
 			holder = (ViewHolder) convertView.getTag();
 		}
-
-		if(this.chatListInfo[position][2].isEmpty()){
-			holder.nickname.setText(MyTools.resolveSpecialChar(this.chatListInfo[position][1]));
+		
+		if(this.contactsInfo[position][2].isEmpty()){
+			holder.nickname.setText(MyTools.resolveSpecialChar(this.contactsInfo[position][1]));
 		}else{
-			holder.nickname.setText(MyTools.resolveSpecialChar(this.chatListInfo[position][2]));
+			holder.nickname.setText(MyTools.resolveSpecialChar(this.contactsInfo[position][2]));
 		}
-		if(this.lastMsg[position].isEmpty()){
-			holder.lastChatMsg.setText(" ");
-		}else{
-			holder.lastChatMsg.setText(MyTools.resolveSpecialChar(this.lastMsg[position]));
-		}
-		holder.lastChatTime.setText(this.chatListInfo[position][3]);
 		
 		//todo load user's profile picture
-		holder.item_profile_pic.setImageResource(R.drawable.ic_launcher_background);
+		holder.profile_pic.setImageResource(R.drawable.ic_launcher_background);
 		return convertView;
 	}
 }

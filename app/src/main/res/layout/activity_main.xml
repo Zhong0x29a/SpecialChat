@@ -52,23 +52,23 @@
 
         <!-- Chats page -->
         <ListView
-            android:id="@+id/main_list_view"
+            android:id="@+id/main_chats_list_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </ListView>
 
-        <!-- todo complete below codes !!-->
+        <!-- todo complete below codes !! -->
         <!-- contacts page -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/main_contacts"
             android:visibility="gone">
-            <TextView
-                android:layout_width="wrap_content"
+            <ListView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="contacts">
-            </TextView>
+                android:id="@+id/main_contacts_list_view">
+            </ListView>
         </LinearLayout>
 
         <!-- moments page -->
@@ -77,10 +77,11 @@
             android:layout_height="wrap_content"
             android:id="@+id/main_moments"
             android:visibility="gone">
+            <!-- todo: complete this. (next ver.) -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="moments">
+                android:text="@string/features_are_still_being_perfected">
             </TextView>
         </LinearLayout>
 
@@ -90,10 +91,11 @@
             android:layout_height="wrap_content"
             android:id="@+id/main_me"
             android:visibility="gone">
+            <!-- todo: complete this. -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="me">
+                android:text="@string/features_are_still_being_perfected">
             </TextView>
         </LinearLayout>
     </LinearLayout>

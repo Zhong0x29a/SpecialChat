@@ -1,22 +1,15 @@
 package cc.specialchat.specialchatserver;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.SQLException;
 
 import static java.lang.System.exit;
 
 public class ServerMain{
 	
-	public static void main(String[] args) throws SQLException, ClassNotFoundException{
+	public static void main(String[] args){
 		// test code.
-		for(int i=1;i<=10;i++){
-			System.out.println(i);
-		}
 		
 		exit(0);
 		// start program.
