@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity{
 	@Override
 	protected void onStart(){
 		super.onStart();
-		//init();
+		init();
 	}
 	
 	@Override
@@ -88,8 +88,6 @@ public class MainActivity extends AppCompatActivity{
 	
 	// todo : edit the text on the right(完善注释)    next method -> normalMode()
 	private void init(){
-		
-		
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 		if(preferences.getInt("is_login",0)!=1){
 			changeView(1);
@@ -111,7 +109,7 @@ public class MainActivity extends AppCompatActivity{
 					findViewById(R.id.main_contacts).setVisibility(View.VISIBLE);
 					findViewById(R.id.main_moments).setVisibility(View.GONE);
 					findViewById(R.id.main_me).setVisibility(View.GONE);
-					
+					//todo load contacts
 				}
 			});
 			findViewById(R.id.menu_btn_moments).setOnClickListener(new View.OnClickListener(){
@@ -121,7 +119,7 @@ public class MainActivity extends AppCompatActivity{
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.VISIBLE);
 					findViewById(R.id.main_me).setVisibility(View.GONE);
-					
+					//todo load moments
 				}
 			});
 			findViewById(R.id.menu_btn_me).setOnClickListener(new View.OnClickListener(){
@@ -131,10 +129,9 @@ public class MainActivity extends AppCompatActivity{
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.GONE);
 					findViewById(R.id.main_me).setVisibility(View.VISIBLE);
-					
+					//todo load 'me'
 				}
 			});
-			
 			normalMode();
 		}
 	}
@@ -232,6 +229,7 @@ public class MainActivity extends AppCompatActivity{
 				startActivity(intent);
 			}
 		});
+		
 		ml_view.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent,View view,int position,long id){
