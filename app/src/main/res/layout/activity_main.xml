@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -15,14 +16,18 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="53dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="0dp"
+            android:layout_margin="0dp">
             <Button
                 android:layout_width="88dp"
                 android:layout_height="match_parent"
                 android:id="@+id/menu_btn_chats"
                 android:text="@string/chats"
                 android:textSize="12sp"
-                android:background="@drawable/set_button_selector">
+                android:background="@drawable/set_button_selector"
+                android:layout_margin="0dp"
+                tools:ignore="ButtonStyle">
             </Button>
             <Button
                 android:layout_width="88dp"
@@ -30,7 +35,9 @@
                 android:id="@+id/menu_btn_contacts"
                 android:text="@string/contacts"
                 android:textSize="12sp"
-                android:background="@drawable/set_button_selector">
+                android:background="@drawable/set_button_selector"
+                android:layout_margin="0dp"
+                tools:ignore="ButtonStyle">
             </Button>
             <Button
                 android:layout_width="88dp"
@@ -38,7 +45,9 @@
                 android:id="@+id/menu_btn_moments"
                 android:text="@string/moments"
                 android:textSize="12sp"
-                android:background="@drawable/set_button_selector">
+                android:background="@drawable/set_button_selector"
+                android:layout_margin="0dp"
+                tools:ignore="ButtonStyle">
             </Button>
             <Button
                 android:layout_width="88dp"
@@ -46,7 +55,9 @@
                 android:id="@+id/menu_btn_me"
                 android:text="@string/me"
                 android:textSize="12sp"
-                android:background="@drawable/set_button_selector">
+                android:background="@drawable/set_button_selector"
+                android:layout_margin="0dp"
+                tools:ignore="ButtonStyle">
             </Button>
         </LinearLayout>
 

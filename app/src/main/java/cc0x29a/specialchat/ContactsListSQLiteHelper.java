@@ -49,9 +49,23 @@ public class ContactsListSQLiteHelper extends SQLiteOpenHelper{
 		return contactsList;
 	}
 	
-	//todo complete
-	void insertNewContact(){
-	
+	/**
+	 * Insert new contact into Contacts list
+	 * @param db SQLite database
+	 * @param user_id string user_id
+	 * @param user_name string user_name
+	 * @param nickname string nickname , if is null, nickname=user_name
+	 */
+	void insertNewContact(SQLiteDatabase db,String user_id,String user_name,String nickname){
+		try{
+			if(nickname==null||nickname.equals("")){
+				nickname=user_name;
+			}
+			String INSERT_SQL="insert into contacts_list (user_id,user_name,nickname) values ("+""+user_id+",'"+user_name+"','"+nickname+"')";
+			db.execSQL(INSERT_SQL);
+		}catch(SQLException|NullPointerException e){
+			e.printStackTrace();
+		}
 	}
 	
 	@Override

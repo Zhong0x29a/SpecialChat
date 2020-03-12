@@ -61,12 +61,12 @@ public class ChatListItemAdapter extends BaseAdapter{
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		if(this.chatListInfo[position][2].isEmpty()){
+		if(this.chatListInfo[position][2]==null ||this.chatListInfo[position][2].isEmpty()){
 			holder.nickname.setText(MyTools.resolveSpecialChar(this.chatListInfo[position][1]));
 		}else{
 			holder.nickname.setText(MyTools.resolveSpecialChar(this.chatListInfo[position][2]));
 		}
-		if(this.lastMsg[position].isEmpty()){
+		if(this.lastMsg[position]==null||this.lastMsg[position].isEmpty()){
 			holder.lastChatMsg.setText(" ");
 		}else{
 			holder.lastChatMsg.setText(MyTools.resolveSpecialChar(this.lastMsg[position]));

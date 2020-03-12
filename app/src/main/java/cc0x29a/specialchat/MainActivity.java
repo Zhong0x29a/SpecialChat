@@ -19,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -43,32 +44,13 @@ public class MainActivity extends AppCompatActivity{
 		
 		
 		//test code
-		
+		ChatListSQLiteHelper cp=new ChatListSQLiteHelper(this,"chat_list.db",1);
+		cp.insertNewChatListItem(cp.getReadableDatabase(),MyTools.getRandomNum(12000,2),"ha pi",123);
 		//test code
-		
+		init();
 	}
 	
 	//todo what about this??
-	/**
-	 * 获取控件的高度或者宽度  isHeight=true则为测量该控件的高度，isHeight=false则为测量该控件的宽度
-	 * @param view
-	 * @param isHeight
-	 * @return
-	 */
-	public static int getViewHeight(View view, boolean isHeight){
-		int result;
-		if(view==null)return 0;
-		if(isHeight){
-			int h = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
-			view.measure(h,0);
-			result =view.getMeasuredHeight();
-		}else{
-			int w = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
-			view.measure(0,w);
-			result =view.getMeasuredWidth();
-		}
-		return result;
-	}
 	
 	// todo： this still empty
 	@Override
@@ -92,7 +74,7 @@ public class MainActivity extends AppCompatActivity{
 	//todo
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
+		MenuInflater inflater=getMenuInflater();
 		inflater.inflate(R.menu.main_top_bar, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -106,6 +88,11 @@ public class MainActivity extends AppCompatActivity{
 				return true;
 			case R.id.app_bar_settings:
 				Toast.makeText(this,"Settings",Toast.LENGTH_SHORT).show();
+				return true;
+			case R.id.app_bar_about:
+				Toast.makeText(this,"Special Chat-1.0! \n" +
+						"Developed by Zhong Wenliang. \n" +
+						"Email: CuberWenliang@0x29a.cc",Toast.LENGTH_LONG).show();
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);
@@ -126,51 +113,68 @@ public class MainActivity extends AppCompatActivity{
 	 * init views
 	 */
 	private void init(){
-		findViewById(R.id.menu_btn_chats).setOnClickListener(new View.OnClickListener(){
-			@Override
-			public void onClick(View v){
-				findViewById(R.id.main_chats_list_view).setVisibility(View.VISIBLE);
-				findViewById(R.id.main_contacts).setVisibility(View.GONE);
-				findViewById(R.id.main_moments).setVisibility(View.GONE);
-				findViewById(R.id.main_me).setVisibility(View.GONE);
-				
-			}
-		});
-		findViewById(R.id.menu_btn_contacts).setOnClickListener(new View.OnClickListener(){
-			@Override
-			public void onClick(View v){
-				findViewById(R.id.main_chats_list_view).setVisibility(View.GONE);
-				findViewById(R.id.main_contacts).setVisibility(View.VISIBLE);
-				findViewById(R.id.main_moments).setVisibility(View.GONE);
-				findViewById(R.id.main_me).setVisibility(View.GONE);
-				//todo load contacts
-			}
-		});
-		findViewById(R.id.menu_btn_moments).setOnClickListener(new View.OnClickListener(){
-			@Override
-			public void onClick(View v){
-				findViewById(R.id.main_chats_list_view).setVisibility(View.GONE);
-				findViewById(R.id.main_contacts).setVisibility(View.GONE);
-				findViewById(R.id.main_moments).setVisibility(View.VISIBLE);
-				findViewById(R.id.main_me).setVisibility(View.GONE);
-				//todo load moments
-			}
-		});
-		findViewById(R.id.menu_btn_me).setOnClickListener(new View.OnClickListener(){
-			@Override
-			public void onClick(View v){
-				findViewById(R.id.main_chats_list_view).setVisibility(View.GONE);
-				findViewById(R.id.main_contacts).setVisibility(View.GONE);
-				findViewById(R.id.main_moments).setVisibility(View.GONE);
-				findViewById(R.id.main_me).setVisibility(View.VISIBLE);
-				//todo load 'me'
-			}
-		});
+		LinearLayout main_linear_layout=findViewById(R.id.main_linear_layout);
+		int width=MyTools.getViewHeight(main_linear_layout,false);
+//		int height=MyTools.getViewHeight(main_linear_layout,true);
+		{
+			LinearLayout.LayoutParams params=(LinearLayout.LayoutParams)findViewById(R.id.menu_btn_chats).getLayoutParams();
+			params.width=width/4;
+			findViewById(R.id.menu_btn_chats).setLayoutParams(params);
+			params=(LinearLayout.LayoutParams)findViewById(R.id.menu_btn_contacts).getLayoutParams();
+			params.width=width/4;
+			findViewById(R.id.menu_btn_contacts).setLayoutParams(params);
+			params=(LinearLayout.LayoutParams)findViewById(R.id.menu_btn_moments).getLayoutParams();
+			params.width=width/4;
+			findViewById(R.id.menu_btn_moments).setLayoutParams(params);
+			params=(LinearLayout.LayoutParams)findViewById(R.id.menu_btn_me).getLayoutParams();
+			params.width=width/4;
+			findViewById(R.id.menu_btn_me).setLayoutParams(params);
+		}
+		{
+			findViewById(R.id.menu_btn_chats).setOnClickListener(new View.OnClickListener(){
+				@Override
+				public void onClick(View v){
+					findViewById(R.id.main_chats_list_view).setVisibility(View.VISIBLE);
+					findViewById(R.id.main_contacts).setVisibility(View.GONE);
+					findViewById(R.id.main_moments).setVisibility(View.GONE);
+					findViewById(R.id.main_me).setVisibility(View.GONE);
+				}
+			});
+			findViewById(R.id.menu_btn_contacts).setOnClickListener(new View.OnClickListener(){
+				@Override
+				public void onClick(View v){
+					findViewById(R.id.main_chats_list_view).setVisibility(View.GONE);
+					findViewById(R.id.main_contacts).setVisibility(View.VISIBLE);
+					findViewById(R.id.main_moments).setVisibility(View.GONE);
+					findViewById(R.id.main_me).setVisibility(View.GONE);
+					//todo load contacts
+				}
+			});
+			findViewById(R.id.menu_btn_moments).setOnClickListener(new View.OnClickListener(){
+				@Override
+				public void onClick(View v){
+					findViewById(R.id.main_chats_list_view).setVisibility(View.GONE);
+					findViewById(R.id.main_contacts).setVisibility(View.GONE);
+					findViewById(R.id.main_moments).setVisibility(View.VISIBLE);
+					findViewById(R.id.main_me).setVisibility(View.GONE);
+					//todo load moments
+				}
+			});
+			findViewById(R.id.menu_btn_me).setOnClickListener(new View.OnClickListener(){
+				@Override
+				public void onClick(View v){
+					findViewById(R.id.main_chats_list_view).setVisibility(View.GONE);
+					findViewById(R.id.main_contacts).setVisibility(View.GONE);
+					findViewById(R.id.main_moments).setVisibility(View.GONE);
+					findViewById(R.id.main_me).setVisibility(View.VISIBLE);
+					//todo load 'me'
+				}
+			});
+		}
 	}
 	
 	// todo complete
 	private void normalMode(){
-		init();
 		cancelRefreshTimers();
 		
 		// set timer tasks
@@ -233,7 +237,7 @@ public class MainActivity extends AppCompatActivity{
 	 * */
 	private void loadChatList(){
 		ChatListSQLiteHelper chatListSQLiteHelper=
-				new ChatListSQLiteHelper(MainActivity.this,"chat_list.db3",1);
+				new ChatListSQLiteHelper(MainActivity.this,"chat_list.db",1);
 		final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase());
 		
 		// Fetch last one message.

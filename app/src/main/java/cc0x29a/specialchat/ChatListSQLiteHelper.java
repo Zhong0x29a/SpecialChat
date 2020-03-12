@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
  */
 
 public class ChatListSQLiteHelper extends SQLiteOpenHelper{
+	
 	@Override
 	public void onCreate(@NotNull SQLiteDatabase db){
 		String CREATE_TABLE_SQL=
@@ -32,7 +33,11 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 				"last_chat_time INTEGER NOT NULL," +
 				"status INTEGER"+
 				")";
-		db.execSQL(CREATE_TABLE_SQL);
+		try{
+			db.execSQL(CREATE_TABLE_SQL);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -42,16 +47,17 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 	 * @param last_chat_time    last chat time with this friend
 	 */
 	void refreshChatList(@NotNull SQLiteDatabase db,int user_id,int last_chat_time){
-		Cursor cursor=db.query("chat_list",new String[]{"user_id"},
-				"user_id="+user_id+"",null,null,null,null);
-		if(cursor.moveToFirst()){
-			cursor.close();
-			String SQL="update chat_list "+
-					"set last_chat_time="+last_chat_time+" "+
-					"where user_id="+user_id;
-			db.execSQL(SQL);
-		}else{
-			insertNewChatListItem(db,user_id,user_id+"",last_chat_time);
+		try{
+			Cursor cursor=db.query("chat_list",new String[]{"user_id"},"user_id="+user_id+"",null,null,null,null);
+			if(cursor.moveToFirst()){
+				cursor.close();
+				String SQL="update chat_list "+"set last_chat_time="+last_chat_time+" "+"where user_id="+user_id;
+				db.execSQL(SQL);
+			}else{
+				insertNewChatListItem(db,user_id,user_id+"",last_chat_time);
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
 		}
 	}
 	
@@ -93,8 +99,7 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 	 * @param nickname  nickname, String
 	 * @param last_chat_time last chat time , integer
 	 */
-	void insertNewChatListItem(@NotNull SQLiteDatabase db,int user_id,String nickname,
-	                                   int last_chat_time){
+	void insertNewChatListItem(@NotNull SQLiteDatabase db,int user_id,String nickname,int last_chat_time){
 		String INSERT_NEW_CHAT_LIST_ITEM_SQL=
 				"insert into chat_list (index_num,user_id,nickname,last_chat_time) values(" +
 					"null," +
@@ -102,7 +107,11 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 					"'"+nickname +"',"+
 					last_chat_time+
 					")";
-		db.execSQL(INSERT_NEW_CHAT_LIST_ITEM_SQL);
+		try{
+			db.execSQL(INSERT_NEW_CHAT_LIST_ITEM_SQL);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -113,7 +122,11 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 	void deleteChatListItem(@NotNull SQLiteDatabase db,int user_id){
 		String DELETE_CHAT_LIST_ITEM_SQL=
 				"DELETE FROM chat_list WHERE user_id="+user_id;
-		db.execSQL(DELETE_CHAT_LIST_ITEM_SQL);
+		try{
+			db.execSQL(DELETE_CHAT_LIST_ITEM_SQL);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -123,7 +136,11 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 	void deleteAllChatListItem(@NotNull SQLiteDatabase db){
 		String DELETE_CHAT_LIST_ITEM_SQL=
 				"DELETE FROM chat_list";
-		db.execSQL(DELETE_CHAT_LIST_ITEM_SQL);
+		try{
+			db.execSQL(DELETE_CHAT_LIST_ITEM_SQL);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
 	}
 	
 	ChatListSQLiteHelper(Context context,String name,int version){

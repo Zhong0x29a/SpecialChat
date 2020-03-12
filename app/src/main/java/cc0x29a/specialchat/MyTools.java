@@ -1,6 +1,7 @@
 package cc0x29a.specialchat;
 
 import android.text.TextUtils;
+import android.view.View;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -13,6 +14,27 @@ import java.security.NoSuchAlgorithmException;
  */
 
 class MyTools{
+	
+	/**
+	 * Get view's heigth or width
+	 * @param view a view to be measured
+	 * @param isHeight height or width
+	 * @return a integer
+	 */
+	public static int getViewHeight(View view,boolean isHeight){
+		int result;
+		if(view==null)return 0;
+		if(isHeight){
+			int h = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
+			view.measure(h,0);
+			result =view.getMeasuredHeight();
+		}else{
+			int w = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
+			view.measure(0,w);
+			result =view.getMeasuredWidth();
+		}
+		return result;
+	}
 	
 	/**
 	 * Filter Some not good chars
