@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  *  column      :
  *      msg_index       INTEGER,primary key,autoincrement   //index
  *      msg_by          INTEGER,NOT NULL
- *      is_read         INTEGER,NOT NULL
+ *      is_read         INTEGER,NOT NULL        // read->1, unread->0;
  *      send_time       INTEGER,NOT NULL
  *      msg_content     TEXT,   NOT NULL
  *
@@ -67,17 +67,16 @@ public class MsgSQLiteHelper extends SQLiteOpenHelper{
 	 * Insert new message into SQLite.
 	 * @param db , the database
 	 * @param msg_by , integer, sender
-	 * @param is_read , integer, read->1, unread->0;
 	 * @param send_time , integer, msg send time
 	 * @param msg_content , string, msg content
 	 */
-	void insertNewMsg(@NotNull SQLiteDatabase db,int msg_by,int is_read,int send_time,
+	void insertNewMsg(@NotNull SQLiteDatabase db,int msg_by,int send_time,
 	                  String msg_content){
 		String INSERT_NEW_MSG_SQL=
 				"insert into msg (msg_index,msg_by,is_read,send_time,msg_content) values(" +
 						"null," +
 						msg_by+"," +
-						is_read+"," +
+						"0," +
 						send_time+"," +
 						"'"+msg_content+"'" +
 						")";

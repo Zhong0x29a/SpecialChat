@@ -9,8 +9,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-/**
- * Class for ListView of chat list.
+/*
+ * Adapter for ListView of chat list.
  */
 
 public class ChatListItemAdapter extends BaseAdapter{
@@ -22,6 +22,7 @@ public class ChatListItemAdapter extends BaseAdapter{
 	ChatListItemAdapter(Context context){
 		layoutInflater=LayoutInflater.from(context);
 	}
+	
 	@Override
 	public int getCount() {
 		return this.count;
@@ -46,7 +47,6 @@ public class ChatListItemAdapter extends BaseAdapter{
 	@Override
 	public View getView(int position,View convertView,ViewGroup parent) {
 		ViewHolder holder;
-		
 		position++;
 		if (convertView == null){
 			convertView = layoutInflater.inflate(R.layout.chat_list_item,null);

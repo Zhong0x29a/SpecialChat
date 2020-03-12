@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,6 +30,8 @@ import org.json.JSONObject;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static java.lang.System.exit;
+
 public class MainActivity extends AppCompatActivity{
 	
 	static Timer checkLoginTimer;
@@ -42,11 +45,12 @@ public class MainActivity extends AppCompatActivity{
 		// todo: this can set a lunch page !!
 		setContentView(R.layout.activity_main);
 		
+		//test code
+//		MsgSQLiteHelper h=new MsgSQLiteHelper(this,"msg_2950.db",1);
+//		h.insertNewMsg(h.getReadableDatabase(),2950,1230,"I love you so...but...");
+//		exit(0);
+		//test code
 		
-		//test code
-		ChatListSQLiteHelper cp=new ChatListSQLiteHelper(this,"chat_list.db",1);
-		//cp.insertNewChatListItem(cp.getReadableDatabase(),MyTools.getRandomNum(12000,2),"ha pi",123);
-		//test code
 		init();
 	}
 	
@@ -56,7 +60,7 @@ public class MainActivity extends AppCompatActivity{
 	@Override
 	protected void onStart(){
 		super.onStart();
-		//redirect();
+		//redirect(); todo
 	}
 	
 	@Override
@@ -239,55 +243,61 @@ public class MainActivity extends AppCompatActivity{
 	 * Load Chat list ListView by Adapter
 	 * */
 	private void loadChatList(){
-		ChatListSQLiteHelper chatListSQLiteHelper=
-				new ChatListSQLiteHelper(MainActivity.this,"chat_list.db",1);
-		final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase());
-		
-		// Fetch last one message.
-		String[] lastMsg=new String[50];
-		for(int i=1;i<= (Integer.parseInt(chatList[0][0])) && i<=50;i++){
-			MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(MainActivity.this,
-					"msg_"+chatList[i][1]+".db",1);
-			lastMsg[i]=msgSQLiteHelper.getLastMsg(msgSQLiteHelper.getReadableDatabase());
-		}
-		
-		ListView ml_view=findViewById(R.id.main_chats_listView);
-		ChatListItemAdapter cli_adapter=new ChatListItemAdapter(MainActivity.this);
-		cli_adapter.chatListInfo=chatList;
-		cli_adapter.lastMsg=lastMsg;
-		cli_adapter.count=Integer.parseInt(chatList[0][0]); // item 数量
-		ml_view.setAdapter(cli_adapter);
-		
-		ml_view.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-			@Override
-			public void onItemClick(AdapterView<?> parent,View view,int position,long id){
-				position++;
-				Intent intent=new Intent(MainActivity.this,ChatActivity.class);
-				Bundle bundle=new Bundle();
-				bundle.putString("user_id", chatList[position][1]);
-				intent.putExtras(bundle);
-				startActivity(intent);
+		MainActivity.this.runOnUiThread(
+			new Runnable(){
+				public void run(){
+					ChatListSQLiteHelper chatListSQLiteHelper=
+							new ChatListSQLiteHelper(MainActivity.this,"chat_list.db",1);
+					final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase());
+					
+					// Fetch last one message.
+					String[] lastMsg=new String[50];
+					for(int i=1;i<= (Integer.parseInt(chatList[0][0])) && i<=50;i++){
+						MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(MainActivity.this,
+								"msg_"+chatList[i][1]+".db",1);
+						lastMsg[i]=msgSQLiteHelper.getLastMsg(msgSQLiteHelper.getReadableDatabase());
+					}
+					
+					ChatListItemAdapter cli_adapter=new ChatListItemAdapter(MainActivity.this);
+					cli_adapter.chatListInfo=chatList;
+					cli_adapter.lastMsg=lastMsg;
+					cli_adapter.count=Integer.parseInt(chatList[0][0]); // item 数量
+					
+					ListView ml_view=findViewById(R.id.main_chats_listView);
+					ml_view.setAdapter(cli_adapter);
+					
+					ml_view.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+						@Override
+						public void onItemClick(AdapterView<?> parent,View view,int position,long id){
+							position++;
+							Intent intent=new Intent(MainActivity.this,ChatActivity.class);
+							Bundle bundle=new Bundle();
+							bundle.putString("user_id", chatList[position][1]);
+							intent.putExtras(bundle);
+							startActivity(intent);
+						}
+					});
+					
+					ml_view.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+						@Override
+						public boolean onItemLongClick(AdapterView<?> parent,View view,int position,long id){
+							position++;
+							// todo: position (int) ,open a little menu,to delete chat or so on.
+							return true;
+						}
+					});
+				}
 			}
-		});
-		
-		
-		ml_view.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent,View view,int position,long id){
-				position++;
-				// todo: position (int) ,open a little menu,to delete chat or so on.
-				return true;
-			}
-		});
+		);
 	}
 	
 	/**
 	 * Load Contacts List ListView by Adapter
 	 */
 	private void loadContactsList(){
-//		MainActivity.this.runOnUiThread(
-//			new Runnable(){
-//				public void run(){
+		MainActivity.this.runOnUiThread(
+			new Runnable(){
+				public void run(){
 					ContactsListSQLiteHelper contactsListSQLiteHelper=
 							new ContactsListSQLiteHelper(MainActivity.this,"contacts_list.db",1);
 					final String[][] contactsList=
@@ -304,7 +314,11 @@ public class MainActivity extends AppCompatActivity{
 						@Override
 						public void onItemClick(AdapterView<?> parent,View view,int position,long id){
 							position++;
-							//todo open contacts details page
+							Intent intent=new Intent(MainActivity.this,ContactDetail.class);
+							Bundle bundle=new Bundle();
+							bundle.putString("user_id",contactsList[position][0]);
+							intent.putExtras(bundle);
+							startActivity(intent);
 						}
 					});
 					
@@ -316,9 +330,9 @@ public class MainActivity extends AppCompatActivity{
 							return true;
 						}
 					});
-//				}
-//			}
-//		);
+				}
+			}
+		);
 	}
 	
 	/**
@@ -390,7 +404,7 @@ public class MainActivity extends AppCompatActivity{
 				int send_time=Integer.parseInt(jsonTemp.getString("send_time"));
 				
 				MsgSQLiteHelper mh=new MsgSQLiteHelper(MainActivity.this,"msg_"+friend_id+".db",1);
-				mh.insertNewMsg(mh.getReadableDatabase(),friend_id,0,send_time,jsonTemp.getString("msg_content"));
+				mh.insertNewMsg(mh.getReadableDatabase(),friend_id,send_time,jsonTemp.getString("msg_content"));
 				
 				ChatListSQLiteHelper clh=new ChatListSQLiteHelper(MainActivity.this,"chat_list.db",1);
 				clh.updateChatList(clh.getReadableDatabase(),friend_id,send_time);

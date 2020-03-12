@@ -5,5 +5,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#333">
-
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/chatWindow_listView">
+    </ListView>
 </LinearLayout>

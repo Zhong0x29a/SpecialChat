@@ -29,7 +29,6 @@ import org.json.JSONException;
  *     login_time:  [login_time],
  * }
  * **/
-
 public class LoginActivity extends AppCompatActivity{
 	
 	@Override
