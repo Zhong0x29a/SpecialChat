@@ -9,6 +9,6 @@ public class FriendDetail extends AppCompatActivity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_contacts_detail);//todo error!!
+		setContentView(R.layout.activity_contacts_detail);
 	}
 }
