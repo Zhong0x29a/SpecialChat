@@ -56,7 +56,7 @@ public class MsgSQLiteHelper extends SQLiteOpenHelper{
 				record[index][2]=cursor.getInt(cursor.getColumnIndex("is_read"))+"";
 				record[index][3]=cursor.getInt(cursor.getColumnIndex("send_time"))+"";
 				record[index][4]=cursor.getString(cursor.getColumnIndex("msg_content"));
-			}while(index <= 20 && cursor.moveToNext());
+			}while(index < 20 && cursor.moveToNext());
 		}
 		cursor.close();
 		record[0][0]=index+"";

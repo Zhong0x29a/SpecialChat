@@ -46,10 +46,12 @@ public class MainActivity extends AppCompatActivity{
 		setContentView(R.layout.activity_main);
 		
 		//test code
-//		MsgSQLiteHelper h=new MsgSQLiteHelper(this,"msg_2950.db",1);
-//		h.insertNewMsg(h.getReadableDatabase(),2950,1230,"I love you so...but...");
-//		ChatListSQLiteHelper c=new ChatListSQLiteHelper(this,"chat_list.db",1);
-//		c.insertNewChatListItem(c.getReadableDatabase(),1123592075,"Cube.",12322213);
+//		for(int i=1;i<=30;i++ ){
+//			MsgSQLiteHelper h=new MsgSQLiteHelper(this,"msg_1123592075.db",1);
+//			h.insertNewMsg(h.getReadableDatabase(),1123592075,12300+i,i+" I love you so...but...");
+//			ChatListSQLiteHelper c=new ChatListSQLiteHelper(this,"chat_list.db",1);
+//			c.insertNewChatListItem(c.getReadableDatabase(),1123592075,"Cube.",12322213);
+//		}
 //		exit(0);
 		//test code
 		
@@ -91,6 +93,10 @@ public class MainActivity extends AppCompatActivity{
 		switch (item.getItemId()) {
 			case R.id.app_bar_search:
 				Toast.makeText(this, "Search! ", Toast.LENGTH_SHORT).show();
+				return true;
+			case R.id.app_bar_stopRefresh:
+				cancelRefreshTimers();
+				Toast.makeText(this,"Stopped auto refresh.",Toast.LENGTH_LONG).show();
 				return true;
 			case R.id.app_bar_settings:
 				Toast.makeText(this,"Settings",Toast.LENGTH_SHORT).show();
@@ -250,7 +256,7 @@ public class MainActivity extends AppCompatActivity{
 				public void run(){
 					ChatListSQLiteHelper chatListSQLiteHelper=
 							new ChatListSQLiteHelper(MainActivity.this,"chat_list.db",1);
-					final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase());
+					final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase(),0);
 					
 					// Fetch last one message.
 					String[] lastMsg=new String[50];

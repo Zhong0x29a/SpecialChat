@@ -62,7 +62,7 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 	}
 	
 	/**
-	 * Fetch chat list items. 49 for max each time. //todo: but total just 49,need complete!!
+	 * Fetch chat list items. 50 for max each time.
 	 * @param db SQLiteDataBase
 	 * @return chat list, String[item number][4]
 	 *         [0]->index_num
@@ -70,17 +70,20 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 	 *         [2]->nickname
 	 *         [3]->last_chat_time
 	 */
-	String[][] fetchChatList(@NotNull SQLiteDatabase db){
-		String[][] chatList=new String[50][4];
+	String[][] fetchChatList(@NotNull SQLiteDatabase db,int position){
+		String[][] chatList=new String[51][4]; //todo update next ver. todo: but total just 50,need complete!!
 		int index=0;
 		try{
-			Cursor cursor=db.query("chat_list",new String[]{"index_num","user_id","nickname","last_chat_time",},null,null,null,null,"last_chat_time desc");
-			while(cursor.moveToNext()){
-				index++;
-				chatList[index][0]=cursor.getInt(cursor.getColumnIndex("index_num"))+"";
-				chatList[index][1]=cursor.getInt(cursor.getColumnIndex("user_id"))+"";
-				chatList[index][2]=cursor.getString(cursor.getColumnIndex("nickname"));
-				chatList[index][3]=cursor.getInt(cursor.getColumnIndex("last_chat_time"))+"";
+			Cursor cursor=db.query("chat_list",new String[]{"index_num","user_id","nickname","last_chat_time",},
+					null,null,null,null,"last_chat_time desc");
+			if(cursor.moveToPosition(position)){
+				do{
+					index++;
+					chatList[index][0]=cursor.getInt(cursor.getColumnIndex("index_num"))+"";
+					chatList[index][1]=cursor.getInt(cursor.getColumnIndex("user_id"))+"";
+					chatList[index][2]=cursor.getString(cursor.getColumnIndex("nickname"));
+					chatList[index][3]=cursor.getInt(cursor.getColumnIndex("last_chat_time"))+"";
+				}while(index<20&&cursor.moveToNext());
 			}
 			cursor.close();
 		}catch(SQLException e){

@@ -9,6 +9,10 @@
 <!--    what about this?    app:actionViewClass="android.widget.SearchView"-->
 
     <item
+        android:id="@+id/app_bar_stopRefresh"
+        android:title="Stop auto refresh"
+        app:showAsAction="never"/>
+    <item
         android:id="@+id/app_bar_settings"
         android:title="Settings"
         app:showAsAction="never"/>

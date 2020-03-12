@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
     android:background="#333"
     android:id="@+id/chat_linear"
-    android:gravity="bottom">
+    >
+<!--    <view class="androidx.appcompat.app.AlertController$RecycleListView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent">-->
+
+<!--    </view>-->
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/chatWindow_listView">
+        android:id="@+id/chatWindow_listView"
+        android:layout_gravity="bottom"
+        android:gravity="bottom">
     </ListView>
     <LinearLayout
         android:id="@+id/chat_input_linear"

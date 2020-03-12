@@ -34,6 +34,9 @@ dependencies {
         transitive = true
     }
     implementation 'org.jetbrains:annotations-java5:15.0'
+
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
+
 }
 
 repositories {

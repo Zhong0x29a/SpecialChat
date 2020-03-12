@@ -30,7 +30,7 @@ public class ChatActivity extends AppCompatActivity{
 					"msg_"+user_id+".db",1);
 //			MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,
 //					"msg_2950.db",1);
-			String[][] record=msgSQLiteHelper.getChatRecord(msgSQLiteHelper.getReadableDatabase(),0);
+			String[][] record=msgSQLiteHelper.getChatRecord(msgSQLiteHelper.getReadableDatabase(),0); //position start from 0
 			
 			SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 			String my_id=preferences.getString("user_id",null);
@@ -59,11 +59,12 @@ public class ChatActivity extends AppCompatActivity{
 					return true;
 				}
 			});
-			
+			//chat_listView.scrollTo(0,0);
 		}else{
 			Toast.makeText(ChatActivity.this,"ERROR! ",Toast.LENGTH_LONG).show();
 			finish();
 		}
+		
 		
 		
 		
@@ -73,6 +74,7 @@ public class ChatActivity extends AppCompatActivity{
 	@Override
 	protected void onStart(){
 		super.onStart();
+		findViewById(R.id.chatWindow_listView).scrollTo(0,findViewById(R.id.chatWindow_listView).getBottom());
 		
 	}
 }
