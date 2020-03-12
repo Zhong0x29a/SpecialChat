@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity{
 		//test code
 //		MsgSQLiteHelper h=new MsgSQLiteHelper(this,"msg_2950.db",1);
 //		h.insertNewMsg(h.getReadableDatabase(),2950,1230,"I love you so...but...");
+//		ChatListSQLiteHelper c=new ChatListSQLiteHelper(this,"chat_list.db",1);
+//		c.insertNewChatListItem(c.getReadableDatabase(),1123592075,"Cube.",12322213);
 //		exit(0);
 		//test code
 		

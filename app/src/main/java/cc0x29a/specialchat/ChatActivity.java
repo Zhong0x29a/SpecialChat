@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -23,12 +24,12 @@ public class ChatActivity extends AppCompatActivity{
 		if(bundle != null){
 			user_id=bundle.getString("user_id");
 		}
-		if( user_id != null && !user_id.equals("")){
+		if(user_id != null && !user_id.equals("")){
 			// todo: now can only fetch 20 pieces of messages!! need to complete.
-//			MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,
-//					"msg_"+user_id+".db",1);
 			MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,
-					"msg_2950.db",1);
+					"msg_"+user_id+".db",1);
+//			MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,
+//					"msg_2950.db",1);
 			String[][] record=msgSQLiteHelper.getChatRecord(msgSQLiteHelper.getReadableDatabase(),0);
 			
 			SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
@@ -63,6 +64,15 @@ public class ChatActivity extends AppCompatActivity{
 			Toast.makeText(ChatActivity.this,"ERROR! ",Toast.LENGTH_LONG).show();
 			finish();
 		}
+		
+		
+		
+		
+	}
+	
+	@Override
+	protected void onStart(){
+		super.onStart();
 		
 	}
 }

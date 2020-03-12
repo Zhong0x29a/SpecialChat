@@ -1,13 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:background="#333">
+    android:background="#333"
+    android:id="@+id/chat_linear"
+    android:gravity="bottom">
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/chatWindow_listView">
     </ListView>
+    <LinearLayout
+        android:id="@+id/chat_input_linear"
+        android:layout_width="match_parent"
+        android:layout_height="46px">
+        <TextView
+            android:textColor="#fff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Input msg"/>
+    </LinearLayout>
 </LinearLayout>

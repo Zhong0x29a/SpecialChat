@@ -48,8 +48,8 @@ public class ChatRecordAdapter extends BaseAdapter{
 		ViewHolder holder;
 		position++;
 		if(convertView==null){
-//			if(messages[position][1].equals(my_id)){
-			if(messages[position][1].equals("2950")){
+			if(messages[position][1].equals(my_id)){
+//			if(messages[position][1].equals("2950")){
 				
 				convertView=layoutInflater.inflate(R.layout.chat_my_msg,null);
 				holder=new ViewHolder();
