@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  *
- *      database    :chat_list.db3
+ *      database    :chat_list.db
  *      table       :chat_list
  *      column(5)   :
  *          index_num       INTEGER,primary key,autoincrement   index
@@ -41,12 +41,12 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 	}
 	
 	/**
-	 * Refresh chat list
+	 * Update chat list or add new row
 	 * @param db    writeable SQLiteDatabase
 	 * @param user_id   user_id(friend_id)
 	 * @param last_chat_time    last chat time with this friend
 	 */
-	void refreshChatList(@NotNull SQLiteDatabase db,int user_id,int last_chat_time){
+	void updateChatList(@NotNull SQLiteDatabase db,int user_id,int last_chat_time){
 		try{
 			Cursor cursor=db.query("chat_list",new String[]{"user_id"},"user_id="+user_id+"",null,null,null,null);
 			if(cursor.moveToFirst()){
@@ -94,6 +94,7 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 	
 	/**
 	 * Insert a new chat list item into SQLite
+	 * SHOULD BE CAREFUL NICKNAME!!!
 	 * @param db SQLiteDatabase
 	 * @param user_id   user id, integer
 	 * @param nickname  nickname, String
@@ -143,13 +144,13 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 		}
 	}
 	
-	ChatListSQLiteHelper(Context context,String name,int version){
-		super(context, name, null,version);
-	}
-	
 	@Override
 	public void onUpgrade(SQLiteDatabase db,int oldVersion,int newVersion){
 	
+	}
+	
+	ChatListSQLiteHelper(Context context,String name,int version){
+		super(context, name, null,version);
 	}
 	
 }

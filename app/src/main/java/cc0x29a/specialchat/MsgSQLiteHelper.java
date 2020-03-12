@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  *
- *  database    :msg_[user_id].db3
+ *  database    :msg_[user_id].db
  *  table       :msg
  *  column      :
  *      msg_index       INTEGER,primary key,autoincrement   //index

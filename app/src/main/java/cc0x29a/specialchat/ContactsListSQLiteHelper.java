@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 /**
  *
- *      database    :contacts_list.db3
+ *      database    :contacts_list.db
  *      table       :contacts_list
  *      column(5)   :
  *          index_num       INTEGER,primary key,autoincrement   index
@@ -20,9 +20,6 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 
 public class ContactsListSQLiteHelper extends SQLiteOpenHelper{
-	ContactsListSQLiteHelper(Context context,String name,SQLiteDatabase.CursorFactory factory,int version){
-		super(context,name,factory,version);
-	}
 	
 	/**
 	 * Fetch contacts list , max num is 49 each time //todo: but total just 49,need complete!!
@@ -37,8 +34,8 @@ public class ContactsListSQLiteHelper extends SQLiteOpenHelper{
 			while(cursor.moveToNext()){
 				index++;
 				contactsList[index][0]=cursor.getInt(cursor.getColumnIndex("user_id"))+"";
-				contactsList[index][0]=cursor.getString(cursor.getColumnIndex("user_name"));
-				contactsList[index][0]=cursor.getString(cursor.getColumnIndex("nickname"));
+				contactsList[index][1]=cursor.getString(cursor.getColumnIndex("user_name"));
+				contactsList[index][2]=cursor.getString(cursor.getColumnIndex("nickname"));
 			}
 			cursor.close();
 		}catch(SQLException e){
@@ -61,7 +58,8 @@ public class ContactsListSQLiteHelper extends SQLiteOpenHelper{
 			if(nickname==null||nickname.equals("")){
 				nickname=user_name;
 			}
-			String INSERT_SQL="insert into contacts_list (user_id,user_name,nickname) values ("+""+user_id+",'"+user_name+"','"+nickname+"')";
+			String INSERT_SQL="insert into contacts_list (user_id,user_name,nickname) " +
+					"values ("+user_id+",'"+user_name+"','"+nickname+"')";
 			db.execSQL(INSERT_SQL);
 		}catch(SQLException|NullPointerException e){
 			e.printStackTrace();
@@ -84,5 +82,9 @@ public class ContactsListSQLiteHelper extends SQLiteOpenHelper{
 	@Override
 	public void onUpgrade(SQLiteDatabase db,int oldVersion,int newVersion){
 	
+	}
+	
+	ContactsListSQLiteHelper(Context context,String name,int version){
+		super(context,name,null,version);
 	}
 }

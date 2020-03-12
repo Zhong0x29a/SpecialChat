@@ -46,7 +46,8 @@ public class ChatListItemAdapter extends BaseAdapter{
 	@Override
 	public View getView(int position,View convertView,ViewGroup parent) {
 		ViewHolder holder;
-
+		
+		position++;
 		if (convertView == null){
 			convertView = layoutInflater.inflate(R.layout.chat_list_item,null);
 

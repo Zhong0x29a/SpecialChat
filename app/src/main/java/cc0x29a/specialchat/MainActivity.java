@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity{
 		
 		//test code
 		ChatListSQLiteHelper cp=new ChatListSQLiteHelper(this,"chat_list.db",1);
-		cp.insertNewChatListItem(cp.getReadableDatabase(),MyTools.getRandomNum(12000,2),"ha pi",123);
+		//cp.insertNewChatListItem(cp.getReadableDatabase(),MyTools.getRandomNum(12000,2),"ha pi",123);
 		//test code
 		init();
 	}
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity{
 		return super.onCreateOptionsMenu(menu);
 	}
 	
-	//todo
+	//todo complete this
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -134,26 +134,27 @@ public class MainActivity extends AppCompatActivity{
 			findViewById(R.id.menu_btn_chats).setOnClickListener(new View.OnClickListener(){
 				@Override
 				public void onClick(View v){
-					findViewById(R.id.main_chats_list_view).setVisibility(View.VISIBLE);
+					findViewById(R.id.main_chats_listView).setVisibility(View.VISIBLE);
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.GONE);
 					findViewById(R.id.main_me).setVisibility(View.GONE);
+					loadChatList();
 				}
 			});
 			findViewById(R.id.menu_btn_contacts).setOnClickListener(new View.OnClickListener(){
 				@Override
 				public void onClick(View v){
-					findViewById(R.id.main_chats_list_view).setVisibility(View.GONE);
+					findViewById(R.id.main_chats_listView).setVisibility(View.GONE);
 					findViewById(R.id.main_contacts).setVisibility(View.VISIBLE);
 					findViewById(R.id.main_moments).setVisibility(View.GONE);
 					findViewById(R.id.main_me).setVisibility(View.GONE);
-					//todo load contacts
+					loadContactsList();
 				}
 			});
 			findViewById(R.id.menu_btn_moments).setOnClickListener(new View.OnClickListener(){
 				@Override
 				public void onClick(View v){
-					findViewById(R.id.main_chats_list_view).setVisibility(View.GONE);
+					findViewById(R.id.main_chats_listView).setVisibility(View.GONE);
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.VISIBLE);
 					findViewById(R.id.main_me).setVisibility(View.GONE);
@@ -163,7 +164,7 @@ public class MainActivity extends AppCompatActivity{
 			findViewById(R.id.menu_btn_me).setOnClickListener(new View.OnClickListener(){
 				@Override
 				public void onClick(View v){
-					findViewById(R.id.main_chats_list_view).setVisibility(View.GONE);
+					findViewById(R.id.main_chats_listView).setVisibility(View.GONE);
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.GONE);
 					findViewById(R.id.main_me).setVisibility(View.VISIBLE);
@@ -174,6 +175,9 @@ public class MainActivity extends AppCompatActivity{
 	}
 	
 	// todo complete
+	/**
+	 * Normal mode perform.
+	 */
 	private void normalMode(){
 		cancelRefreshTimers();
 		
@@ -231,9 +235,8 @@ public class MainActivity extends AppCompatActivity{
 		loadChatList();
 	}
 	
-	//todo add a little menu .
 	/**
-	 * Load ListView by Adapter
+	 * Load Chat list ListView by Adapter
 	 * */
 	private void loadChatList(){
 		ChatListSQLiteHelper chatListSQLiteHelper=
@@ -244,11 +247,11 @@ public class MainActivity extends AppCompatActivity{
 		String[] lastMsg=new String[50];
 		for(int i=1;i<= (Integer.parseInt(chatList[0][0])) && i<=50;i++){
 			MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(MainActivity.this,
-					"msg_"+chatList[i][1]+".db3",1);
+					"msg_"+chatList[i][1]+".db",1);
 			lastMsg[i]=msgSQLiteHelper.getLastMsg(msgSQLiteHelper.getReadableDatabase());
 		}
 		
-		ListView ml_view=findViewById(R.id.main_chats_list_view);
+		ListView ml_view=findViewById(R.id.main_chats_listView);
 		ChatListItemAdapter cli_adapter=new ChatListItemAdapter(MainActivity.this);
 		cli_adapter.chatListInfo=chatList;
 		cli_adapter.lastMsg=lastMsg;
@@ -258,6 +261,7 @@ public class MainActivity extends AppCompatActivity{
 		ml_view.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 			@Override
 			public void onItemClick(AdapterView<?> parent,View view,int position,long id){
+				position++;
 				Intent intent=new Intent(MainActivity.this,ChatActivity.class);
 				Bundle bundle=new Bundle();
 				bundle.putString("user_id", chatList[position][1]);
@@ -270,10 +274,51 @@ public class MainActivity extends AppCompatActivity{
 		ml_view.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent,View view,int position,long id){
+				position++;
 				// todo: position (int) ,open a little menu,to delete chat or so on.
 				return true;
 			}
 		});
+	}
+	
+	/**
+	 * Load Contacts List ListView by Adapter
+	 */
+	private void loadContactsList(){
+//		MainActivity.this.runOnUiThread(
+//			new Runnable(){
+//				public void run(){
+					ContactsListSQLiteHelper contactsListSQLiteHelper=
+							new ContactsListSQLiteHelper(MainActivity.this,"contacts_list.db",1);
+					final String[][] contactsList=
+							contactsListSQLiteHelper.fetchContactsList(contactsListSQLiteHelper.getReadableDatabase());
+					
+					ListView contacts_listView=findViewById(R.id.main_contacts_listView);
+					ContactsListItemAdapter contactsListItemAdapter=
+							new ContactsListItemAdapter(MainActivity.this);
+					contactsListItemAdapter.contactsInfo=contactsList;
+					contactsListItemAdapter.count=Integer.parseInt(contactsList[0][0]);
+					contacts_listView.setAdapter(contactsListItemAdapter);
+					
+					contacts_listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+						@Override
+						public void onItemClick(AdapterView<?> parent,View view,int position,long id){
+							position++;
+							//todo open contacts details page
+						}
+					});
+					
+					contacts_listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+						@Override
+						public boolean onItemLongClick(AdapterView<?> parent,View view,int position,long id){
+							position++;
+							// todo: at next ver. , add new function here. (a little menu?)
+							return true;
+						}
+					});
+//				}
+//			}
+//		);
 	}
 	
 	/**
@@ -344,11 +389,11 @@ public class MainActivity extends AppCompatActivity{
 				int friend_id=Integer.parseInt(jsonTemp.getString("user_id"));
 				int send_time=Integer.parseInt(jsonTemp.getString("send_time"));
 				
-				MsgSQLiteHelper mh=new MsgSQLiteHelper(MainActivity.this,"msg_"+friend_id+".db3",1);
+				MsgSQLiteHelper mh=new MsgSQLiteHelper(MainActivity.this,"msg_"+friend_id+".db",1);
 				mh.insertNewMsg(mh.getReadableDatabase(),friend_id,0,send_time,jsonTemp.getString("msg_content"));
 				
-				ChatListSQLiteHelper clh=new ChatListSQLiteHelper(MainActivity.this,"chat_list.db3",1);
-				clh.refreshChatList(clh.getReadableDatabase(),friend_id,send_time);
+				ChatListSQLiteHelper clh=new ChatListSQLiteHelper(MainActivity.this,"chat_list.db",1);
+				clh.updateChatList(clh.getReadableDatabase(),friend_id,send_time);
 			}
 			loadChatList();
 			return 0;

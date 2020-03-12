@@ -44,7 +44,7 @@ public class ContactsListItemAdapter extends BaseAdapter{
 		ViewHolder holder;
 		
 		if (convertView == null){
-			convertView = layoutInflater.inflate(R.layout.chat_list_item,null);
+			convertView = layoutInflater.inflate(R.layout.contacts_list_item,null);
 			
 			holder = new ViewHolder();
 			holder.profile_pic=convertView.findViewById(R.id.contactsListItem_profile_pic);
@@ -55,13 +55,16 @@ public class ContactsListItemAdapter extends BaseAdapter{
 			holder = (ViewHolder) convertView.getTag();
 		}
 		
-		if(this.contactsInfo[position][2].isEmpty()){
+		// todo: Seemed need to optimised
+		if(!(this.contactsInfo[position][2]==null || this.contactsInfo[position][2].isEmpty())){
+			holder.nickname.setText(MyTools.resolveSpecialChar(this.contactsInfo[position][2]));
+		}else if(!(this.contactsInfo[position][1]==null || this.contactsInfo[position][1].isEmpty())){
 			holder.nickname.setText(MyTools.resolveSpecialChar(this.contactsInfo[position][1]));
 		}else{
-			holder.nickname.setText(MyTools.resolveSpecialChar(this.contactsInfo[position][2]));
+			holder.nickname.setText(MyTools.resolveSpecialChar(this.contactsInfo[position][0]));
 		}
 		
-		//todo load user's profile picture
+		//todo: load user's profile picture
 		holder.profile_pic.setImageResource(R.drawable.ic_launcher_background);
 		return convertView;
 	}
