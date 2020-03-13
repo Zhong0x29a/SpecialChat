@@ -14,7 +14,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,8 +28,6 @@ import org.json.JSONObject;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static java.lang.System.exit;
 
 public class MainActivity extends AppCompatActivity{
 	
@@ -327,7 +324,7 @@ public class MainActivity extends AppCompatActivity{
 						@Override
 						public void onItemClick(AdapterView<?> parent,View view,int position,long id){
 							position++;
-							Intent intent=new Intent(MainActivity.this,ContactDetail.class);
+							Intent intent=new Intent(MainActivity.this,ContactDetailActivity.class);
 							Bundle bundle=new Bundle();
 							bundle.putString("user_id",contactsList[position][0]);
 							intent.putExtras(bundle);

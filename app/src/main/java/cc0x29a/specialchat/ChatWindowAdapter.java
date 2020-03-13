@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.jetbrains.annotations.NotNull;
+
 /*
  * Adapter for R.id.chatWindow_listView.
  * To show chat records
@@ -83,6 +85,7 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 		return this.count;
 	}
 	
+	@NotNull
 	@Override
 	public VH onCreateViewHolder(ViewGroup parent,int viewType) {
 		View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_msg_item, parent, false);

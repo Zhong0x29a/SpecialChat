@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class FindNewFriends extends AppCompatActivity{
+public class FindNewFriendsActivity extends AppCompatActivity{
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){

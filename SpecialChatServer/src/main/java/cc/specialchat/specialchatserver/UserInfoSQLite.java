@@ -125,7 +125,15 @@ class UserInfoSQLite{
 		try{
 			Connection connection=getConnection();
 			Statement statement=connection.createStatement();
-			String ADD_NEW_USER_SQL="insert into user_info "+"(user_index,user_id,user_name,password,login_time,token_key) "+"values (null,"+user_id+","+"'"+user_name+"',"+"'"+password+"',"+MyTools.getCurrentTime()+","+"null"+")";
+			String ADD_NEW_USER_SQL="insert into user_info "+
+					"(user_index,user_id,user_name,password,login_time,token_key) "+
+					"values (null,"+
+					user_id+","+
+					"'"+user_name+"',"+
+					"'"+password+"',"+
+					MyTools.getCurrentTime()+","+
+					"null"+
+					")";
 			statement.executeUpdate(ADD_NEW_USER_SQL);
 			statement.close();
 			connection.close();

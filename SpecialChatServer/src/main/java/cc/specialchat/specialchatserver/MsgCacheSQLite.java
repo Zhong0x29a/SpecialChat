@@ -20,7 +20,7 @@ import java.sql.Statement;
  * */
 
 
-public class MsgCacheSQLite{
+class MsgCacheSQLite{
 	private static Connection getConnection() throws SQLException, ClassNotFoundException{
 		Class.forName("org.sqlite.JDBC");
 		//c.setAutoCommit(false);
@@ -51,18 +51,24 @@ public class MsgCacheSQLite{
 	}
 	
 	//todo: insert new message
-	static int[] insertNewMsg(String from_id,String to_id,String msg_content){
+	static int insertNewMsg(String from_id,String to_id,String msg_content){
 		try{
-			int[] msg_info=new int[2];
-			msg_info[0]=MyTools.getCurrentTime();
+			int msg_send_time=MyTools.getCurrentTime();
 			Connection con=getConnection();
 			Statement st=con.createStatement();
-			String INSERT_SQL="insert into msg_cache" +
-					"";
-			return msg_info;
+			String INSERT_SQL="insert into msg_cache " +
+					"(from_id, to_id, msg_content, send_time) " +
+					"values ("+
+					from_id+"," +
+					to_id+"," +
+					"'"+msg_content+"'," +
+					msg_send_time +
+					")";
+			st.executeUpdate(INSERT_SQL);
+			return msg_send_time;
 		}catch(SQLException|ClassNotFoundException e){
 			e.printStackTrace();
-			return null;
+			return 0;
 		}
 	}
 	
@@ -83,7 +89,7 @@ public class MsgCacheSQLite{
 			
 			String QUERY_SQL="select * from msg_cache where to_id="+user_id+";";
 			ResultSet resultSet=statement.executeQuery(QUERY_SQL);
-			String[][] msg=new String[50][4]; // 50 pieces for max each time.
+			String[][] msg=new String[51][4]; // 50 pieces for max each time.
 			int index=0;
 			while(resultSet.next() && index<50){
 				index++;

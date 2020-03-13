@@ -11,7 +11,7 @@ public class ServerMain{
 	public static void main(String[] args){
 		// test code.
 		
-		exit(0);
+//		exit(0);
 		// start program.
 		try{
 			ServerSocket serverSocket = new ServerSocket(21027);

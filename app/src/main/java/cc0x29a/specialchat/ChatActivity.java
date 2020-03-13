@@ -27,8 +27,8 @@ public class ChatActivity extends AppCompatActivity{
 			// todo: now can only fetch 20 pieces of messages!! need to complete.
 			MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,
 					"msg_"+ta_id+".db",1);
-//			MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,
-//					"msg_2950.db",1);
+			//			MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,
+			//					"msg_2950.db",1);
 			String[][] record=msgSQLiteHelper.getChatRecord(msgSQLiteHelper.getReadableDatabase(),0); //position start from 0
 			
 			SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
@@ -45,8 +45,8 @@ public class ChatActivity extends AppCompatActivity{
 			recyclerView.setItemAnimator(new DefaultItemAnimator());
 			
 			layoutManager.setReverseLayout(true);
-//			layoutManager.scrollToPosition(adapter.count-1);
-		
+			//			layoutManager.scrollToPosition(adapter.count-1);
+			
 		}else{
 			Toast.makeText(ChatActivity.this,"ERROR! (...)",Toast.LENGTH_LONG).show();
 			finish();
@@ -72,45 +72,24 @@ public class ChatActivity extends AppCompatActivity{
 				EditText e=findViewById(R.id.chat_EditText);
 				String msg=MyTools.filterSpecialChar(e.getText().toString());
 				
-				String dataToSend="{" +
-						"'client':'SCC-1.0'," +
-						"'action':'0004'," +
-						"'user_id':'"+user_id+"'," +
-						"'token_key':'"+token_key+"'," +
-						"'to':'"+ta_id+"'," +
-						"'msg_content':'"+msg+"'," +
-						"'timestamp':'"+MyTools.getCurrentTime()+"'" +
-						"}";
+				if(user_id!=null&&token_key!=null){
+					String dataToSend="{" +
+							"'client':'SCC-1.0'," +
+							"'action':'0004'," +
+							"'user_id':'"+user_id+"'," +
+							"'token_key':'"+token_key+"'," +
+							"'to':'"+ta_id+"'," +
+							"'msg_content':'"+msg+"'," +
+							"'timestamp':'"+MyTools.getCurrentTime()+"'" +
+							"}";
+					
+					SocketWithServer socket=new SocketWithServer();
+					socket.DataSend=dataToSend;
+					socket.startSocket();
+				}
+				
 			}
 		});
 	}
 	
 }
-
-
-/*
-			//			ChatWindowAdapter chatRecordAdapter=new ChatWindowAdapter(ChatActivity.this);
-//			chatRecordAdapter.count=Integer.parseInt(record[0][0]);
-//			chatRecordAdapter.messages=record;
-//			chatRecordAdapter.my_id=my_id;
-//
-//			ListView chat_listView=findViewById(R.id.chatWindow_listView);
-//			chat_listView.setAdapter(chatRecordAdapter);
-
-//			chat_listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-//				@Override
-//				public void onItemClick(AdapterView<?> parent,View view,int position,long id){
-//					position++;
-//					// Noting to do here.
-//				}
-//			});
-//
-//			chat_listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
-//				@Override
-//				public boolean onItemLongClick(AdapterView<?> parent,View view,int position,long id){
-//					position++;
-//					return true;
-//				}
-//			});
-			//chat_listView.scrollTo(0,0);
-* */

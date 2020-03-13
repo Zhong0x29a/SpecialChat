@@ -1,0 +1,11 @@
+/build
+/.idea/
+.gitignore
+gradlew
+fradlew.bat
+local*
+settings.gradle
+./Special Chat.iml
+proguard-rules.pro
+build/
+.gradle/

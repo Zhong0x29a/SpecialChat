@@ -57,6 +57,9 @@ public class ServerThread extends Thread {
 				case "0003": // client refresh message
 					msgSend=ProcessAction.action_0003(dataJsonReturn);
 					break;
+				case "0004":
+					msgSend=ProcessAction.action_0004(dataJsonReturn);
+					break;
 				default:
 					msgSend="{\"msg\":\"ERROR!! (1000)\"}";
 					break;
@@ -69,10 +72,10 @@ public class ServerThread extends Thread {
 			outputStream.flush();
 			
 			socket.shutdownOutput();
-		}catch(IOException e){
+		}catch(IOException|NullPointerException e){
 			e.printStackTrace();
 		}finally{
-			// release resource
+			// Release resource
 			try{
 				if(outputStream != null){
 					outputStream.close();
