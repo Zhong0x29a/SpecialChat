@@ -47,10 +47,10 @@ public class MainActivity extends AppCompatActivity{
 		
 		//test code
 //		for(int i=1;i<=30;i++ ){
-//			MsgSQLiteHelper h=new MsgSQLiteHelper(this,"msg_1123592075.db",1);
-//			h.insertNewMsg(h.getReadableDatabase(),1123592075,12300+i,i+" I love you so...but...");
+////			MsgSQLiteHelper h=new MsgSQLiteHelper(this,"msg_1123592075.db",1);
+////			h.insertNewMsg(h.getReadableDatabase(),1123592075,12300+i,i+" I love you so...but...");
 //			ChatListSQLiteHelper c=new ChatListSQLiteHelper(this,"chat_list.db",1);
-//			c.insertNewChatListItem(c.getReadableDatabase(),1123592075,"Cube.",12322213);
+//			c.insertNewChatListItem(c.getReadableDatabase(),MyTools.getRandomNum(1000000,9999),"Cube.",12322213);
 //		}
 //		exit(0);
 		//test code
@@ -58,13 +58,11 @@ public class MainActivity extends AppCompatActivity{
 		init();
 	}
 	
-	//todo what about this??
-	
 	// todo： this still empty
 	@Override
 	protected void onStart(){
 		super.onStart();
-		//redirect(); todo
+		//redirect(); todo resume
 	}
 	
 	@Override
@@ -111,7 +109,7 @@ public class MainActivity extends AppCompatActivity{
 		}
 	}
 	
-	// todo : edit the text on the right(完善注释)    next method -> normalMode()
+	// todo : edit the text on the right->    next method -> normalMode()
 	private void redirect(){
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 		if(preferences.getInt("is_login",0)!=1){
@@ -256,6 +254,13 @@ public class MainActivity extends AppCompatActivity{
 				public void run(){
 					ChatListSQLiteHelper chatListSQLiteHelper=
 							new ChatListSQLiteHelper(MainActivity.this,"chat_list.db",1);
+					/*
+					* chatList[0][0]    -> total number
+					* chatList[index][0] -> index (index>0)
+					* chatList[index][1] -> user_id
+					* chatList[index][2] -> nickname
+					* chatList[index][3] -> last_chat_time
+					 * */
 					final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase(),0);
 					
 					// Fetch last one message.
@@ -269,7 +274,7 @@ public class MainActivity extends AppCompatActivity{
 					ChatListItemAdapter cli_adapter=new ChatListItemAdapter(MainActivity.this);
 					cli_adapter.chatListInfo=chatList;
 					cli_adapter.lastMsg=lastMsg;
-					cli_adapter.count=Integer.parseInt(chatList[0][0]); // item 数量
+					cli_adapter.count=Integer.parseInt(chatList[0][0]); // item number
 					
 					ListView ml_view=findViewById(R.id.main_chats_listView);
 					ml_view.setAdapter(cli_adapter);

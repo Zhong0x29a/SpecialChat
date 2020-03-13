@@ -55,7 +55,7 @@ public class MsgSQLiteHelper extends SQLiteOpenHelper{
 				record[index][1]=cursor.getInt(cursor.getColumnIndex("msg_by"))+"";
 				record[index][2]=cursor.getInt(cursor.getColumnIndex("is_read"))+"";
 				record[index][3]=cursor.getInt(cursor.getColumnIndex("send_time"))+"";
-				record[index][4]=cursor.getString(cursor.getColumnIndex("msg_content"));
+				record[index][4]=MyTools.resolveSpecialChar(cursor.getString(cursor.getColumnIndex("msg_content")));
 			}while(index < 20 && cursor.moveToNext());
 		}
 		cursor.close();
@@ -94,7 +94,7 @@ public class MsgSQLiteHelper extends SQLiteOpenHelper{
 				null,null,null,null,
 				"send_time desc");
 		if(cursor.moveToFirst()){
-			String temp=cursor.getString(cursor.getColumnIndex("msg_content"));
+			String temp=MyTools.resolveSpecialChar(cursor.getString(cursor.getColumnIndex("msg_content")));
 			cursor.close();
 			return temp;
 		}

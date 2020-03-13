@@ -5,14 +5,77 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#333">
+    android:background="#333"
+    android:gravity="bottom">
 
     <LinearLayout
         android:id="@+id/main_linear_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="visible"
+        android:layout_weight="1">
+
+        <!-- Main content -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:layout_weight="1">
+            <!-- Chats page -->
+            <ListView
+                android:id="@+id/main_chats_listView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </ListView>
+
+            <!-- contacts page -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/main_contacts"
+                android:visibility="gone">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/contacts"/>
+                <ListView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/main_contacts_listView">
+                </ListView>
+            </LinearLayout>
+
+            <!-- moments page -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/main_moments"
+                android:visibility="gone">
+                <!-- todo: complete this. (next ver.) -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/features_are_still_being_perfected">
+                </TextView>
+            </LinearLayout>
+
+            <!--  me page -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/main_me"
+                android:visibility="gone">
+                <!-- todo: complete this. -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/features_are_still_being_perfected">
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Bottom menu -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="53dp"
@@ -27,7 +90,8 @@
                 android:textSize="12sp"
                 android:background="@drawable/set_button_selector"
                 android:layout_margin="0dp"
-                tools:ignore="ButtonStyle">
+                tools:ignore="ButtonStyle"
+                android:layout_weight="1">
             </Button>
             <Button
                 android:layout_width="88dp"
@@ -37,7 +101,8 @@
                 android:textSize="12sp"
                 android:background="@drawable/set_button_selector"
                 android:layout_margin="0dp"
-                tools:ignore="ButtonStyle">
+                tools:ignore="ButtonStyle"
+                android:layout_weight="1">
             </Button>
             <Button
                 android:layout_width="88dp"
@@ -47,7 +112,8 @@
                 android:textSize="12sp"
                 android:background="@drawable/set_button_selector"
                 android:layout_margin="0dp"
-                tools:ignore="ButtonStyle">
+                tools:ignore="ButtonStyle"
+                android:layout_weight="1">
             </Button>
             <Button
                 android:layout_width="88dp"
@@ -57,61 +123,11 @@
                 android:textSize="12sp"
                 android:background="@drawable/set_button_selector"
                 android:layout_margin="0dp"
-                tools:ignore="ButtonStyle">
+                tools:ignore="ButtonStyle"
+                android:layout_weight="1">
             </Button>
         </LinearLayout>
 
-        <!-- Chats page -->
-        <ListView
-            android:id="@+id/main_chats_listView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </ListView>
-
-        <!-- contacts page -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/main_contacts"
-            android:visibility="gone">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/contacts"/>
-            <ListView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/main_contacts_listView">
-            </ListView>
-        </LinearLayout>
-
-        <!-- moments page -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/main_moments"
-            android:visibility="gone">
-            <!-- todo: complete this. (next ver.) -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/features_are_still_being_perfected">
-            </TextView>
-        </LinearLayout>
-
-        <!--  me page -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/main_me"
-            android:visibility="gone">
-            <!-- todo: complete this. -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/features_are_still_being_perfected">
-            </TextView>
-        </LinearLayout>
     </LinearLayout>
 
     <!-- Font login page -->

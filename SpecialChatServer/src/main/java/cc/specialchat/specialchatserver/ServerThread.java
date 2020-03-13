@@ -49,48 +49,13 @@ public class ServerThread extends Thread {
 			System.out.println(dataJsonReturn.getString("action"));
 			switch(dataJsonReturn.getString("action")){
 				case "0001": // check login status
-					user_id=dataJsonReturn.getString("user_id");
-					token_key=dataJsonReturn.getString("token_key");
-					if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
-						msgSend="{\"status\":\"true\"}";
-					}
+					msgSend=ProcessAction.action_0001(dataJsonReturn);
 					break;
 				case "0002": // perform login
-					user_id=dataJsonReturn.getString("user_id");
-					password=dataJsonReturn.getString("password");
-					String[] user_info=UserInfoSQLite.goLogin(user_id,password);
-					if(user_info[0].equals("")){
-						msgSend="{\"status\":\"false\"}";
-					}else if(user_id!=null){
-						msgSend="{\"status\":\"true\"," +
-								"\"user_id\":\""+user_info[0]+"\"," +
-								"\"user_name\":\""+user_info[1]+"\"," +
-								"\"token_key\":\""+user_info[2]+"\"," +
-								"\"login_time\":\""+user_info[3]+"\"" +
-								"}";
-					}else{
-						msgSend="{\"msg\":\"What's Wrong?? (1002)\"}";
-					}
+					msgSend=ProcessAction.action_0002(dataJsonReturn);
 					break;
 				case "0003": // client refresh message
-					user_id=dataJsonReturn.getString("user_id");
-					token_key=dataJsonReturn.getString("token_key");
-					if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
-						String[][] msg_temp;
-						if((msg_temp=MsgCacheSQLite.fetchMsg(user_id)).length>0){
-							StringBuffer p;
-							if(msg_temp != null){
-								p=new StringBuffer("{\"new_msg_num\":\""+msg_temp[0][0]+"\",");
-								for(int i=0;i<Integer.parseInt(msg_temp[0][0]);i++){
-									p.append("\"index_").append((i+1)).append("\":\"{'user_id':'").append(msg_temp[i][1]).append("','send_time':'").append(msg_temp[i][3]).append("','msg_content':'").append(msg_temp[i][2]).append("'}\",");
-								}
-								p.append("\"is_new_msg\":\"true\"}");
-								msgSend=p.toString();
-							}
-						}else{
-							msgSend="{\"is_new_msg\":\"false\"}";
-						}
-					}
+					msgSend=ProcessAction.action_0003(dataJsonReturn);
 					break;
 				default:
 					msgSend="{\"msg\":\"ERROR!! (1000)\"}";

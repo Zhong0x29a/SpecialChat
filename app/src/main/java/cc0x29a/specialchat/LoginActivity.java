@@ -53,7 +53,7 @@ public class LoginActivity extends AppCompatActivity{
 				}
 				
 				// start login
-				final String msg="{" +
+				final String dataToSend="{" +
 						"\"client\":\"SCC-1.0\"," +
 						"\"action\":\"0002\"," +
 						"\"user_id\":\""+user_id+"\"," +
@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity{
 						"}";
 				
 				SocketWithServer SWS=new SocketWithServer();
-				SWS.DataSend=msg;
+				SWS.DataSend=dataToSend;
 				SWS.startSocket();
 				
 				/* wait 888ms */

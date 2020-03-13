@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:gravity="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:background="#333"
     android:id="@+id/chat_linear"
-    >
-<!--    <view class="androidx.appcompat.app.AlertController$RecycleListView"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent">-->
+    android:gravity="bottom">
 
-<!--    </view>-->
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/chatWindow_recyclerView"/>
+        android:layout_height="0dp"
+        android:id="@+id/chatWindow_recyclerView"
+        android:layout_gravity="end"
+        android:layout_weight="1"/>
 <!--    <ListView-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="wrap_content"-->
@@ -26,11 +25,27 @@
     <LinearLayout
         android:id="@+id/chat_input_linear"
         android:layout_width="match_parent"
-        android:layout_height="46px">
-        <TextView
-            android:textColor="#fff"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:padding="0dp">
+
+        <EditText
+            android:id="@+id/chat_EditText"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Input msg"/>
+            android:layout_height="54dp"
+            android:hint="Input a message here. "
+            android:background="@drawable/set_button_selector"
+            android:textSize="20sp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:layout_weight="17"
+            android:layout_marginVertical="0dp"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="54dp"
+            android:id="@+id/chat_btn_send"
+            android:text="Send"
+            android:layout_weight="1"/>
     </LinearLayout>
 </LinearLayout>

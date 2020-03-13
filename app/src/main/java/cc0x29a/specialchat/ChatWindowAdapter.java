@@ -1,10 +1,14 @@
 package cc0x29a.specialchat;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -12,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
  * Adapter for R.id.chatWindow_listView.
  * To show chat records
  */
-
 
 public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH>{
 	String my_id;
@@ -33,20 +36,44 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 		this.messages = data;
 	}
 	
-	//③ 在Adapter中实现3个方法
 	@Override
 	public void onBindViewHolder(VH holder, int position) {
-		int index=position+1;
+		final int index=position+1;
 		holder.chat_msg_tv.setText(messages[index][4]);
 		if(messages[index][1]!=null && messages[index][1].equals(my_id)){
-			holder.chat_msg_container.setBackgroundResource(R.drawable.my_msg_style);
+			holder.chat_msg_container.setGravity(Gravity.END);
+			holder.chat_msg_tv.setBackgroundResource(R.drawable.my_msg_style);
 		}else{
-			holder.chat_msg_container.setBackgroundResource(R.drawable.ta_msg_style);
+			holder.chat_msg_container.setGravity(Gravity.START);
+			holder.chat_msg_tv.setBackgroundResource(R.drawable.ta_msg_style);
 		}
-		holder.itemView.setOnClickListener(new View.OnClickListener() {
+		holder.chat_msg_container.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//item 点击事件
+				// nothing.
+			}
+		});
+		holder.chat_msg_container.setOnLongClickListener(new View.OnLongClickListener(){
+			@Override
+			public boolean onLongClick(final View v){
+				//todo show a little menu
+				AlertDialog alertDialog2 = new AlertDialog.Builder(v.getContext())
+						.setTitle("Notices")
+						.setMessage("Sure to delete this message? \n'"+messages[index][4]+"'")
+						.setPositiveButton("Yeah", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialogInterface, int i) {
+								//todo delete the message!
+								Toast.makeText(v.getContext(), "Deleted", Toast.LENGTH_SHORT).show();
+							}
+						})
+						.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialogInterface, int i) {}
+						})
+						.create();
+				alertDialog2.show();
+				return true;
 			}
 		});
 	}
@@ -58,13 +85,12 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 	
 	@Override
 	public VH onCreateViewHolder(ViewGroup parent,int viewType) {
-		//LayoutInflater.from指定写法
 		View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_msg_item, parent, false);
 		return new VH(v);
 	}
 }
 
-
+// coda. fine.
 
 
 /*
