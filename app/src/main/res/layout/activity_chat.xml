@@ -12,13 +12,17 @@
 
 <!--    </view>-->
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/chatWindow_listView"
-        android:layout_gravity="bottom"
-        android:gravity="bottom">
-    </ListView>
+        android:id="@+id/chatWindow_recyclerView"/>
+<!--    <ListView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/chatWindow_listView"-->
+<!--        android:layout_gravity="bottom"-->
+<!--        android:gravity="bottom">-->
+<!--    </ListView>-->
     <LinearLayout
         android:id="@+id/chat_input_linear"
         android:layout_width="match_parent"

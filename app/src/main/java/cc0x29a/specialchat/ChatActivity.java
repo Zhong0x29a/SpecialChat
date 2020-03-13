@@ -1,16 +1,13 @@
 package cc0x29a.specialchat;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Toast;
-
-import java.util.prefs.Preferences;
 
 public class ChatActivity extends AppCompatActivity{
 	
@@ -35,30 +32,41 @@ public class ChatActivity extends AppCompatActivity{
 			SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 			String my_id=preferences.getString("user_id",null);
 			
-			ChatRecordAdapter chatRecordAdapter=new ChatRecordAdapter(ChatActivity.this);
-			chatRecordAdapter.count=Integer.parseInt(record[0][0]);
-			chatRecordAdapter.messages=record;
-			chatRecordAdapter.my_id=my_id;
+			RecyclerView recyclerView=findViewById(R.id.chatWindow_recyclerView);
+			LinearLayoutManager layoutManager=new LinearLayoutManager(this);
+			recyclerView.setLayoutManager(layoutManager);
 			
-			ListView chat_listView=findViewById(R.id.chatWindow_listView);
-			chat_listView.setAdapter(chatRecordAdapter);
+			ChatWindowAdapter adapter=new ChatWindowAdapter(record);
+			adapter.count=Integer.parseInt(record[0][0]);
+			adapter.my_id=my_id;
+			recyclerView.setAdapter(adapter);
+			recyclerView.setItemAnimator(new DefaultItemAnimator());
 			
-			chat_listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-				@Override
-				public void onItemClick(AdapterView<?> parent,View view,int position,long id){
-					position++;
-					// Noting to do here.
-				}
-			});
 			
-			chat_listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
-				@Override
-				public boolean onItemLongClick(AdapterView<?> parent,View view,int position,long id){
-					position++;
-					// todo add a menu to delete msg here.
-					return true;
-				}
-			});
+			//			ChatWindowAdapter chatRecordAdapter=new ChatWindowAdapter(ChatActivity.this);
+//			chatRecordAdapter.count=Integer.parseInt(record[0][0]);
+//			chatRecordAdapter.messages=record;
+//			chatRecordAdapter.my_id=my_id;
+//
+//			ListView chat_listView=findViewById(R.id.chatWindow_listView);
+//			chat_listView.setAdapter(chatRecordAdapter);
+			
+//			chat_listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+//				@Override
+//				public void onItemClick(AdapterView<?> parent,View view,int position,long id){
+//					position++;
+//					// Noting to do here.
+//				}
+//			});
+//
+//			chat_listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+//				@Override
+//				public boolean onItemLongClick(AdapterView<?> parent,View view,int position,long id){
+//					position++;
+//					// todo add a menu to delete msg here.
+//					return true;
+//				}
+//			});
 			//chat_listView.scrollTo(0,0);
 		}else{
 			Toast.makeText(ChatActivity.this,"ERROR! ",Toast.LENGTH_LONG).show();
@@ -74,7 +82,5 @@ public class ChatActivity extends AppCompatActivity{
 	@Override
 	protected void onStart(){
 		super.onStart();
-		findViewById(R.id.chatWindow_listView).scrollTo(0,findViewById(R.id.chatWindow_listView).getBottom());
-		
 	}
 }
