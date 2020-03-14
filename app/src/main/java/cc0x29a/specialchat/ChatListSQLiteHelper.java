@@ -46,12 +46,15 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 	 * @param user_id   user_id(friend_id)
 	 * @param last_chat_time    last chat time with this friend
 	 */
-	void updateChatList(@NotNull SQLiteDatabase db,int user_id,int last_chat_time){
+	void updateChatList(@NotNull SQLiteDatabase db,String user_id,String last_chat_time){
 		try{
 			Cursor cursor=db.query("chat_list",new String[]{"user_id"},"user_id="+user_id+"",null,null,null,null);
 			if(cursor.moveToFirst()){
 				cursor.close();
-				String SQL="update chat_list "+"set last_chat_time="+last_chat_time+" "+"where user_id="+user_id;
+				String SQL="update chat_list "+
+						"set last_chat_time="+
+						last_chat_time+" "+
+						"where user_id="+user_id;
 				db.execSQL(SQL);
 			}else{
 				insertNewChatListItem(db,user_id,user_id+"",last_chat_time);
@@ -81,16 +84,15 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 					index++;
 					chatList[index][0]=cursor.getInt(cursor.getColumnIndex("index_num"))+"";
 					chatList[index][1]=cursor.getInt(cursor.getColumnIndex("user_id"))+"";
-					chatList[index][2]=cursor.getString(cursor.getColumnIndex("nickname"));
+					chatList[index][2]=MyTools.resolveSpecialChar(cursor.getString(cursor.getColumnIndex("nickname")));
 					chatList[index][3]=cursor.getInt(cursor.getColumnIndex("last_chat_time"))+"";
-				}while(index<20&&cursor.moveToNext());
+				}while(index<20 && cursor.moveToNext());
 			}
 			cursor.close();
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
 		chatList[0][0]=index+"";
-		
 		
 		return chatList;
 	}
@@ -103,7 +105,7 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 	 * @param nickname  nickname, String
 	 * @param last_chat_time last chat time , integer
 	 */
-	void insertNewChatListItem(@NotNull SQLiteDatabase db,int user_id,String nickname,int last_chat_time){
+	void insertNewChatListItem(@NotNull SQLiteDatabase db,String user_id,String nickname,String last_chat_time){
 		String INSERT_NEW_CHAT_LIST_ITEM_SQL=
 				"insert into chat_list (index_num,user_id,nickname,last_chat_time) values(" +
 					"null," +
@@ -123,7 +125,7 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 	 * @param db SQLiteDatabase
 	 * @param user_id user's id
 	 */
-	void deleteChatListItem(@NotNull SQLiteDatabase db,int user_id){
+	void deleteChatListItem(@NotNull SQLiteDatabase db,String user_id){
 		String DELETE_CHAT_LIST_ITEM_SQL=
 				"DELETE FROM chat_list WHERE user_id="+user_id;
 		try{

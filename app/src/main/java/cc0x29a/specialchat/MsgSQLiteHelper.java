@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  *  column      :
  *      msg_index       INTEGER,primary key,autoincrement   //index
  *      msg_by          INTEGER,NOT NULL
- *      is_read         INTEGER,NOT NULL        // read->1, unread->0;
+ *      is_read         INTEGER        // read->1, unread->0;
  *      send_time       INTEGER,NOT NULL
  *      msg_content     TEXT,   NOT NULL
  *
@@ -27,14 +27,13 @@ public class MsgSQLiteHelper extends SQLiteOpenHelper{
 				"create table msg("+
 				"msg_index INTEGER primary key autoincrement," +
 				"msg_by INTEGER NOT NULL,"+    // user_id
-				"is_read INTEGER NOT NULL,"+
+				"is_read INTEGER,"+
 				"send_time INTEGER NOT NULL,"+
 				"msg_content TEXT NOT NULL" +
 				")";
 		db.execSQL(CREATE_TABLE_SQL);
 	}
 	
-	//todo: a warning here
 	/**
 	 * Get chat record, 20 pieces is max each time.
 	 * @param db , the database.
@@ -70,7 +69,7 @@ public class MsgSQLiteHelper extends SQLiteOpenHelper{
 	 * @param send_time , integer, msg send time
 	 * @param msg_content , string, msg content
 	 */
-	void insertNewMsg(@NotNull SQLiteDatabase db,int msg_by,int send_time,
+	void insertNewMsg(@NotNull SQLiteDatabase db,String msg_by,String send_time,
 	                  String msg_content){
 		String INSERT_NEW_MSG_SQL=
 				"insert into msg (msg_index,msg_by,is_read,send_time,msg_content) values(" +

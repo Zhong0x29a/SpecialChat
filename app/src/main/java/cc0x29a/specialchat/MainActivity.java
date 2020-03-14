@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity{
 	@Override
 	protected void onStart(){
 		super.onStart();
-		//redirect(); todo resume
+		redirect(); //todo resume
 	}
 	
 	@Override
@@ -410,8 +410,8 @@ public class MainActivity extends AppCompatActivity{
 			int new_msg_num=Integer.parseInt(SWS.DataJsonReturn.getString("new_msg_num"));
 			for(int i=1;i<=new_msg_num;i++){
 				JSONObject jsonTemp=SWS.DataJsonReturn.getJSONObject(SWS.DataJsonReturn.getString("index_"+i));
-				int friend_id=Integer.parseInt(jsonTemp.getString("user_id"));
-				int send_time=Integer.parseInt(jsonTemp.getString("send_time"));
+				String friend_id=jsonTemp.getString("user_id");
+				String send_time=jsonTemp.getString("send_time");
 				
 				MsgSQLiteHelper mh=new MsgSQLiteHelper(MainActivity.this,"msg_"+friend_id+".db",1);
 				mh.insertNewMsg(mh.getReadableDatabase(),friend_id,send_time,jsonTemp.getString("msg_content"));

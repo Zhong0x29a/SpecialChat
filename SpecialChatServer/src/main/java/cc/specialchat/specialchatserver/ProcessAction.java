@@ -5,8 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import java.sql.SQLException;
 
-public class ProcessAction{
-	private static String user_id,password,token_key;
+class ProcessAction{
 	
 	/**
 	 * Check login status by user_id and token_key
@@ -15,8 +14,8 @@ public class ProcessAction{
 	 */
 	static String action_0001(JSONObject JsonData){
 		try{
-			user_id=JsonData.getString("user_id");
-			token_key=JsonData.getString("token_key");
+			String user_id=JsonData.getString("user_id");
+			String token_key=JsonData.getString("token_key");
 			if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
 				return "{\"status\":\"true\"}";
 			}else{
@@ -35,8 +34,8 @@ public class ProcessAction{
 	 */
 	static String action_0002(JSONObject JsonData){
 		try{
-			user_id=JsonData.getString("user_id");
-			password=JsonData.getString("password");
+			String user_id=JsonData.getString("user_id");
+			String password=JsonData.getString("password");
 			String[] user_info=UserInfoSQLite.goLogin(user_id,password);
 			if(user_info[0].equals("")){
 				return "{\"status\":\"false\"}";
@@ -63,8 +62,8 @@ public class ProcessAction{
 	 */
 	static String action_0003(JSONObject JsonData){
 		try{
-			user_id=JsonData.getString("user_id");
-			token_key=JsonData.getString("token_key");
+			String user_id=JsonData.getString("user_id");
+			String token_key=JsonData.getString("token_key");
 			if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
 				String[][] msg_temp;
 				if((msg_temp=MsgCacheSQLite.fetchMsg(user_id)).length>0){
@@ -99,8 +98,8 @@ public class ProcessAction{
 	 */
 	static String action_0004(JSONObject JsonData){
 		try{
-			user_id=JsonData.getString("user_id");
-			token_key=JsonData.getString("token_key");
+			String user_id=JsonData.getString("user_id");
+			String token_key=JsonData.getString("token_key");
 			String to_id=JsonData.getString("to_id");
 			String msg_content=JsonData.getString("msg_content");
 			int send_time;

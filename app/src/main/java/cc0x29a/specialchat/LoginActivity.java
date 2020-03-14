@@ -92,15 +92,34 @@ public class LoginActivity extends AppCompatActivity{
 						Intent intent=new Intent(LoginActivity.this, MainActivity.class);
 						startActivity(intent);
 					}else if(SWS.DataJsonReturn.getString("status").equals("false")){
+						ET_password.getText().clear();
 						Toast.makeText(LoginActivity.this,"Login failed! \n" +
 								"Please check your ID number and password.",Toast.LENGTH_LONG).show();
 					}else{
-						Toast.makeText(LoginActivity.this,"Unknown ERROR!",
+						Toast.makeText(LoginActivity.this,"Unknown ERROR! (LA0002)",
 								Toast.LENGTH_LONG).show();
 					}
 				}catch(JSONException e){
 					e.printStackTrace();
+					Toast.makeText(LoginActivity.this,"Unknown ERROR! (LA0002+)",
+							Toast.LENGTH_LONG).show();
 				}
+			}
+		});
+		
+		findViewById(R.id.btn_signUp).setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v){
+				Intent intent=new Intent(LoginActivity.this,SignUpActivity.class);
+				startActivity(intent);
+			}
+		});
+		
+		findViewById(R.id.btn_signUp).setOnLongClickListener(new View.OnLongClickListener(){
+			@Override
+			public boolean onLongClick(View v){
+				Toast.makeText(LoginActivity.this,"Don't be hesitate! ",Toast.LENGTH_LONG).show();
+				return false;
 			}
 		});
 	}

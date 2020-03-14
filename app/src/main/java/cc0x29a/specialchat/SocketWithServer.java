@@ -53,7 +53,7 @@ class SocketWithServer{
 					if(DataReturn!=null){
 						DataJsonReturn=new JSONObject(DataReturn.toString());
 					}
-				}catch(IOException|JSONException e){
+				}catch(IOException|JSONException|NullPointerException e){
 					DataReturn=null;
 					e.printStackTrace();
 				}

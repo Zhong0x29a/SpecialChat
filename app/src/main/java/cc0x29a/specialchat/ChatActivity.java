@@ -11,6 +11,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.json.JSONException;
+
+//todo activity lunch mode need to be update!
+
 public class ChatActivity extends AppCompatActivity{
 	
 	static String ta_id;
@@ -45,7 +49,6 @@ public class ChatActivity extends AppCompatActivity{
 			recyclerView.setItemAnimator(new DefaultItemAnimator());
 			
 			layoutManager.setReverseLayout(true);
-			//			layoutManager.scrollToPosition(adapter.count-1);
 			
 		}else{
 			Toast.makeText(ChatActivity.this,"ERROR! (...)",Toast.LENGTH_LONG).show();
@@ -61,31 +64,52 @@ public class ChatActivity extends AppCompatActivity{
 	}
 	
 	private void init(){
-		findViewById(R.id.chat_EditText).setOnClickListener(new View.OnClickListener(){
+		
+		// Send message in editText
+		findViewById(R.id.chat_btn_send).setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View v){
-				//todo send msg
-				SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
-				String user_id=preferences.getString("use_id",null);
-				String token_key=preferences.getString("token_kay",null);
-				
-				EditText e=findViewById(R.id.chat_EditText);
-				String msg=MyTools.filterSpecialChar(e.getText().toString());
-				
-				if(user_id!=null&&token_key!=null){
-					String dataToSend="{" +
-							"'client':'SCC-1.0'," +
-							"'action':'0004'," +
-							"'user_id':'"+user_id+"'," +
-							"'token_key':'"+token_key+"'," +
-							"'to':'"+ta_id+"'," +
-							"'msg_content':'"+msg+"'," +
-							"'timestamp':'"+MyTools.getCurrentTime()+"'" +
-							"}";
+				try{
+					SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
+					String my_id=preferences.getString("use_id",null);
+					String token_key=preferences.getString("token_kay",null);
 					
-					SocketWithServer socket=new SocketWithServer();
-					socket.DataSend=dataToSend;
-					socket.startSocket();
+					EditText editText=findViewById(R.id.chat_EditText);
+					String msg_content=MyTools.filterSpecialChar(editText.getText().toString());
+					
+					if(my_id!=null&&token_key!=null){
+						String dataToSend="{" +
+								"'client':'SCC-1.0'," +
+								"'action':'0004'," +
+								"'user_id':'"+my_id+"'," +
+								"'token_key':'"+token_key+"'," +
+								"'to':'"+ta_id+"'," +
+								"'msg_content':'"+msg_content+"'," +
+								"'timestamp':'"+MyTools.getCurrentTime()+"'" +
+								"}";
+						
+						SocketWithServer socket=new SocketWithServer();
+						socket.DataSend=dataToSend;
+						socket.startSocket();
+						if( socket.DataJsonReturn==null ){
+							Toast.makeText(ChatActivity.this,"Perhaps Network is lazy? ",Toast.LENGTH_SHORT).show();
+						}else if( socket.DataJsonReturn.getString("status").equals("true") ){
+							MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,"msg_"+my_id+".db",1);
+							msgSQLiteHelper.insertNewMsg(
+									msgSQLiteHelper.getReadableDatabase(),my_id,
+									socket.DataJsonReturn.getString("send_time"),msg_content);
+							editText.getText().clear();
+						}else if( socket.DataJsonReturn.getString("status").equals("false") ){
+							Toast.makeText(ChatActivity.this,"Something wrong!",Toast.LENGTH_SHORT).show();
+						}else{
+							Toast.makeText(ChatActivity.this,"Unknown error! (CA104)",Toast.LENGTH_SHORT).show();
+						}
+					}else{
+						Toast.makeText(ChatActivity.this,"Bad login info! ",Toast.LENGTH_SHORT).show();
+					}
+				}catch(JSONException|NullPointerException e){
+					e.printStackTrace();
+					Toast.makeText(ChatActivity.this,"Unknown error! (CA0004)",Toast.LENGTH_SHORT).show();
 				}
 				
 			}

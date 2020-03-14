@@ -6,55 +6,89 @@
     android:orientation="vertical"
     android:background="#333">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/login_page"
-        android:textSize="36sp"
-        android:textColor="#eee"
-        android:gravity="center"
-        android:layout_margin="24dp"
-        android:paddingHorizontal="18dp"
-        android:paddingVertical="6dp"/>
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_weight="13">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/login_page"
+            android:textSize="36sp"
+            android:textColor="#eee"
+            android:gravity="center"
+            android:layout_margin="24dp"
+            android:paddingHorizontal="18dp"
+            android:paddingVertical="6dp"/>
 
-    <EditText
-        android:id="@+id/text_user_id"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="number"
-        android:text=""
-        android:textSize="20sp"
-        android:hint="@string/User_ID"
-        android:textColor="#222"
-        android:background="@drawable/set_button_selector"
-        android:paddingHorizontal="18dp"
-        android:paddingVertical="8dp"
-        android:layout_marginVertical="8dp"
-        android:autofillHints="user_id" />
+        <EditText
+            android:id="@+id/text_user_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number"
+            android:text=""
+            android:textSize="20sp"
+            android:hint="@string/User_ID"
+            android:textColor="#222"
+            android:background="@drawable/set_button_selector"
+            android:paddingHorizontal="18dp"
+            android:paddingVertical="8dp"
+            android:layout_marginVertical="8dp"
+            android:autofillHints="user_id" />
 
-    <EditText
-        android:id="@+id/text_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPassword"
-        android:textSize="20sp"
-        android:hint="@string/password"
-        android:textColor="#222"
-        android:background="@drawable/set_button_selector"
-        android:paddingHorizontal="18dp"
-        android:paddingVertical="8dp"
-        android:autofillHints="password" />
+        <EditText
+            android:id="@+id/text_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPassword"
+            android:textSize="20sp"
+            android:hint="@string/password"
+            android:textColor="#222"
+            android:background="@drawable/set_button_selector"
+            android:paddingHorizontal="18dp"
+            android:paddingVertical="8dp"
+            android:autofillHints="password" />
 
-    <Button
-        android:id="@+id/btn_login"
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/login"
+            android:textSize="33sp"
+            android:layout_margin="48dp"
+            android:background="@drawable/set_button_selector"/>
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/login"
-        android:textSize="33sp"
-        android:layout_margin="48dp"
-        android:background="@drawable/set_button_selector"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.2"
+            android:text=" "/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:id="@+id/btn_signUp"
+            android:text="Sign up?"
+            android:autoLink="all"
+            android:padding="1dp"
+            android:textSize="12sp"
+            android:layout_weight="1"
+            android:layout_marginVertical="6dp"
+            android:background="@drawable/set_button_selector"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.2"
+            android:text=" "/>
+    </LinearLayout>
 
 </LinearLayout>
 

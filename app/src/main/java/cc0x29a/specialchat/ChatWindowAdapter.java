@@ -65,7 +65,7 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 						.setPositiveButton("Yeah", new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialogInterface, int i) {
-								//todo delete the message!
+								//todo delete the message! by index
 								Toast.makeText(v.getContext(), "Deleted", Toast.LENGTH_SHORT).show();
 							}
 						})
