@@ -47,24 +47,29 @@ public class ServerThread extends Thread {
 			String user_id,password,token_key;
 			
 			System.out.println(dataJsonReturn.getString("action"));
-			switch(dataJsonReturn.getString("action")){
-				case "0001": // check login status
-					msgSend=ProcessAction.action_0001(dataJsonReturn);
-					break;
-				case "0002": // perform login
-					msgSend=ProcessAction.action_0002(dataJsonReturn);
-					break;
-				case "0003": // client refresh message
-					msgSend=ProcessAction.action_0003(dataJsonReturn);
-					break;
-				case "0004":
-					msgSend=ProcessAction.action_0004(dataJsonReturn);
-					break;
-				default:
-					msgSend="{\"msg\":\"ERROR!! (1000)\"}";
-					break;
-			}
+//			switch(dataJsonReturn.getString("action")){
+//				case "0001": // check login status
+//					msgSend=ProcessAction.action_0001(dataJsonReturn);
+//					break;
+//				case "0002": // perform login
+//					msgSend=ProcessAction.action_0002(dataJsonReturn);
+//					break;
+//				case "0003": // client refresh message
+//					msgSend=ProcessAction.action_0003(dataJsonReturn);
+//					break;
+//				case "0004":
+//					msgSend=ProcessAction.action_0004(dataJsonReturn);
+//					break;
+//				case "0005":
+//					msgSend=ProcessAction.action_0005(dataJsonReturn);
+//				default:
+//					msgSend="{\"msg\":\"ERROR!! (1000)\"}";
+//					break;
+//			}
 			System.out.println(DataReturn);
+			
+			//test code:
+			msgSend="{\"status\":\"true\"}";
 			
 			// send
 			outputStream = socket.getOutputStream();

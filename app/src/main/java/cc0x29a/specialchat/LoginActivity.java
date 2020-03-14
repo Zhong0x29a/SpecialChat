@@ -107,6 +107,13 @@ public class LoginActivity extends AppCompatActivity{
 			}
 		});
 		
+		findViewById(R.id.btn_forget).setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v){
+				Toast.makeText(LoginActivity.this,"Sorry! \nPlz contact the admin!",Toast.LENGTH_LONG).show();
+			}
+		});
+		
 		findViewById(R.id.btn_signUp).setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View v){

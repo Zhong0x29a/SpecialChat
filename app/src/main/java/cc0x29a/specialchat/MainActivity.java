@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity{
 		// todo: this can set a lunch page !!
 		setContentView(R.layout.activity_main);
 		
+		welcomePage();
 		//test code
 //		for(int i=1;i<=30;i++ ){
 ////			MsgSQLiteHelper h=new MsgSQLiteHelper(this,"msg_1123592075.db",1);
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity{
 	@Override
 	protected void onRestart(){
 		super.onRestart();
-		normalMode();
+		//normalMode();
 	}
 	
 	@Override
@@ -117,7 +118,23 @@ public class MainActivity extends AppCompatActivity{
 	}
 	
 	/**
-	 * init views
+	 * Load Welcome page at the first run of app.
+	 */
+	private void welcomePage(){
+		SharedPreferences preferences=getSharedPreferences("init_info",MODE_PRIVATE);
+		String is_firstRun=preferences.getString("first_run","yes");
+		
+		if(is_firstRun.equals("yes")){
+			SharedPreferences.Editor e=preferences.edit();
+			e.putString("first_run","no");
+			e.apply();
+			startActivity(new Intent(MainActivity.this,WelcomeActivity.class));
+			finish();
+		}
+	}
+	
+	/**
+	 * init views & some settings
 	 */
 	private void init(){
 		LinearLayout main_linear_layout=findViewById(R.id.main_linear_layout);
@@ -179,6 +196,7 @@ public class MainActivity extends AppCompatActivity{
 				}
 			});
 		}
+		
 	}
 	
 	// todo complete

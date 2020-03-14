@@ -1,4 +1,9 @@
 <resources>
 
     <string name="signUp_page">Sign up page</string>
+    <string name="confirm_password">Confirm your password</string>
+    <string name="invite_code">Invite code</string>
+    <string name="sing_up">Sign up</string>
+    <string name="user_name">User name</string>
+    <string name="start_journey_in_special_chat">~Start journey in Special Chat~</string>
 </resources>

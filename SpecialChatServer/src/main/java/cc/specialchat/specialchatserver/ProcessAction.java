@@ -114,6 +114,21 @@ class ProcessAction{
 		}
 	}
 	
+	
+	static String action_0005(JSONObject JsonData){
+		try{
+			String user_id=JsonData.getString("user_id");
+			if(UserInfoSQLite.checkIDUsability(user_id)){
+				return "{'status':'true'}";
+			}else{
+				return "{'status':'false'}";
+			}
+		}catch(JSONException e){
+			e.printStackTrace();
+			return "{'status':'false','msg':'Error! (1005)'}";
+		}
+	}
+	
 }
 
 /*

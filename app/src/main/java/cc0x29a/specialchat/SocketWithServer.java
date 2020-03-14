@@ -50,6 +50,8 @@ class SocketWithServer{
 					os.close();
 					socket.close();
 					
+					System.out.println(DataReturn.toString());
+					
 					if(DataReturn!=null){
 						DataJsonReturn=new JSONObject(DataReturn.toString());
 					}

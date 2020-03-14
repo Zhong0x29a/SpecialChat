@@ -87,6 +87,31 @@ class UserInfoSQLite{
 	}
 	
 	/**
+	 * Check a user id whether can be use (whether existed)
+	 * @param user_id String user_id to be check
+	 * @return available true or false
+	 */
+	static boolean checkIDUsability(String user_id){
+		try{
+			Connection co=getConnection();
+			Statement st=co.createStatement();
+			String QUERY_SQL="select user_index from user_info where user_id="+user_id;
+			ResultSet re=st.executeQuery(QUERY_SQL);
+			if(re.next()){
+				re.close();
+				st.close();
+				co.close();
+				return false;
+			}else{
+				return true;
+			}
+		}catch(SQLException|ClassNotFoundException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	/**
 	 * Verify User's token_key
 	 * @param user_id String user_id
 	 * @param token_key String token_key
@@ -121,7 +146,7 @@ class UserInfoSQLite{
 	 * @param user_name String, user_name
 	 * @param password String, user password
 	 */
-	static void addNewUser(int user_id,String user_name,String password){
+	static void addNewUser(String user_id,String user_name,String password){
 		try{
 			Connection connection=getConnection();
 			Statement statement=connection.createStatement();
