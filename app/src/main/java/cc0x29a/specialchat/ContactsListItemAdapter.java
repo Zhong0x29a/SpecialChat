@@ -64,7 +64,7 @@ public class ContactsListItemAdapter extends BaseAdapter{
 			holder.nickname.setText(MyTools.resolveSpecialChar(this.contactsInfo[position][0]));
 		}
 		
-		//todo: load user's profile picture
+		//todo: next ver load user's profile picture
 		holder.profile_pic.setImageResource(R.drawable.ic_launcher_background);
 		return convertView;
 	}

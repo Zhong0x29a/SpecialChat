@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * server:          scs.0x29a.cc:21027
@@ -62,7 +63,7 @@ public class LoginActivity extends AppCompatActivity{
 				
 				SocketWithServer SWS=new SocketWithServer();
 				SWS.DataSend=dataToSend;
-				SWS.startSocket();
+				JSONObject data=SWS.startSocket();
 				
 				/* wait 888ms */
 				try{
@@ -72,17 +73,17 @@ public class LoginActivity extends AppCompatActivity{
 				}
 				
 				try{
-					if(SWS.DataJsonReturn==null){
+					if(data==null){
 						Toast.makeText(LoginActivity.this,"Login failed! \n" +
 								"Please check your Network setting. ",Toast.LENGTH_LONG).show();
-					}else if(SWS.DataJsonReturn.getString("status").equals("true")){
+					}else if(data.getString("status").equals("true")){
 						SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 						SharedPreferences.Editor editor=preferences.edit();
 						
-						editor.putString("user_id",SWS.DataJsonReturn.getString("user_id")+"");
-						editor.putString("user_name",SWS.DataJsonReturn.getString("user_name")+"");
-						editor.putString("token_key",SWS.DataJsonReturn.getString("token_key")+"");
-						editor.putString("login_time",SWS.DataJsonReturn.getString("login_time")+"");
+						editor.putString("user_id",data.getString("user_id")+"");
+						editor.putString("user_name",data.getString("user_name")+"");
+						editor.putString("token_key",data.getString("token_key")+"");
+						editor.putString("login_time",data.getString("login_time")+"");
 						editor.putInt("is_login",1);
 						editor.apply();
 						
@@ -91,7 +92,7 @@ public class LoginActivity extends AppCompatActivity{
 						
 						Intent intent=new Intent(LoginActivity.this, MainActivity.class);
 						startActivity(intent);
-					}else if(SWS.DataJsonReturn.getString("status").equals("false")){
+					}else if(data.getString("status").equals("false")){
 						ET_password.getText().clear();
 						Toast.makeText(LoginActivity.this,"Login failed! \n" +
 								"Please check your ID number and password.",Toast.LENGTH_LONG).show();

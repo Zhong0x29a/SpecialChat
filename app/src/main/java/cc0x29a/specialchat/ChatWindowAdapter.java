@@ -34,7 +34,7 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 		}
 	}
 	
-	public ChatWindowAdapter(String[][] data) {
+	ChatWindowAdapter(String[][] data) {
 		this.messages = data;
 	}
 	
@@ -58,7 +58,6 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 		holder.chat_msg_container.setOnLongClickListener(new View.OnLongClickListener(){
 			@Override
 			public boolean onLongClick(final View v){
-				//todo show a little menu
 				AlertDialog alertDialog2 = new AlertDialog.Builder(v.getContext())
 						.setTitle("Notices")
 						.setMessage("Sure to delete this message? \n'"+messages[index][4]+"'")

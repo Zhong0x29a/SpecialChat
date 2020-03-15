@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 //todo activity lunch mode need to be update!
 
@@ -77,6 +78,11 @@ public class ChatActivity extends AppCompatActivity{
 					EditText editText=findViewById(R.id.chat_EditText);
 					String msg_content=MyTools.filterSpecialChar(editText.getText().toString());
 					
+					if(msg_content.equals("")){
+						Toast.makeText(ChatActivity.this,"Cannot send empty message.",Toast.LENGTH_SHORT).show();
+						return;
+					}
+					
 					if(my_id!=null&&token_key!=null){
 						String dataToSend="{" +
 								"'client':'SCC-1.0'," +
@@ -90,16 +96,16 @@ public class ChatActivity extends AppCompatActivity{
 						
 						SocketWithServer socket=new SocketWithServer();
 						socket.DataSend=dataToSend;
-						socket.startSocket();
-						if( socket.DataJsonReturn==null ){
+						JSONObject data=socket.startSocket();
+						if( data==null ){
 							Toast.makeText(ChatActivity.this,"Perhaps Network is lazy? ",Toast.LENGTH_SHORT).show();
-						}else if( socket.DataJsonReturn.getString("status").equals("true") ){
+						}else if( data.getString("status").equals("true") ){
 							MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,"msg_"+my_id+".db",1);
 							msgSQLiteHelper.insertNewMsg(
 									msgSQLiteHelper.getReadableDatabase(),my_id,
-									socket.DataJsonReturn.getString("send_time"),msg_content);
+									data.getString("send_time"),msg_content);
 							editText.getText().clear();
-						}else if( socket.DataJsonReturn.getString("status").equals("false") ){
+						}else if( data.getString("status").equals("false") ){
 							Toast.makeText(ChatActivity.this,"Something wrong!",Toast.LENGTH_SHORT).show();
 						}else{
 							Toast.makeText(ChatActivity.this,"Unknown error! (CA104)",Toast.LENGTH_SHORT).show();

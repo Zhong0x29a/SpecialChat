@@ -74,7 +74,7 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 	 *         [3]->last_chat_time
 	 */
 	String[][] fetchChatList(@NotNull SQLiteDatabase db,int position){
-		String[][] chatList=new String[51][4]; //todo update next ver. todo: but total just 50,need complete!!
+		String[][] chatList=new String[51][4];
 		int index=0;
 		try{
 			Cursor cursor=db.query("chat_list",new String[]{"index_num","user_id","nickname","last_chat_time",},
@@ -86,7 +86,7 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 					chatList[index][1]=cursor.getInt(cursor.getColumnIndex("user_id"))+"";
 					chatList[index][2]=MyTools.resolveSpecialChar(cursor.getString(cursor.getColumnIndex("nickname")));
 					chatList[index][3]=cursor.getInt(cursor.getColumnIndex("last_chat_time"))+"";
-				}while(index<20 && cursor.moveToNext());
+				}while(index<50 && cursor.moveToNext());
 			}
 			cursor.close();
 		}catch(SQLException e){

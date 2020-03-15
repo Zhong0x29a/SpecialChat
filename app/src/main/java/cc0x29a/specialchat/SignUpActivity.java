@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.nio.IntBuffer;
 import java.util.regex.Matcher;
@@ -30,7 +31,7 @@ public class SignUpActivity extends AppCompatActivity{
 			public void run(){
 				refreshNewID();
 			}
-		}, 2888);
+		}, 888);
 		
 		findViewById(R.id.signUp_btn_new_user_id).setOnClickListener(new View.OnClickListener(){
 			@Override
@@ -135,23 +136,21 @@ public class SignUpActivity extends AppCompatActivity{
 				
 				SocketWithServer socket=new SocketWithServer();
 				socket.DataSend="{'action':'0005','user_id':'"+user_id+"'}";
-				socket.startSocket();
-				System.out.println("a");
-				Thread.sleep(1333);// todo bugs here
-				if(socket.DataJsonReturn!=null &&
-						socket.DataJsonReturn.getString("status").equals("true")){
+				JSONObject data=socket.startSocket();
+				
+				if(data==null){
+					Toast.makeText(SignUpActivity.this,"Perhaps the server is lazy..\nRetry will start soon. ",Toast.LENGTH_LONG).show();
+				}else if(data.getString("status").equals("true")){
 					return user_id;
-				}else{
-					System.out.println("b");
 				}
-				Thread.sleep(4333);
+				Thread.sleep(8888);
 				return createNewId(t);
 			}catch(InterruptedException|JSONException e){
 				e.printStackTrace();
 				return null;
 			}
 		}else{
-			Toast.makeText(SignUpActivity.this,"Perhaps the server is lazy..\nRetry for new id! ",Toast.LENGTH_LONG).show();
+			Toast.makeText(SignUpActivity.this,"Perhaps the server is to lazy...\nRetry for new id! ",Toast.LENGTH_LONG).show();
 			return null;
 		}
 	}

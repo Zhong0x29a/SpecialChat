@@ -10,6 +10,8 @@ package cc0x29a.specialchat;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -60,7 +62,7 @@ public class MainActivity extends AppCompatActivity{
 	@Override
 	protected void onStart(){
 		super.onStart();
-		redirect(); //todo resume
+		//redirect(); //todo resume
 	}
 	
 	@Override
@@ -111,7 +113,7 @@ public class MainActivity extends AppCompatActivity{
 	private void redirect(){
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 		if(preferences.getInt("is_login",0)!=1){
-			changeView(1);
+			changeViewToFontLogin();
 		}else if(preferences.getInt("is_login",0)==1){
 			normalMode();
 		}
@@ -199,7 +201,6 @@ public class MainActivity extends AppCompatActivity{
 		
 	}
 	
-	// todo complete
 	/**
 	 * Normal mode perform.
 	 */
@@ -215,7 +216,7 @@ public class MainActivity extends AppCompatActivity{
 			@Override public void run(){
 				try{
 					if(checkLogin()==2){
-						changeView(1);
+						changeViewToFontLogin();
 					}else if(checkLogin()==1){
 						showToast("Ohh! Poor Network... :(",Toast.LENGTH_LONG);
 					}
@@ -279,7 +280,7 @@ public class MainActivity extends AppCompatActivity{
 					final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase(),0);
 					
 					// Fetch last one message.
-					String[] lastMsg=new String[50];
+					String[] lastMsg=new String[51];
 					for(int i=1;i<= (Integer.parseInt(chatList[0][0])) && i<=50;i++){
 						MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(MainActivity.this,
 								"msg_"+chatList[i][1]+".db",1);
@@ -311,6 +312,23 @@ public class MainActivity extends AppCompatActivity{
 						public boolean onItemLongClick(AdapterView<?> parent,View view,int position,long id){
 							position++;
 							// todo: position (int) ,open a little menu,to delete chat or so on.
+							final int finalPosition=position;
+							AlertDialog alertDialog2 = new AlertDialog.Builder(MainActivity.this)
+									.setTitle("Notices")
+									.setMessage("Sure to delete this chat? \n'"+position+"'")
+									.setPositiveButton("Yeah", new DialogInterface.OnClickListener() {
+										@Override
+										public void onClick(DialogInterface dialogInterface, int i) {
+											//todo delete the chat item! by position
+											Toast.makeText(MainActivity.this, "Deleted. "+finalPosition, Toast.LENGTH_SHORT).show();
+										}
+									})
+									.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+										@Override
+										public void onClick(DialogInterface dialogInterface, int i){}
+									})
+									.create();
+							alertDialog2.show();
 							return true;
 						}
 					});
@@ -419,15 +437,15 @@ public class MainActivity extends AppCompatActivity{
 		}
 		SocketWithServer SWS=new SocketWithServer();
 		SWS.DataSend=jsonMsg;
-		SWS.startSocket();
+		JSONObject data=SWS.startSocket();
 		
-		if(SWS.DataJsonReturn==null){
+		if(data==null){
 			System.out.println("Network ERROR! ");
 			return 1;
-		}else if(SWS.DataJsonReturn.getString("is_new_msg").equals("true")){
-			int new_msg_num=Integer.parseInt(SWS.DataJsonReturn.getString("new_msg_num"));
+		}else if(data.getString("is_new_msg").equals("true")){
+			int new_msg_num=Integer.parseInt(data.getString("new_msg_num"));
 			for(int i=1;i<=new_msg_num;i++){
-				JSONObject jsonTemp=SWS.DataJsonReturn.getJSONObject(SWS.DataJsonReturn.getString("index_"+i));
+				JSONObject jsonTemp=data.getJSONObject(data.getString("index_"+i));
 				String friend_id=jsonTemp.getString("user_id");
 				String send_time=jsonTemp.getString("send_time");
 				
@@ -439,7 +457,7 @@ public class MainActivity extends AppCompatActivity{
 			}
 			loadChatList();
 			return 0;
-		}else if(SWS.DataJsonReturn.getString("is_new_msg").equals("false")){
+		}else if(data.getString("is_new_msg").equals("false")){
 			return 2;
 		}else{
 			return 3;
@@ -466,12 +484,13 @@ public class MainActivity extends AppCompatActivity{
 				"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
 				"}";
 		SocketWithServer SWS=new SocketWithServer();
+		SWS.delay=6;
 		SWS.DataSend=jsonMsg;
-		SWS.startSocket();
+		JSONObject data=SWS.startSocket();
 		
-		if(SWS.DataJsonReturn==null){
+		if(data==null){
 			return 1;
-		}else if(SWS.DataJsonReturn.getString("status").equals("true")){
+		}else if(data.getString("status").equals("true")){
 			if(preferences.getInt("is_login",0)!=1){
 				SharedPreferences.Editor editor=preferences.edit();
 				editor.putInt("is_login",1);
@@ -496,29 +515,22 @@ public class MainActivity extends AppCompatActivity{
 	
 	/**
 	 * Change content layout
-	 * @param toPage
-	 *        0 -> main page
-	 *        1 -> font login page
 	 * **/
-	private void changeView(final int toPage){
+	private void changeViewToFontLogin(){
 		MainActivity.this.runOnUiThread(new Runnable() {
 			public void run() {
-				if(toPage==0){ //main page
-					findViewById(R.id.font_login_linear_layout).setVisibility(View.GONE);
-					findViewById(R.id.main_linear_layout).setVisibility(View.VISIBLE);
-				}else if(toPage==1){ //login
-					findViewById(R.id.font_login_linear_layout).setVisibility(View.VISIBLE);
-					findViewById(R.id.main_linear_layout).setVisibility(View.GONE);
-					findViewById(R.id.btn_front_login).setOnClickListener(new View.OnClickListener(){
-						@Override
-						public void onClick(View v){
-							goToLogin();
-						}
-					});
-					cancelRefreshTimers();
-					Toast.makeText(MainActivity.this,"Maybe you haven't login yet? ",
-							Toast.LENGTH_LONG).show();
-				}
+				//login
+				findViewById(R.id.font_login_linear_layout).setVisibility(View.VISIBLE);
+				findViewById(R.id.main_linear_layout).setVisibility(View.GONE);
+				findViewById(R.id.btn_front_login).setOnClickListener(new View.OnClickListener(){
+					@Override
+					public void onClick(View v){
+						goToLogin();
+					}
+				});
+				cancelRefreshTimers();
+				Toast.makeText(MainActivity.this,"Maybe you haven't login yet? ",
+				Toast.LENGTH_LONG).show();
 			}
 		});
 	}
@@ -529,6 +541,7 @@ public class MainActivity extends AppCompatActivity{
 	private void goToLogin(){
 		cancelRefreshTimers();
 		startActivity(new Intent(MainActivity.this,LoginActivity.class));
+		finish();
 	}
 	
 	/**

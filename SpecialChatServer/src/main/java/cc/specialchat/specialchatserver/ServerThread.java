@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 public class ServerThread extends Thread {
 	
 	private Socket socket;
-	private StringBuffer DataReturn=new StringBuffer();
+	private StringBuffer DataGet=new StringBuffer();
 	private static String msgSend;
 	
 	ServerThread(Socket socket) {
@@ -39,37 +39,37 @@ public class ServerThread extends Thread {
 			
 			String temp;
 			while((temp=bufferedReader.readLine())!=null){
-				DataReturn.append("\n").append(temp);
+				DataGet.append("\n").append(temp);
 			}
 			socket.shutdownInput();
 			
-			JSONObject dataJsonReturn=JSONObject.parseObject(DataReturn.toString());
-			String user_id,password,token_key;
+			JSONObject dataJsonReturn=JSONObject.parseObject(DataGet.toString());
 			
 			System.out.println(dataJsonReturn.getString("action"));
-//			switch(dataJsonReturn.getString("action")){
-//				case "0001": // check login status
-//					msgSend=ProcessAction.action_0001(dataJsonReturn);
-//					break;
-//				case "0002": // perform login
-//					msgSend=ProcessAction.action_0002(dataJsonReturn);
-//					break;
-//				case "0003": // client refresh message
-//					msgSend=ProcessAction.action_0003(dataJsonReturn);
-//					break;
-//				case "0004":
-//					msgSend=ProcessAction.action_0004(dataJsonReturn);
-//					break;
-//				case "0005":
-//					msgSend=ProcessAction.action_0005(dataJsonReturn);
-//				default:
-//					msgSend="{\"msg\":\"ERROR!! (1000)\"}";
-//					break;
-//			}
-			System.out.println(DataReturn);
+			
+			switch(dataJsonReturn.getString("action")){
+				case "0001": // check login status
+					msgSend=ProcessAction.action_0001(dataJsonReturn);
+					break;
+				case "0002": // perform login
+					msgSend=ProcessAction.action_0002(dataJsonReturn);
+					break;
+				case "0003": // client refresh message
+					msgSend=ProcessAction.action_0003(dataJsonReturn);
+					break;
+				case "0004":
+					msgSend=ProcessAction.action_0004(dataJsonReturn);
+					break;
+				case "0005":
+					msgSend=ProcessAction.action_0005(dataJsonReturn);
+				default:
+					msgSend="{\"msg\":\"ERROR!! (1000)\"}";
+					break;
+			}
+			System.out.println(DataGet);
 			
 			//test code:
-			msgSend="{\"status\":\"true\"}";
+//			msgSend="{\"status\":\"true\"}";
 			
 			// send
 			outputStream = socket.getOutputStream();

@@ -4,7 +4,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-//todo complete this class!!!
 public class ChatWindowAdapter_backup extends BaseAdapter{
 	@Override
 	public int getCount(){

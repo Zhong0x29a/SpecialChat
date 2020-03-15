@@ -23,9 +23,10 @@ import java.nio.charset.StandardCharsets;
 class SocketWithServer{
 	String DataSend=null;
 	private StringBuffer DataReturn=new StringBuffer();
-	JSONObject DataJsonReturn=null;
+	private JSONObject DataJsonReturn=null;
+	int delay=5;
 	
-	void startSocket(){
+	JSONObject startSocket(){
 		new Thread(){
 			@Override
 			public void run() {
@@ -61,6 +62,14 @@ class SocketWithServer{
 				}
 			}
 		}.start();
+		
+		int startTime=MyTools.getCurrentTime();
+		while(MyTools.getCurrentTime()<startTime+delay){
+			if(DataJsonReturn!=null){
+				return DataJsonReturn;
+			}
+		}
+		return null;
 	}
 }
 

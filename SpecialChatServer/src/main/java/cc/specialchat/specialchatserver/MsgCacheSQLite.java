@@ -50,7 +50,13 @@ class MsgCacheSQLite{
 		System.out.println("---- init table msg_cache done! ----\n");
 	}
 	
-	//todo: insert new message
+	/**
+	 * Insert new msg.
+	 * @param from_id String user_id from who
+	 * @param to_id String user_id to who
+	 * @param msg_content String content
+	 * @return int , send_time timestamp
+	 */
 	static int insertNewMsg(String from_id,String to_id,String msg_content){
 		try{
 			int msg_send_time=MyTools.getCurrentTime();
@@ -72,7 +78,7 @@ class MsgCacheSQLite{
 		}
 	}
 	
-	//todo: check whether msg is read by msg_index
+	//todo: next ver , check whether msg is read by msg_index
 	static int checkIsRead(String msg_index){
 		return 1;
 	}
