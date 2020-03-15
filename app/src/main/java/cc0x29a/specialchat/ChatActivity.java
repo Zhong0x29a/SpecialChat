@@ -14,9 +14,9 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-//todo activity lunch mode need to be update!
-
 public class ChatActivity extends AppCompatActivity{
+	
+	// this activity lunch mode need to be update! or will cause a little bug!
 	
 	static String ta_id;
 	@Override

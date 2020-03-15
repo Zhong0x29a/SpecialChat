@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity{
 	@Override
 	protected void onRestart(){
 		super.onRestart();
-		//normalMode();
+		normalMode();
 	}
 	
 	@Override
@@ -139,22 +139,22 @@ public class MainActivity extends AppCompatActivity{
 	 * init views & some settings
 	 */
 	private void init(){
-		LinearLayout main_linear_layout=findViewById(R.id.main_linear_layout);
-		int width=MyTools.getViewHeight(main_linear_layout,false);
+//		LinearLayout main_linear_layout=findViewById(R.id.main_linear_layout);
+//		int width=MyTools.getViewHeight(main_linear_layout,false);
 //		int height=MyTools.getViewHeight(main_linear_layout,true);
 		{
-			LinearLayout.LayoutParams params=(LinearLayout.LayoutParams)findViewById(R.id.menu_btn_chats).getLayoutParams();
-			params.width=width/4;
-			findViewById(R.id.menu_btn_chats).setLayoutParams(params);
-			params=(LinearLayout.LayoutParams)findViewById(R.id.menu_btn_contacts).getLayoutParams();
-			params.width=width/4;
-			findViewById(R.id.menu_btn_contacts).setLayoutParams(params);
-			params=(LinearLayout.LayoutParams)findViewById(R.id.menu_btn_moments).getLayoutParams();
-			params.width=width/4;
-			findViewById(R.id.menu_btn_moments).setLayoutParams(params);
-			params=(LinearLayout.LayoutParams)findViewById(R.id.menu_btn_me).getLayoutParams();
-			params.width=width/4;
-			findViewById(R.id.menu_btn_me).setLayoutParams(params);
+//			LinearLayout.LayoutParams params=(LinearLayout.LayoutParams)findViewById(R.id.menu_btn_chats).getLayoutParams();
+//			params.width=width/4;
+//			findViewById(R.id.menu_btn_chats).setLayoutParams(params);
+//			params=(LinearLayout.LayoutParams)findViewById(R.id.menu_btn_contacts).getLayoutParams();
+//			params.width=width/4;
+//			findViewById(R.id.menu_btn_contacts).setLayoutParams(params);
+//			params=(LinearLayout.LayoutParams)findViewById(R.id.menu_btn_moments).getLayoutParams();
+//			params.width=width/4;
+//			findViewById(R.id.menu_btn_moments).setLayoutParams(params);
+//			params=(LinearLayout.LayoutParams)findViewById(R.id.menu_btn_me).getLayoutParams();
+//			params.width=width/4;
+//			findViewById(R.id.menu_btn_me).setLayoutParams(params);
 		}
 		{
 			findViewById(R.id.menu_btn_chats).setOnClickListener(new View.OnClickListener(){
@@ -280,7 +280,7 @@ public class MainActivity extends AppCompatActivity{
 					final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase(),0);
 					
 					// Fetch last one message.
-					String[] lastMsg=new String[51];
+					String[] lastMsg=new String[51]; // <--todo here
 					for(int i=1;i<= (Integer.parseInt(chatList[0][0])) && i<=50;i++){
 						MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(MainActivity.this,
 								"msg_"+chatList[i][1]+".db",1);

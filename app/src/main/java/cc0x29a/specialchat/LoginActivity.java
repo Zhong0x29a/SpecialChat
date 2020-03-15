@@ -29,6 +29,8 @@ import org.json.JSONObject;
  *     token_key:   [token_key],
  *     login_time:  [login_time],
  * }
+ *
+ * check v
  * **/
 public class LoginActivity extends AppCompatActivity{
 	
@@ -90,24 +92,27 @@ public class LoginActivity extends AppCompatActivity{
 						Toast.makeText(LoginActivity.this,"Login succeed! \n" +
 								"Enjoy your time~",Toast.LENGTH_LONG).show();
 						
-						Intent intent=new Intent(LoginActivity.this, MainActivity.class);
-						startActivity(intent);
+						startActivity(new Intent(LoginActivity.this, MainActivity.class));
 					}else if(data.getString("status").equals("false")){
 						ET_password.getText().clear();
-						Toast.makeText(LoginActivity.this,"Login failed! \n" +
+						Toast.makeText(LoginActivity.this,
+								"Login failed! \n" +
 								"Please check your ID number and password.",Toast.LENGTH_LONG).show();
 					}else{
-						Toast.makeText(LoginActivity.this,"Unknown ERROR! (LA0002)",
+						Toast.makeText(LoginActivity.this,
+								"Unknown ERROR! (LA0002)",
 								Toast.LENGTH_LONG).show();
 					}
 				}catch(JSONException e){
 					e.printStackTrace();
-					Toast.makeText(LoginActivity.this,"Unknown ERROR! (LA0002+)",
+					Toast.makeText(LoginActivity.this,
+							"Unknown ERROR! (LA0002+)",
 							Toast.LENGTH_LONG).show();
 				}
 			}
 		});
 		
+		// check v
 		findViewById(R.id.btn_forget).setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View v){
@@ -118,8 +123,7 @@ public class LoginActivity extends AppCompatActivity{
 		findViewById(R.id.btn_signUp).setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View v){
-				Intent intent=new Intent(LoginActivity.this,SignUpActivity.class);
-				startActivity(intent);
+				startActivity(new Intent(LoginActivity.this,SignUpActivity.class));
 			}
 		});
 		
@@ -130,6 +134,7 @@ public class LoginActivity extends AppCompatActivity{
 				return false;
 			}
 		});
+		
 	}
 	
 }

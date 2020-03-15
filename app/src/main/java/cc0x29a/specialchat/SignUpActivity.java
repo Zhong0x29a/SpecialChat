@@ -1,8 +1,8 @@
 package cc0x29a.specialchat;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ShareCompat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -12,12 +12,10 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
-import java.nio.IntBuffer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static java.lang.System.exit;
 
 public class SignUpActivity extends AppCompatActivity{
 	
@@ -45,7 +43,52 @@ public class SignUpActivity extends AppCompatActivity{
 			public void onClick(View v){
 				if(checkInfo() && checkInviteCode()){
 					Toast.makeText(SignUpActivity.this,"Plz wait a second...",Toast.LENGTH_SHORT).show();
-					// TODO: continue sign up.
+					
+					EditText et_user_phone=findViewById(R.id.sign_user_phone);
+					EditText et_user_name=findViewById(R.id.sign_user_name);
+					EditText et_password=findViewById(R.id.sign_password);
+					TextView et_user_id=findViewById(R.id.sign_user_id);
+					EditText et_invite_code=findViewById(R.id.sign_invite_code);
+
+					String user_id=et_user_id.getText().toString();
+					String user_phone=et_user_phone.getText().toString();
+					String user_name=MyTools.filterSpecialChar(et_user_name.getText().toString());
+					String password=MyTools.md5(et_password.getText().toString()+user_id);
+					String invite_code=et_invite_code.getText().toString();
+					
+					SocketWithServer socket=new SocketWithServer();
+					socket.DataSend="{" +
+							"\"client\":\"SCC-1.0\"," +
+							"\"action\":\"0006\"," +
+							"\"user_name\":\""+user_name+"\"," +
+							"\"user_id\":\""+user_id+"\"," +
+							"\"password\":\""+password+"\"," +
+							"\"user_phone\":\""+user_phone+"\"," +
+							"\"invite_code\":\""+invite_code+"\"," +
+							"\"secret\":\"I love you.\"" +
+							"}";
+					
+					JSONObject data=socket.startSocket();
+					
+					try{
+						if(data==null){
+							Toast.makeText(SignUpActivity.this,"Perhaps Network lost...",Toast.LENGTH_SHORT).show();
+						}else if(data.getString("status").equals("true")){
+							Toast.makeText(SignUpActivity.this,
+									"Congratulations!!! \n" +
+									"You are now one of Special Chat's VIPs!! ",Toast.LENGTH_LONG).show();
+							Toast.makeText(SignUpActivity.this,"Now go to login, then enjoy your time! ",Toast.LENGTH_SHORT).show();
+							startActivity(new Intent(SignUpActivity.this,LoginActivity.class));
+							finish();
+						}else if(data.getString("status").equals("false")){
+							Toast.makeText(SignUpActivity.this,"Perhaps server made a mistake...",Toast.LENGTH_SHORT).show();
+						}else{
+							Toast.makeText(SignUpActivity.this,"Unknown error(1006+85)",Toast.LENGTH_SHORT).show();
+						}
+					}catch(JSONException e){
+						e.printStackTrace();
+						Toast.makeText(SignUpActivity.this,"Ohhh, bad luck! Here comes a bug...",Toast.LENGTH_SHORT).show();
+					}
 				}
 				
 			}
@@ -58,6 +101,7 @@ public class SignUpActivity extends AppCompatActivity{
 	 */
 	private boolean checkInfo(){
 		try{
+			EditText user_phone=findViewById(R.id.sign_user_phone);
 			EditText user_name=findViewById(R.id.sign_user_name);
 			EditText password=findViewById(R.id.sign_password);
 			EditText password_confirm=findViewById(R.id.sign_confirm_password);
@@ -68,7 +112,13 @@ public class SignUpActivity extends AppCompatActivity{
 			Pattern pattern_user_name=Pattern.compile("^[a-zA-Z0-9\\u4e00-\\u9fa5_\\-:：.。?？!！()（）]{1,10}$");
 			Matcher m_um=pattern_user_name.matcher(user_name.getText().toString());
 			
-			if(!m_um.matches()){
+			Pattern pattern_user_phone=Pattern.compile("^[1]([3-9])[0-9]{9}$");
+			Matcher m_ph=pattern_user_phone.matcher(user_phone.getText().toString());
+			
+			if(!m_ph.matches()){
+				Toast.makeText(SignUpActivity.this,"The phone number you input is illegal! ",Toast.LENGTH_LONG).show();
+				return false;
+			}else if(!m_um.matches()){
 				Toast.makeText(SignUpActivity.this,"User name should only be \n"+"(a-zA-Z0-9\\u4e00-\\u9fa5_\\-:：.。?？!！()（）)\n"+"and 1~10 bits !",Toast.LENGTH_LONG).show();
 				return false;
 			}else if(!m_pass.matches()){
@@ -77,8 +127,9 @@ public class SignUpActivity extends AppCompatActivity{
 			}else if(!password.getText().toString().equals(password_confirm.getText().toString())){
 				Toast.makeText(SignUpActivity.this,"Two password do not match! ! ",Toast.LENGTH_SHORT).show();
 				return false;
+			}else{
+				return true;
 			}
-			return true;
 		}catch(NullPointerException e){
 			e.printStackTrace();
 			return false;
@@ -110,7 +161,7 @@ public class SignUpActivity extends AppCompatActivity{
 	 */
 	private void refreshNewID(){
 		String new_user_id;
-		TextView textView=findViewById(R.id.signUp_user_id);
+		TextView textView=findViewById(R.id.sign_user_id);
 		if((new_user_id=createNewId(0))!=null){
 			textView.setText(new_user_id);
 		}

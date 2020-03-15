@@ -31,7 +31,7 @@
         android:orientation="horizontal"
         android:gravity="center">
         <TextView
-            android:id="@+id/signUp_user_id"
+            android:id="@+id/sign_user_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="80"
@@ -57,6 +57,32 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/Phone"
+        android:textColor="#eee"
+        android:textSize="18sp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/sign_user_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="text|phone"
+            android:textSize="20sp"
+            android:hint="@string/Phone"
+            android:textColor="#222"
+            android:background="@drawable/set_button_selector"
+            android:paddingHorizontal="18dp"
+            android:paddingVertical="8dp"
+            android:autofillHints="phone" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="@string/user_name"
         android:textColor="#eee"
         android:textSize="18sp"/>
@@ -77,7 +103,7 @@
             android:background="@drawable/set_button_selector"
             android:paddingHorizontal="18dp"
             android:paddingVertical="8dp"
-            android:autofillHints="password" />
+            android:autofillHints="user name" />
     </LinearLayout>
 
     <TextView

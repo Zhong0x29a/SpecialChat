@@ -12,6 +12,7 @@ import java.sql.Statement;
  * columns:
  *      user_index      INTEGER,primary key,autoincrement   //index
  *      user_id         INTEGER,NOT NULL,UNIQUE
+ *      user_phone      INTEGER,NOT NULL    //new added !! 20.03.15
  *      user_name       TEXT,NOT NULL   // string filtered by MyTools.filterSpecialChar()
  *      password        TEXT,NOT NULL
  *      login_time      INTEGER
@@ -39,6 +40,7 @@ class UserInfoSQLite{
 				"create table user_info (" +
 						"user_index INTEGER primary key autoincrement," +
 						"user_id INTEGER NOT NULL UNIQUE," +
+						"user_phone INTEGER NOT NULL," +
 						"user_name TEXT NOT NULL," +
 						"password TEXT NOT NULL," +
 						"login_time INTEGER," +
@@ -56,6 +58,8 @@ class UserInfoSQLite{
 	 * @param user_id String
 	 * @param password String
 	 * @return token_key, String
+	 *
+	 *
 	 */
 	static String[] goLogin(String user_id,String password) {
 		try{
@@ -69,7 +73,10 @@ class UserInfoSQLite{
 				user_info[1]=resultSet.getString("user_name");
 				user_info[2]=MyTools.createANewTokenKey();
 				user_info[3]=MyTools.getCurrentTime()+"";
-				String UPDATE_INFO_SQL="update user_info set "+"token_key='"+user_info[2]+"', "+"login_time="+user_info[3]+" "+"where user_id="+user_id+";";
+				String UPDATE_INFO_SQL="update user_info set "+
+										"token_key='"+user_info[2]+"', "+
+										"login_time="+user_info[3]+" "+
+										"where user_id="+user_id+";";
 				statement.executeUpdate(UPDATE_INFO_SQL);
 				resultSet.close();
 				statement.close();
@@ -142,18 +149,20 @@ class UserInfoSQLite{
 	
 	/**
 	 * Add a new user into user_info
-	 * @param user_id integer, user_id
+	 * @param user_id string, user_id
+	 * @param user_phone string user's phone
 	 * @param user_name String, user_name
 	 * @param password String, user password
 	 */
-	static void addNewUser(String user_id,String user_name,String password){
+	static boolean addNewUser(String user_id,String user_phone,String user_name,String password){
 		try{
 			Connection connection=getConnection();
 			Statement statement=connection.createStatement();
 			String ADD_NEW_USER_SQL="insert into user_info "+
-					"(user_index,user_id,user_name,password,login_time,token_key) "+
+					"(user_index,user_id,user_phone,user_name,password,login_time,token_key) "+
 					"values (null,"+
-					user_id+","+
+					user_id+"," +
+					user_phone+","+
 					"'"+user_name+"',"+
 					"'"+password+"',"+
 					MyTools.getCurrentTime()+","+
@@ -162,8 +171,10 @@ class UserInfoSQLite{
 			statement.executeUpdate(ADD_NEW_USER_SQL);
 			statement.close();
 			connection.close();
+			return true;
 		}catch(SQLException|ClassNotFoundException e){
 			e.printStackTrace();
+			return false;
 		}
 	}
 	
@@ -199,7 +210,7 @@ class UserInfoSQLite{
 	}
 	
 	/**
-	 * Fetch all users information.
+	 * Fetch all users information. note: max number is 50
 	 * @return return a String[50][6]
 	 */
 	static String[][] fetchAllUsersInfo(){
@@ -210,7 +221,7 @@ class UserInfoSQLite{
 			ResultSet resultSet=statement.executeQuery(QUERY_SQL);
 			String[][] allUsersInfo=new String[50][6];
 			int index=0;
-			while(resultSet.next()){
+			while(resultSet.next() && index<50){
 				allUsersInfo[index][0]=resultSet.getInt("user_index")+"";
 				allUsersInfo[index][1]=resultSet.getInt("user_id")+"";
 				allUsersInfo[index][2]=resultSet.getString("user_name");

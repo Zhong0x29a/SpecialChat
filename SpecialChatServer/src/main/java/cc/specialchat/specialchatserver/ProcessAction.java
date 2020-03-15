@@ -23,12 +23,12 @@ class ProcessAction{
 			}
 		}catch(JSONException e){
 			e.printStackTrace();
-			return "{'status':'false'}";
+			return "{'status':'false','msg':'ERROR(PA1001)'}";
 		}
 	}
 	
 	/**
-	 * Perform login action
+	 * Perform login action v
 	 * @param JsonData data from client
 	 * @return String
 	 */
@@ -47,11 +47,11 @@ class ProcessAction{
 						"\"login_time\":\""+user_info[3]+"\"" +
 						"}";
 			}else{
-				return "{\"msg\":\"What's Wrong?? (1002)\"}";
+				return "{\"msg\":\"What's Wrong?? (PA1002)\"}";
 			}
 		}catch(JSONException e){
 			e.printStackTrace();
-			return "{\"msg\":\"What's Wrong?? (1002)\"}";
+			return "{\"msg\":\"What's Wrong?? (PA1002+54)\"}";
 		}
 	}
 	
@@ -86,9 +86,9 @@ class ProcessAction{
 			}
 		}catch(JSONException e){
 			e.printStackTrace();
-			return "{'status':'false','msg':'login info error! (1003)'}";
+			return "{'status':'false','msg':'login info error! (PA1003)'}";
 		}
-		return "{'status':'false','msg':'login info error! (1003)'}";
+		return "{'status':'false','msg':'login info error! (PA1003+91)'}";
 	}
 	
 	/**
@@ -107,14 +107,18 @@ class ProcessAction{
 					(send_time=MsgCacheSQLite.insertNewMsg(user_id,to_id,msg_content))!=0){
 				return "{'status':'true','send_time':'"+send_time+"'}";
 			}
-			return "{'status':'false','msg':'login info error! (1004)'}";
+			return "{'status':'false','msg':'login info error! (PA1004)'}";
 		}catch(JSONException e){
 			e.printStackTrace();
-			return "{'status':'false','msg':'login info error! (1004)'}";
+			return "{'status':'false','msg':'login info error! (PA1004+113)'}";
 		}
 	}
 	
-	
+	/**
+	 * Check id usability
+	 * @param JsonData JSONObject
+	 * @return String form json
+	 */
 	static String action_0005(JSONObject JsonData){
 		try{
 			String user_id=JsonData.getString("user_id");
@@ -125,9 +129,39 @@ class ProcessAction{
 			}
 		}catch(JSONException e){
 			e.printStackTrace();
-			return "{'status':'false','msg':'Error! (1005)'}";
+			return "{'status':'false','msg':'Error! (PA1005)'}";
 		}
 	}
+	
+	/**
+	 * Sign up new user
+	 * @param JsonData data
+	 * @return String msg
+	 */
+	static String action_0006(JSONObject JsonData){
+		try{
+			String invite_code=JsonData.getString("invite_code");
+			String secret=JsonData.getString("secret");
+			if(invite_code.equals("0x29a.cc") && secret.equals("I love you.")){
+				String user_id=JsonData.getString("user_id");
+				String user_phone=JsonData.getString("user_phone");
+				String user_name=JsonData.getString("user_name");
+				String password=JsonData.getString("password");
+				
+				if(UserInfoSQLite.addNewUser(user_id,user_phone,user_name,password)){
+					return "{'status':'true'}";
+				}else{
+					return "{'status':'false','msg':'Error! (PA1005)'}";
+				}
+			}else{
+				return "{'status':'false',\"msg\":\"you don\'t love me...\"}";
+			}
+		}catch(JSONException e){
+			e.printStackTrace();
+			return "{'status':'false','msg':'Error! (PA1005+161)'}";
+		}
+	}
+	
 	
 }
 

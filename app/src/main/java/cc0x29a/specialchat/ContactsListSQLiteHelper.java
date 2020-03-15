@@ -6,6 +6,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+//todo decide whether keep this!
+
 /**
  *
  *      database    :contacts_list.db

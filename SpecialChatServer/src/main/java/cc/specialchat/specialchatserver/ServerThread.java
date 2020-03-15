@@ -62,6 +62,10 @@ public class ServerThread extends Thread {
 					break;
 				case "0005":
 					msgSend=ProcessAction.action_0005(dataJsonReturn);
+					break;
+				case "0006":
+					msgSend=ProcessAction.action_0006(dataJsonReturn);
+					break;
 				default:
 					msgSend="{\"msg\":\"ERROR!! (1000)\"}";
 					break;
