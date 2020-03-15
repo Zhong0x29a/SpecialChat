@@ -58,4 +58,13 @@
         android:paddingVertical="3dp"
         android:paddingHorizontal="9dp"/>
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/set_button_selector"
+        android:layout_marginVertical="20dp"
+        android:layout_marginHorizontal="88dp"
+        android:text="Add"
+        android:id="@+id/btn_add_or_chat"/>
+
 </LinearLayout>

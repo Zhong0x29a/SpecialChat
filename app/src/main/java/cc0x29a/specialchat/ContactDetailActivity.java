@@ -10,6 +10,6 @@ public class ContactDetailActivity extends AppCompatActivity{
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_contacts_detail);
-		//todo: complete.
+		//todo: fetch detail
 	}
 }
