@@ -21,19 +21,17 @@ class MyTools{
 		if(toBeFilter!=null && (!toBeFilter.isEmpty())){
 			return toBeFilter.replaceAll("\"","&#34;")
 					.replaceAll("'","&#39;")
-					.replaceAll("&","&#38;")
 					.replaceAll(" ","&#32;")
 					.replaceAll("%","&#37;")
 					.replaceAll("\\(","&#40;")
 					.replaceAll("\\)","&#41;")
 					.replaceAll("\\{","&#123;")
-					.replaceAll("}","&#123;")
+					.replaceAll("\\}","&#123;")
 					.replaceAll("\\*","&#42;")
 					.replaceAll("/","&#47;")
 					.replaceAll("\\\\","&#92;")
 					.replaceAll("\\.","&#46;")
 					.replaceAll(",","&#44;")
-					.replaceAll("#","&#35;")
 					.replaceAll("!","&#33;");
 		}else{
 			return "";
@@ -49,19 +47,17 @@ class MyTools{
 		if(toBeResolved!=null && (!toBeResolved.isEmpty())){
 			return toBeResolved.replaceAll("&#34;","\"")
 					.replaceAll("&#39;","'")
-					.replaceAll("&#38;","&")
 					.replaceAll("&#32;"," ")
 					.replaceAll("&#37;","%")
-					.replaceAll("&#40;","\\(")
-					.replaceAll("&#41;","\\)")
-					.replaceAll("&#123;","\\{")
+					.replaceAll("&#40;","(")
+					.replaceAll("&#41;",")")
+					.replaceAll("&#123;","{")
 					.replaceAll("&#123;","}")
-					.replaceAll("&#42;","\\*")
+					.replaceAll("&#42;","*")
 					.replaceAll("&#47;","/")
-					.replaceAll("&#92;","\\\\")
-					.replaceAll("&#46;","\\.")
+					.replaceAll("&#92;","\\")
+					.replaceAll("&#46;",".")
 					.replaceAll("&#44;",",")
-					.replaceAll("&#35;","#")
 					.replaceAll("&#33;","!");
 		}else{
 			return "";

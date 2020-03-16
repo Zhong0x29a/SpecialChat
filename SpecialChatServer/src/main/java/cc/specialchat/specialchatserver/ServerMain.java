@@ -3,14 +3,13 @@ package cc.specialchat.specialchatserver;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-
-import static java.lang.System.exit;
+import java.sql.SQLException;
 
 public class ServerMain{
 	
-	public static void main(String[] args){
+	public static void main(String[] args) throws SQLException, ClassNotFoundException{
 		// test code.
-		
+//		MsgCacheSQLite.init();
 //		exit(0);
 		// start program.
 		try{

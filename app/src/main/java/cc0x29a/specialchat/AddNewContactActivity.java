@@ -1,10 +1,10 @@
 package cc0x29a.specialchat;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 
-public class FindNewFriendsActivity extends AppCompatActivity{
+import androidx.appcompat.app.AppCompatActivity;
+
+public class AddNewContactActivity extends AppCompatActivity{
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){

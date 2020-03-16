@@ -8,8 +8,6 @@ package cc0x29a.specialchat;
  
   **/
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,9 +19,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,6 +51,8 @@ public class MainActivity extends AppCompatActivity{
 //			ChatListSQLiteHelper c=new ChatListSQLiteHelper(this,"chat_list.db",1);
 //			c.insertNewChatListItem(c.getReadableDatabase(),MyTools.getRandomNum(1000000,9999),"Cube.",12322213);
 //		}
+//		ContactsListSQLiteHelper c=new ContactsListSQLiteHelper(MainActivity.this,"contacts_list.db",1);
+//		c.insertNewContact(c.getReadableDatabase(),"12332112","Apple","Ha pi");
 //		exit(0);
 		//test code
 		
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity{
 	@Override
 	protected void onStart(){
 		super.onStart();
-		//redirect(); //todo resume
+		 redirect(); //todo resume
 	}
 	
 	@Override
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity{
 		return super.onCreateOptionsMenu(menu);
 	}
 	
-	//todo complete this
+	// action menu
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -98,6 +99,10 @@ public class MainActivity extends AppCompatActivity{
 				return true;
 			case R.id.app_bar_settings:
 				Toast.makeText(this,"Settings",Toast.LENGTH_SHORT).show();
+				return true;
+			case R.id.app_bar_login:
+				startActivity(new Intent(MainActivity.this,LoginActivity.class));
+//				finish();
 				return true;
 			case R.id.app_bar_about:
 				Toast.makeText(this,"Special Chat-1.0! \n" +
@@ -462,6 +467,11 @@ public class MainActivity extends AppCompatActivity{
 		}else{
 			return 3;
 		}
+	}
+	
+	// TODO: 16/03/20 finish this.
+	private int syncContactsList(){
+		return 0;
 	}
 	
 	/**

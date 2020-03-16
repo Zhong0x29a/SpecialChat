@@ -34,7 +34,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/main_contacts"
-                android:visibility="gone">
+                android:visibility="gone"
+                android:orientation="vertical">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -52,7 +53,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/main_moments"
-                android:visibility="gone">
+                android:visibility="gone"
+                android:orientation="vertical">
                 <!-- todo: complete this. (next ver.) -->
                 <TextView
                     android:layout_width="wrap_content"
@@ -67,7 +69,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/main_me"
-                android:visibility="gone">
+                android:visibility="gone"
+                android:orientation="vertical">
                 <!-- todo: complete this. -->
                 <TextView
                     android:layout_width="wrap_content"

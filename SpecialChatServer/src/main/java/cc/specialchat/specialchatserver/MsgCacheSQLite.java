@@ -32,7 +32,7 @@ class MsgCacheSQLite{
 	 * @throws SQLException ...
 	 * @throws ClassNotFoundException ...
 	 */
-	void init() throws SQLException, ClassNotFoundException{
+	static void init() throws SQLException, ClassNotFoundException{
 		Connection connection=getConnection();
 		Statement statement=connection.createStatement();
 		String CREATE_TABLE_SQL=

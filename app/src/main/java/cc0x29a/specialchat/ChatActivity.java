@@ -1,15 +1,15 @@
 package cc0x29a.specialchat;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,7 +52,7 @@ public class ChatActivity extends AppCompatActivity{
 			layoutManager.setReverseLayout(true);
 			
 		}else{
-			Toast.makeText(ChatActivity.this,"ERROR! (...)",Toast.LENGTH_LONG).show();
+			Toast.makeText(ChatActivity.this,"ERROR! (CA55)",Toast.LENGTH_LONG).show();
 			finish();
 		}
 		
@@ -72,18 +72,18 @@ public class ChatActivity extends AppCompatActivity{
 			public void onClick(View v){
 				try{
 					SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
-					String my_id=preferences.getString("use_id",null);
-					String token_key=preferences.getString("token_kay",null);
+					String my_id=preferences.getString("user_id",null);
+					String token_key=preferences.getString("token_key",null);
 					
 					EditText editText=findViewById(R.id.chat_EditText);
 					String msg_content=MyTools.filterSpecialChar(editText.getText().toString());
 					
-					if(msg_content.equals("")){
+					if(msg_content.equals("") || msg_content.equals("&#32;")){
 						Toast.makeText(ChatActivity.this,"Cannot send empty message.",Toast.LENGTH_SHORT).show();
 						return;
 					}
 					
-					if(my_id!=null&&token_key!=null){
+					if(my_id!=null && token_key!=null){
 						String dataToSend="{" +
 								"'client':'SCC-1.0'," +
 								"'action':'0004'," +
@@ -108,14 +108,14 @@ public class ChatActivity extends AppCompatActivity{
 						}else if( data.getString("status").equals("false") ){
 							Toast.makeText(ChatActivity.this,"Something wrong!",Toast.LENGTH_SHORT).show();
 						}else{
-							Toast.makeText(ChatActivity.this,"Unknown error! (CA104)",Toast.LENGTH_SHORT).show();
+							Toast.makeText(ChatActivity.this,"Unknown error! (CA111)",Toast.LENGTH_SHORT).show();
 						}
 					}else{
 						Toast.makeText(ChatActivity.this,"Bad login info! ",Toast.LENGTH_SHORT).show();
 					}
 				}catch(JSONException|NullPointerException e){
 					e.printStackTrace();
-					Toast.makeText(ChatActivity.this,"Unknown error! (CA0004)",Toast.LENGTH_SHORT).show();
+					Toast.makeText(ChatActivity.this,"Unknown error! (CA1004)",Toast.LENGTH_SHORT).show();
 				}
 				
 			}

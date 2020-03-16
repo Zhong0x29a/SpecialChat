@@ -23,7 +23,7 @@
             android:launchMode="singleTask"
             android:label="Sign up"/>
         <activity android:name=".ContactDetailActivity" />
-        <activity android:name=".FindNewFriendsActivity" />
+        <activity android:name=".AddNewContactActivity" />
         <activity
             android:name=".ChatActivity"
             android:label="Chat"/>
