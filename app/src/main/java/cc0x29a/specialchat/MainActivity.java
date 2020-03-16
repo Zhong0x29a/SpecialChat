@@ -2,9 +2,12 @@ package cc0x29a.specialchat;
 
 /*
 
-  author:  Zhong Wenliang
-  mail:    cuberwenliang@163.com
-  date:    March, 2020
+  author:       Zhong Wenliang
+  mail:         CuberWenliang@163.com
+  start date:   March, 2020
+ 
+ MainActivity.class
+ 
  
   **/
 
@@ -43,8 +46,12 @@ public class MainActivity extends AppCompatActivity{
 		// todo: this can set a lunch page !!
 		setContentView(R.layout.activity_main);
 		
+		// This would run at the very first lunch.
 		welcomePage();
+		
+		
 		//test code
+		
 //		MsgSQLiteHelper h=new MsgSQLiteHelper(this,"msg_1123592075.db",1);
 //		for(int i=1;i<=123;i++){
 //			h.insertNewMsg(h.getReadableDatabase(),1123592075+"",i+"",i+" I love you.");
@@ -56,6 +63,7 @@ public class MainActivity extends AppCompatActivity{
 //		String[][] a=new String[][]{{"a","b","a","s"},{"a","b","c"},{"a","b","c"}};
 //		System.out.println(a.length);
 //		finish();
+		
 		//test code
 		
 		init();

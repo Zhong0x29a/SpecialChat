@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 /*
  * Adapter for R.id.chatWindow_listView.
  * To show chat records
+ * No more bugs !!!
  */
 
 public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH>{
@@ -44,10 +45,10 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 			return;
 		}
 		
-		String[][] tempRecord=new String[messages.length+Integer.parseInt(newRecord[0][0])-1][5];
+		String[][] tempRecord=new String[messages.length+Integer.parseInt(newRecord[0][0])][5];
 		System.arraycopy(messages,0,tempRecord,0,messages.length);
 		int index=1;
-		for(int i=messages.length;i<=messages.length+Integer.parseInt(newRecord[0][0])-2;i++){
+		for(int i=messages.length;i<=messages.length+Integer.parseInt(newRecord[0][0])-1;i++){
 			tempRecord[i]=newRecord[index];
 			index++;
 		}
@@ -58,7 +59,7 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 	}
 	
 	@Override
-	public void onBindViewHolder(VH holder, int position) {
+	public void onBindViewHolder(@NotNull VH holder,final int position) {
 		final int index=position+1;
 		if(position>=messages.length-1){
 			return;
@@ -74,7 +75,7 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 		holder.chat_msg_container.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// nothing.
+				// nothing to do here.
 			}
 		});
 		holder.chat_msg_container.setOnLongClickListener(new View.OnLongClickListener(){
@@ -82,17 +83,20 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 			public boolean onLongClick(final View v){
 				AlertDialog alertDialog2 = new AlertDialog.Builder(v.getContext())
 						.setTitle("Notices")
-						.setMessage("Sure to delete this message? \n'"+messages[index][4]+"'")
+						.setMessage("Sure to delete this message? \n'"+messages[index][4]+"'\n"+position)
 						.setPositiveButton("Yeah", new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialogInterface, int i) {
-								//todo delete the message! by index
+								//todo delete the message! by index !
+								
 								Toast.makeText(v.getContext(), "Deleted", Toast.LENGTH_SHORT).show();
 							}
 						})
 						.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 							@Override
-							public void onClick(DialogInterface dialogInterface, int i) {}
+							public void onClick(DialogInterface dialogInterface, int i){
+								// nothing to do here.
+							}
 						})
 						.create();
 				alertDialog2.show();

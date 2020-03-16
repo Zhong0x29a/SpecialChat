@@ -95,7 +95,6 @@ public class ChatActivity extends AppCompatActivity{
 					
 					if (newState == RecyclerView.SCROLL_STATE_IDLE) {
 						if (lastVisibleItemPosition == totalItemCount - 1){
-							//todo at top, load more history
 							
 							history_position=history_position+50;
 							
