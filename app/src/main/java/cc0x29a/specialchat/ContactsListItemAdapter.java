@@ -55,16 +55,15 @@ public class ContactsListItemAdapter extends BaseAdapter{
 			holder = (ViewHolder) convertView.getTag();
 		}
 		
-		// todo: Seemed need to optimised
-		if(!(this.contactsInfo[position][2]==null || this.contactsInfo[position][2].isEmpty())){
+		if( ! (this.contactsInfo[position][2]==null || this.contactsInfo[position][2].isEmpty())){
 			holder.nickname.setText(MyTools.resolveSpecialChar(this.contactsInfo[position][2]));
-		}else if(!(this.contactsInfo[position][1]==null || this.contactsInfo[position][1].isEmpty())){
+		}else if( ! (this.contactsInfo[position][1]==null || this.contactsInfo[position][1].isEmpty())){
 			holder.nickname.setText(MyTools.resolveSpecialChar(this.contactsInfo[position][1]));
 		}else{
 			holder.nickname.setText(MyTools.resolveSpecialChar(this.contactsInfo[position][0]));
 		}
 		
-		//todo: next ver load user's profile picture
+		//next ver load user's profile picture
 		holder.profile_pic.setImageResource(R.drawable.ic_launcher_background);
 		return convertView;
 	}

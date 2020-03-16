@@ -52,18 +52,17 @@ public class MainActivity extends AppCompatActivity{
 //			c.insertNewChatListItem(c.getReadableDatabase(),MyTools.getRandomNum(1000000,9999),"Cube.",12322213);
 //		}
 //		ContactsListSQLiteHelper c=new ContactsListSQLiteHelper(MainActivity.this,"contacts_list.db",1);
-//		c.insertNewContact(c.getReadableDatabase(),"12332112","Apple","Ha pi");
+//		c.insertNewContact(c.getReadableDatabase(),"1123592075","Apple2","Haaaa pi","13360417480");
 //		exit(0);
 		//test code
 		
 		init();
 	}
 	
-	// todo： this still empty
 	@Override
 	protected void onStart(){
 		super.onStart();
-		 redirect(); //todo resume
+		 redirect();
 	}
 	
 	@Override
@@ -78,7 +77,7 @@ public class MainActivity extends AppCompatActivity{
 		cancelRefreshTimers();
 	}
 	
-	//todo
+	// set menu.
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater=getMenuInflater();
@@ -86,7 +85,7 @@ public class MainActivity extends AppCompatActivity{
 		return super.onCreateOptionsMenu(menu);
 	}
 	
-	// action menu
+	// action menu.
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -114,7 +113,7 @@ public class MainActivity extends AppCompatActivity{
 		}
 	}
 	
-	// todo : edit the text on the right->    next method -> normalMode()
+	// whether redirect to login
 	private void redirect(){
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 		if(preferences.getInt("is_login",0)!=1){
@@ -189,7 +188,7 @@ public class MainActivity extends AppCompatActivity{
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.VISIBLE);
 					findViewById(R.id.main_me).setVisibility(View.GONE);
-					//todo load moments
+					// next ver
 				}
 			});
 			findViewById(R.id.menu_btn_me).setOnClickListener(new View.OnClickListener(){
@@ -199,7 +198,7 @@ public class MainActivity extends AppCompatActivity{
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.GONE);
 					findViewById(R.id.main_me).setVisibility(View.VISIBLE);
-					//todo load 'me'
+					// next ver
 				}
 			});
 		}
@@ -266,6 +265,7 @@ public class MainActivity extends AppCompatActivity{
 		loadChatList();
 	}
 	
+	//todo optimise perform!!
 	/**
 	 * Load Chat list ListView by Adapter
 	 * */
@@ -285,11 +285,11 @@ public class MainActivity extends AppCompatActivity{
 					final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase(),0);
 					
 					// Fetch last one message.
-					String[] lastMsg=new String[51]; // <--todo here
+					String[] lastMsg=new String[51];
 					for(int i=1;i<= (Integer.parseInt(chatList[0][0])) && i<=50;i++){
 						MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(MainActivity.this,
 								"msg_"+chatList[i][1]+".db",1);
-						lastMsg[i]=msgSQLiteHelper.getLastMsg(msgSQLiteHelper.getReadableDatabase());
+						lastMsg[i]=msgSQLiteHelper.getLatestMsg(msgSQLiteHelper.getReadableDatabase());
 					}
 					
 					ChatListItemAdapter cli_adapter=new ChatListItemAdapter(MainActivity.this);
@@ -320,7 +320,7 @@ public class MainActivity extends AppCompatActivity{
 							final int finalPosition=position;
 							AlertDialog alertDialog2 = new AlertDialog.Builder(MainActivity.this)
 									.setTitle("Notices")
-									.setMessage("Sure to delete this chat? \n'"+position+"'")
+									.setMessage("Sure to delete this chat? \n'"+chatList[position][1]+"'")
 									.setPositiveButton("Yeah", new DialogInterface.OnClickListener() {
 										@Override
 										public void onClick(DialogInterface dialogInterface, int i) {
@@ -378,6 +378,22 @@ public class MainActivity extends AppCompatActivity{
 						public boolean onItemLongClick(AdapterView<?> parent,View view,int position,long id){
 							position++;
 							// todo: at next ver. , add new function here. (a little menu?)
+							AlertDialog alertDialog2 = new AlertDialog.Builder(MainActivity.this)
+									.setTitle("Notices")
+									.setMessage("Sure to delete this contact? \n'"+contactsList[position][0]+"'")
+									.setPositiveButton("Yeah", new DialogInterface.OnClickListener() {
+										@Override
+										public void onClick(DialogInterface dialogInterface, int i) {
+											//todo delete the item! by index
+											Toast.makeText(MainActivity.this, "Deleted", Toast.LENGTH_SHORT).show();
+										}
+									})
+									.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+										@Override
+										public void onClick(DialogInterface dialogInterface, int i) {}
+									})
+									.create();
+							alertDialog2.show();
 							return true;
 						}
 					});

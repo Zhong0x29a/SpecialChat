@@ -2,6 +2,7 @@ package cc0x29a.specialchat;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -41,24 +42,28 @@ public class MsgSQLiteHelper extends SQLiteOpenHelper{
 	 * @return String[][] record
 	 */
 	String[][] getChatRecord(@NotNull SQLiteDatabase db,int position){
-		String[][] record=new String[21][5];
+		String[][] record=new String[51][5];
 		int index=0;
-		Cursor cursor=db.query("msg",
-				new String[]{"msg_index","msg_by","is_read","send_time","msg_content"},
-				null,null,null,null,
-				"msg_index desc");
-		if(cursor.moveToPosition(position)){
-			do{
+		try{
+			Cursor cursor=db.query("msg",
+					new String[]{"msg_index","msg_by","is_read","send_time","msg_content"},
+					null,null,null,null,
+					"msg_index desc");
+			
+			while(index < 50 && cursor.moveToNext()){
 				index++;
 				record[index][0]=cursor.getInt(cursor.getColumnIndex("msg_index"))+"";
 				record[index][1]=cursor.getInt(cursor.getColumnIndex("msg_by"))+"";
 				record[index][2]=cursor.getInt(cursor.getColumnIndex("is_read"))+"";
 				record[index][3]=cursor.getInt(cursor.getColumnIndex("send_time"))+"";
 				record[index][4]=MyTools.resolveSpecialChar(cursor.getString(cursor.getColumnIndex("msg_content")));
-			}while(index < 20 && cursor.moveToNext());
+			};
+		
+			cursor.close();
+		}catch(SQLException e){
+			e.printStackTrace();
 		}
-		cursor.close();
-		record[0][0]=index+"";
+		record[0][0]=(index)+"";
 		return record;
 	}
 	
@@ -83,11 +88,11 @@ public class MsgSQLiteHelper extends SQLiteOpenHelper{
 	}
 	
 	/**
-	 * Fetch last message
+	 * Fetch latest one message
 	 * @param db SQLiteDatabase
 	 * @return a String
 	 */
-	String getLastMsg(@NotNull SQLiteDatabase db){
+	String getLatestMsg(@NotNull SQLiteDatabase db){
 		Cursor cursor=db.query("msg",
 				new String[]{"msg_content"},
 				null,null,null,null,
