@@ -38,9 +38,31 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 		this.messages = data;
 	}
 	
+	void addData(String[][] newRecord) {
+		
+		if(Integer.parseInt(newRecord[0][0])==0){
+			return;
+		}
+		
+		String[][] tempRecord=new String[messages.length+Integer.parseInt(newRecord[0][0])-1][5];
+		System.arraycopy(messages,0,tempRecord,0,messages.length);
+		int index=1;
+		for(int i=messages.length;i<=messages.length+Integer.parseInt(newRecord[0][0])-2;i++){
+			tempRecord[i]=newRecord[index];
+			index++;
+		}
+		messages=tempRecord;
+		count=count+Integer.parseInt(newRecord[0][0]);
+//		notifyItemInserted(Integer.parseInt(newRecord[0][0])-1);
+		notifyDataSetChanged();
+	}
+	
 	@Override
 	public void onBindViewHolder(VH holder, int position) {
 		final int index=position+1;
+		if(position>=messages.length-1){
+			return;
+		}
 		holder.chat_msg_tv.setText(messages[index][4]);
 		if(messages[index][1]!=null && messages[index][1].equals(my_id)){
 			holder.chat_msg_container.setGravity(Gravity.END);

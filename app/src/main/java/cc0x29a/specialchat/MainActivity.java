@@ -45,15 +45,17 @@ public class MainActivity extends AppCompatActivity{
 		
 		welcomePage();
 		//test code
-//		for(int i=1;i<=30;i++ ){
-////			MsgSQLiteHelper h=new MsgSQLiteHelper(this,"msg_1123592075.db",1);
-////			h.insertNewMsg(h.getReadableDatabase(),1123592075,12300+i,i+" I love you so...but...");
+//		MsgSQLiteHelper h=new MsgSQLiteHelper(this,"msg_1123592075.db",1);
+//		for(int i=1;i<=123;i++){
+//			h.insertNewMsg(h.getReadableDatabase(),1123592075+"",i+"",i+" I love you.");
 //			ChatListSQLiteHelper c=new ChatListSQLiteHelper(this,"chat_list.db",1);
 //			c.insertNewChatListItem(c.getReadableDatabase(),MyTools.getRandomNum(1000000,9999),"Cube.",12322213);
 //		}
 //		ContactsListSQLiteHelper c=new ContactsListSQLiteHelper(MainActivity.this,"contacts_list.db",1);
 //		c.insertNewContact(c.getReadableDatabase(),"1123592075","Apple2","Haaaa pi","13360417480");
-//		exit(0);
+//		String[][] a=new String[][]{{"a","b","a","s"},{"a","b","c"},{"a","b","c"}};
+//		System.out.println(a.length);
+//		finish();
 		//test code
 		
 		init();
@@ -307,8 +309,10 @@ public class MainActivity extends AppCompatActivity{
 							Intent intent=new Intent(MainActivity.this,ChatActivity.class);
 							Bundle bundle=new Bundle();
 							bundle.putString("user_id", chatList[position][1]);
+							bundle.putString("nickname",chatList[position][2]);
 							intent.putExtras(bundle);
 							startActivity(intent);
+							cancelRefreshTimers();
 						}
 					});
 					

@@ -36,9 +36,9 @@ public class MsgSQLiteHelper extends SQLiteOpenHelper{
 	}
 	
 	/**
-	 * Get chat record, 20 pieces is max each time.
+	 * Get chat record, 50 pieces is max each time.
 	 * @param db , the database.
-	 * @param position , count start from 0, so it should be 20*n (n>=0).
+	 * @param position , count start from 0, so it should be 50*n (n>=0).
 	 * @return String[][] record
 	 */
 	String[][] getChatRecord(@NotNull SQLiteDatabase db,int position){
@@ -50,14 +50,17 @@ public class MsgSQLiteHelper extends SQLiteOpenHelper{
 					null,null,null,null,
 					"msg_index desc");
 			
-			while(index < 50 && cursor.moveToNext()){
-				index++;
-				record[index][0]=cursor.getInt(cursor.getColumnIndex("msg_index"))+"";
-				record[index][1]=cursor.getInt(cursor.getColumnIndex("msg_by"))+"";
-				record[index][2]=cursor.getInt(cursor.getColumnIndex("is_read"))+"";
-				record[index][3]=cursor.getInt(cursor.getColumnIndex("send_time"))+"";
-				record[index][4]=MyTools.resolveSpecialChar(cursor.getString(cursor.getColumnIndex("msg_content")));
-			};
+			if(cursor.moveToPosition(position)){
+				do{
+					index++;
+					record[index][0]=cursor.getInt(cursor.getColumnIndex("msg_index"))+"";
+					record[index][1]=cursor.getInt(cursor.getColumnIndex("msg_by"))+"";
+					record[index][2]=cursor.getInt(cursor.getColumnIndex("is_read"))+"";
+					record[index][3]=cursor.getInt(cursor.getColumnIndex("send_time"))+"";
+					record[index][4]=MyTools.resolveSpecialChar(cursor.getString(cursor.getColumnIndex("msg_content")));
+				}while(index < 50 && cursor.moveToNext());
+			}
+			
 		
 			cursor.close();
 		}catch(SQLException e){
@@ -84,7 +87,11 @@ public class MsgSQLiteHelper extends SQLiteOpenHelper{
 						send_time+"," +
 						"'"+msg_content+"'" +
 						")";
-		db.execSQL(INSERT_NEW_MSG_SQL);
+		try{
+			db.execSQL(INSERT_NEW_MSG_SQL);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
 	}
 	
 	/**

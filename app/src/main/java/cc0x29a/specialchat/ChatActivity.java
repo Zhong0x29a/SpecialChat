@@ -19,42 +19,16 @@ public class ChatActivity extends AppCompatActivity{
 	// this activity lunch mode need to be update! or will cause a little bug!
 	
 	static String ta_id;
+	static String nickname;
+	
+	static int history_position=0;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_chat);
-		
-		Bundle bundle = this.getIntent().getExtras();
-		
-		ta_id= (bundle != null) ? bundle.getString("user_id") : null;
-		
-		if(ta_id!= null && !ta_id.equals("")){
-			// todo: now can only fetch 20 pieces of messages!! need to complete.
-			MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,
-					"msg_"+ta_id+".db",1);
-			//			MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,
-			//					"msg_2950.db",1);
-			String[][] record=msgSQLiteHelper.getChatRecord(msgSQLiteHelper.getReadableDatabase(),0); //position start from 0
-			
-			SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
-			String my_id=preferences.getString("user_id",null);
-			
-			RecyclerView recyclerView=findViewById(R.id.chatWindow_recyclerView);
-			LinearLayoutManager layoutManager=new LinearLayoutManager(this);
-			recyclerView.setLayoutManager(layoutManager);
-			
-			ChatWindowAdapter adapter=new ChatWindowAdapter(record);
-			adapter.count=Integer.parseInt(record[0][0]);
-			adapter.my_id=my_id;
-			recyclerView.setAdapter(adapter);
-			recyclerView.setItemAnimator(new DefaultItemAnimator());
-			
-			layoutManager.setReverseLayout(true);
-			
-		}else{
-			Toast.makeText(ChatActivity.this,"ERROR! (CA55)",Toast.LENGTH_LONG).show();
-			finish();
-		}
+//		this.setTitle("aa");
+	
 		
 	}
 	
@@ -62,6 +36,98 @@ public class ChatActivity extends AppCompatActivity{
 	protected void onStart(){
 		super.onStart();
 		init();
+		
+		history_position=0;
+		
+		Bundle bundle = this.getIntent().getExtras();
+		
+		ta_id= (bundle != null) ? bundle.getString("user_id") : null;
+		nickname= (bundle != null) ? bundle.getString("nickname") : null;
+		
+		if(nickname!=null){
+			this.setTitle(nickname);
+		}
+		
+		if(ta_id!= null && !ta_id.equals("")){
+			MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,
+					"msg_"+ta_id+".db",1);
+			String[][] record=msgSQLiteHelper.getChatRecord(msgSQLiteHelper.getReadableDatabase(),history_position); //position start from 0
+			
+			SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
+			String my_id=preferences.getString("user_id",null);
+			
+			final RecyclerView recordRecyclerView=findViewById(R.id.chatWindow_recyclerView);
+			LinearLayoutManager layoutManager=new LinearLayoutManager(this);
+			recordRecyclerView.setLayoutManager(layoutManager);
+			
+			final ChatWindowAdapter adapter=new ChatWindowAdapter(record);
+			adapter.count=Integer.parseInt(record[0][0]);
+			adapter.my_id=my_id;
+			recordRecyclerView.setAdapter(adapter);
+			recordRecyclerView.setItemAnimator(new DefaultItemAnimator());
+			
+			layoutManager.setReverseLayout(true);
+			
+			
+			recordRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+				private int lastVisibleItemPosition;
+				private int firstVisibleItemPosition;
+				
+				@Override
+				public void onScrolled(RecyclerView recyclerView, int dx, int dy){
+					super.onScrolled(recyclerView, dx, dy);
+					
+					RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+					if (layoutManager instanceof LinearLayoutManager) {
+						lastVisibleItemPosition = ((LinearLayoutManager) layoutManager)
+								.findLastVisibleItemPosition();
+						firstVisibleItemPosition = ((LinearLayoutManager) layoutManager)
+								.findFirstVisibleItemPosition();
+					}
+				}
+				
+				@Override
+				public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+					super.onScrollStateChanged(recyclerView, newState);
+					RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+					
+					int totalItemCount = layoutManager.getItemCount();
+					
+					if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+						if (lastVisibleItemPosition == totalItemCount - 1){
+							//todo at top, load more history
+							
+							history_position=history_position+50;
+							
+							MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,
+									"msg_"+ta_id+".db",1);
+							String[][] record=msgSQLiteHelper.getChatRecord(msgSQLiteHelper.getReadableDatabase(),history_position);
+							if(Integer.parseInt(record[0][0])==0){
+								Toast.makeText(ChatActivity.this,"No more! ",Toast.LENGTH_SHORT).show();
+							}else{
+								adapter.addData(record);
+							}
+						} else if (firstVisibleItemPosition == 0) {
+							//at bottom
+						}
+					}
+				}
+			});
+			
+			
+			
+			
+		}else{
+			Toast.makeText(ChatActivity.this,"ERROR! (CA55)",Toast.LENGTH_LONG).show();
+			finish();
+		}
+		
+		
+	}
+	
+	@Override
+	protected void onStop(){
+		super.onStop();
 	}
 	
 	private void init(){
