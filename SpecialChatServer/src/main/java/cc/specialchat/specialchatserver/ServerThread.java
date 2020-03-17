@@ -68,6 +68,10 @@ public class ServerThread extends Thread {
 					break;
 				case "0007": // add new contact
 					msgSend=ProcessAction.action_0007(dataJsonReturn);
+					break;
+				case "0008": // fetch contact info.
+					msgSend=ProcessAction.action_0008(dataJsonReturn);
+					break;
 				default:
 					msgSend="{\"msg\":\"ERROR!! (1000)\"}";
 					break;

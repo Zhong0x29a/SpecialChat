@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
+ * User Info. SQLite Manager
+ *
  * Database:    user_info.db
  * table:       user_info
  * columns:
@@ -22,6 +24,7 @@ import java.sql.Statement;
 
 class UserInfoSQLite{
 	
+	// Create a SQLite connection.
 	private static Connection getConnection() throws SQLException, ClassNotFoundException{
 		Class.forName("org.sqlite.JDBC");
 		//c.setAutoCommit(false);

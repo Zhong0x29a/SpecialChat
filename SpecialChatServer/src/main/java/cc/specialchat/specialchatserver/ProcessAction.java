@@ -160,6 +160,11 @@ class ProcessAction{
 		}
 	}
 	
+	/**
+	 * Add new contact .
+	 * @param JsonData JSONObject
+	 * @return String
+	 */
 	static String action_0007(JSONObject JsonData){
 		try{
 			String user_id=JsonData.getString("user_id");
@@ -173,6 +178,21 @@ class ProcessAction{
 		}catch(JSONException|NullPointerException e){
 			e.printStackTrace();
 			return "{'status':'false','msg':'Error(PA1007)'}";
+		}
+	}
+	
+	/**
+	 * Fetch contact detail
+	 * @param JsonData JSONObject
+	 * @return String
+	 */
+	static String action_0008(JSONObject JsonData){
+		try{
+			//todo here
+			return null;
+		}catch(JSONException|NullPointerException e){
+			e.printStackTrace();
+			return "{'status':'false','msg':'Error(PA1008)'}";
 		}
 	}
 }

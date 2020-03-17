@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
+ * Message Cache SQLite Manager
+ *
  * Database:    msg_cache.db
  * table:       msg_cache
  * columns:
@@ -15,12 +17,14 @@ import java.sql.Statement;
  *      to_id           INTEGER,NOT NULL
  *      msg_content     TEXT,NOT NULL
  *      send_time       INTEGER,NOT NULL
- *      is_read         INTEGER     // -1 is not fetch;0 is unread;1 is read
+ *      is_read         INTEGER     // (not use yet. ) -1 is not fetch;0 is unread;1 is read
  *
  * */
 
 
 class MsgCacheSQLite{
+	
+	// Create a SQLite connection.
 	private static Connection getConnection() throws SQLException, ClassNotFoundException{
 		Class.forName("org.sqlite.JDBC");
 		//c.setAutoCommit(false);
@@ -79,6 +83,12 @@ class MsgCacheSQLite{
 	}
 	
 	//todo: next ver , check whether msg is read by msg_index
+	
+	/**
+	 * Check whether message is read.
+	 * @param msg_index msg_index
+	 * @return int , status
+	 */
 	static int checkIsRead(String msg_index){
 		return 1;
 	}
