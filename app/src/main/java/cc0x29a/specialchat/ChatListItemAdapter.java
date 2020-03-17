@@ -16,7 +16,7 @@ import android.widget.TextView;
 public class ChatListItemAdapter extends BaseAdapter{
 	private LayoutInflater layoutInflater;
 	String[][] chatListInfo;
-	String[] lastMsg=null;
+//	String[] lastMsg=null;
 	int count=0;
 	
 	ChatListItemAdapter(Context context){
@@ -63,14 +63,14 @@ public class ChatListItemAdapter extends BaseAdapter{
 		}
 
 		if(this.chatListInfo[position][2]==null ||this.chatListInfo[position][2].isEmpty()){
-			holder.nickname.setText(MyTools.resolveSpecialChar(this.chatListInfo[position][1]));
+			holder.nickname.setText(this.chatListInfo[position][1]);
 		}else{
-			holder.nickname.setText(MyTools.resolveSpecialChar(this.chatListInfo[position][2]));
+			holder.nickname.setText(this.chatListInfo[position][2]);
 		}
-		if(this.lastMsg[position]==null||this.lastMsg[position].isEmpty()){
+		if(this.chatListInfo[position][4]==null||this.chatListInfo[position][4].isEmpty()){
 			holder.lastChatMsg.setText(" ");
 		}else{
-			holder.lastChatMsg.setText(MyTools.resolveSpecialChar(this.lastMsg[position]));
+			holder.lastChatMsg.setText(this.chatListInfo[position][4]);
 		}
 		holder.lastChatTime.setText(this.chatListInfo[position][3]);
 		

@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
     package="cc0x29a.specialchat">
+
     <!-- Internet assess permission -->
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -14,23 +15,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <service
+            android:name=".BackgroundTask"
+            android:enabled="true"
+            android:exported="false"></service>
+
         <activity
             android:name=".WelcomeActivity"
-            android:theme="@style/generalNoTitle"
-            android:label="Welcome page"/>
+            android:label="Welcome page"
+            android:theme="@style/generalNoTitle" />
         <activity
             android:name=".SignUpActivity"
-            android:launchMode="singleTask"
-            android:label="Sign up"/>
+            android:label="Sign up"
+            android:launchMode="singleTask" />
         <activity android:name=".ContactDetailActivity" />
         <activity android:name=".AddNewContactActivity" />
         <activity
             android:name=".ChatActivity"
-            android:label="Chat"/>
+            android:label="Chat" />
         <activity
             android:name=".LoginActivity"
-            android:launchMode="singleTask"
-            android:label="Login in"/>
+            android:label="Login in"
+            android:launchMode="singleTask" />
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTask">

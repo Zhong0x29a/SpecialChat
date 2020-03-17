@@ -1,16 +1,17 @@
 package cc0x29a.specialchat;
 
 /*
+* MainActivity.class
+*
+* Author:       Zhong Wenliang
+* mail:         CuberWenliang@0x29a.cc
+* start date:   March, 2020
+*
+* */
 
-  author:       Zhong Wenliang
-  mail:         CuberWenliang@163.com
-  start date:   March, 2020
- 
- MainActivity.class
- 
- 
-  **/
-
+/*
+* todo:!!!!!  use service  !!!!!!!
+* */
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -49,6 +50,9 @@ public class MainActivity extends AppCompatActivity{
 		// This would run at the very first lunch.
 		welcomePage();
 		
+		// UI views init
+		init();
+		
 		
 		//test code
 		
@@ -56,7 +60,7 @@ public class MainActivity extends AppCompatActivity{
 //		for(int i=1;i<=123;i++){
 //			h.insertNewMsg(h.getReadableDatabase(),1123592075+"",i+"",i+" I love you.");
 //			ChatListSQLiteHelper c=new ChatListSQLiteHelper(this,"chat_list.db",1);
-//			c.insertNewChatListItem(c.getReadableDatabase(),MyTools.getRandomNum(1000000,9999),"Cube.",12322213);
+//			c.insertNewChatListItem(c.getReadableDatabase(),1123592075+"","Cube.",""+23333);
 //		}
 //		ContactsListSQLiteHelper c=new ContactsListSQLiteHelper(MainActivity.this,"contacts_list.db",1);
 //		c.insertNewContact(c.getReadableDatabase(),"1123592075","Apple2","Haaaa pi","13360417480");
@@ -66,7 +70,7 @@ public class MainActivity extends AppCompatActivity{
 		
 		//test code
 		
-		init();
+		
 	}
 	
 	@Override
@@ -85,6 +89,7 @@ public class MainActivity extends AppCompatActivity{
 	protected void onDestroy(){
 		super.onDestroy();
 		cancelRefreshTimers();
+		stopService(new Intent(this,BackgroundTask.class));
 	}
 	
 	// set menu.
@@ -95,7 +100,12 @@ public class MainActivity extends AppCompatActivity{
 		return super.onCreateOptionsMenu(menu);
 	}
 	
-	// action menu.
+	/**
+	 * the action menu.
+	 *
+	 * @param item menu item
+	 * @return boolean
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -111,10 +121,10 @@ public class MainActivity extends AppCompatActivity{
 				return true;
 			case R.id.app_bar_login:
 				startActivity(new Intent(MainActivity.this,LoginActivity.class));
-//				finish();
+				cancelRefreshTimers();
 				return true;
 			case R.id.app_bar_about:
-				Toast.makeText(this,"Special Chat-1.0! \n" +
+				Toast.makeText(this,"Special Chat-1.0\n" +
 						"Developed by Zhong Wenliang. \n" +
 						"Email: CuberWenliang@0x29a.cc",Toast.LENGTH_LONG).show();
 				return true;
@@ -123,53 +133,28 @@ public class MainActivity extends AppCompatActivity{
 		}
 	}
 	
-	// whether redirect to login
-	private void redirect(){
-		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
-		if(preferences.getInt("is_login",0)!=1){
-			changeViewToFontLogin();
-		}else if(preferences.getInt("is_login",0)==1){
-			normalMode();
-		}
-	}
-	
-	/**
-	 * Load Welcome page at the first run of app.
-	 */
-	private void welcomePage(){
-		SharedPreferences preferences=getSharedPreferences("init_info",MODE_PRIVATE);
-		String is_firstRun=preferences.getString("first_run","yes");
-		
-		if(is_firstRun.equals("yes")){
-			SharedPreferences.Editor e=preferences.edit();
-			e.putString("first_run","no");
-			e.apply();
-			startActivity(new Intent(MainActivity.this,WelcomeActivity.class));
-			finish();
-		}
-	}
-	
 	/**
 	 * init views & some settings
 	 */
 	private void init(){
-//		LinearLayout main_linear_layout=findViewById(R.id.main_linear_layout);
-//		int width=MyTools.getViewHeight(main_linear_layout,false);
-//		int height=MyTools.getViewHeight(main_linear_layout,true);
+		//		LinearLayout main_linear_layout=findViewById(R.id.main_linear_layout);
+		//		int width=MyTools.getViewHeight(main_linear_layout,false);
+		//		int height=MyTools.getViewHeight(main_linear_layout,true);
 		{
-//			LinearLayout.LayoutParams params=(LinearLayout.LayoutParams)findViewById(R.id.menu_btn_chats).getLayoutParams();
-//			params.width=width/4;
-//			findViewById(R.id.menu_btn_chats).setLayoutParams(params);
-//			params=(LinearLayout.LayoutParams)findViewById(R.id.menu_btn_contacts).getLayoutParams();
-//			params.width=width/4;
-//			findViewById(R.id.menu_btn_contacts).setLayoutParams(params);
-//			params=(LinearLayout.LayoutParams)findViewById(R.id.menu_btn_moments).getLayoutParams();
-//			params.width=width/4;
-//			findViewById(R.id.menu_btn_moments).setLayoutParams(params);
-//			params=(LinearLayout.LayoutParams)findViewById(R.id.menu_btn_me).getLayoutParams();
-//			params.width=width/4;
-//			findViewById(R.id.menu_btn_me).setLayoutParams(params);
+			//			LinearLayout.LayoutParams params=(LinearLayout.LayoutParams)findViewById(R.id.menu_btn_chats).getLayoutParams();
+			//			params.width=width/4;
+			//			findViewById(R.id.menu_btn_chats).setLayoutParams(params);
+			//			params=(LinearLayout.LayoutParams)findViewById(R.id.menu_btn_contacts).getLayoutParams();
+			//			params.width=width/4;
+			//			findViewById(R.id.menu_btn_contacts).setLayoutParams(params);
+			//			params=(LinearLayout.LayoutParams)findViewById(R.id.menu_btn_moments).getLayoutParams();
+			//			params.width=width/4;
+			//			findViewById(R.id.menu_btn_moments).setLayoutParams(params);
+			//			params=(LinearLayout.LayoutParams)findViewById(R.id.menu_btn_me).getLayoutParams();
+			//			params.width=width/4;
+			//			findViewById(R.id.menu_btn_me).setLayoutParams(params);
 		}
+		loadChatList();
 		{
 			findViewById(R.id.menu_btn_chats).setOnClickListener(new View.OnClickListener(){
 				@Override
@@ -216,11 +201,40 @@ public class MainActivity extends AppCompatActivity{
 	}
 	
 	/**
+	 * Whether redirect to front login page
+ 	 */
+	private void redirect(){
+		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
+		if(preferences.getInt("is_login",0)!=1){
+			changeViewToFontLogin();
+		}else if(preferences.getInt("is_login",0)==1){
+			normalMode();
+		}
+	}
+	
+	/**
+	 * Load Welcome page at the first run of app.
+	 */
+	private void welcomePage(){
+		SharedPreferences preferences=getSharedPreferences("init_info",MODE_PRIVATE);
+		String is_firstRun=preferences.getString("first_run","yes");
+		
+		if(is_firstRun.equals("yes")){
+			SharedPreferences.Editor e=preferences.edit();
+			e.putString("first_run","no");
+			e.apply();
+			startActivity(new Intent(MainActivity.this,WelcomeActivity.class));
+			finish();
+		}
+	}
+	
+	/**
 	 * Normal mode perform.
 	 */
 	private void normalMode(){
-		cancelRefreshTimers();
+		startService(new Intent(this,BackgroundTask.class));
 		
+		cancelRefreshTimers();
 		// set timer tasks
 		checkLoginTimer=new Timer();
 		refreshMsgTimer=new Timer();
@@ -272,10 +286,9 @@ public class MainActivity extends AppCompatActivity{
 			}
 		},1700,5888);
 		
-		loadChatList();
 	}
 	
-	//todo optimise perform!!
+	// to use recycleView
 	/**
 	 * Load Chat list ListView by Adapter
 	 * */
@@ -295,16 +308,16 @@ public class MainActivity extends AppCompatActivity{
 					final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase(),0);
 					
 					// Fetch last one message.
-					String[] lastMsg=new String[51];
-					for(int i=1;i<= (Integer.parseInt(chatList[0][0])) && i<=50;i++){
-						MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(MainActivity.this,
-								"msg_"+chatList[i][1]+".db",1);
-						lastMsg[i]=msgSQLiteHelper.getLatestMsg(msgSQLiteHelper.getReadableDatabase());
-					}
+//					String[] lastMsg=new String[51];
+//					for(int i=1;i<= (Integer.parseInt(chatList[0][0])) && i<=50;i++){
+//						MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(MainActivity.this,
+//								"msg_"+chatList[i][1]+".db",1);
+//						lastMsg[i]=msgSQLiteHelper.getLatestMsg(msgSQLiteHelper.getReadableDatabase());
+//					}
 					
 					ChatListItemAdapter cli_adapter=new ChatListItemAdapter(MainActivity.this);
 					cli_adapter.chatListInfo=chatList;
-					cli_adapter.lastMsg=lastMsg;
+//					cli_adapter.lastMsg=lastMsg;
 					cli_adapter.count=Integer.parseInt(chatList[0][0]); // item number
 					
 					ListView ml_view=findViewById(R.id.main_chats_listView);
@@ -328,7 +341,6 @@ public class MainActivity extends AppCompatActivity{
 						@Override
 						public boolean onItemLongClick(AdapterView<?> parent,View view,int position,long id){
 							position++;
-							// todo: position (int) ,open a little menu,to delete chat or so on.
 							final int finalPosition=position;
 							AlertDialog alertDialog2 = new AlertDialog.Builder(MainActivity.this)
 									.setTitle("Notices")
@@ -389,7 +401,6 @@ public class MainActivity extends AppCompatActivity{
 						@Override
 						public boolean onItemLongClick(AdapterView<?> parent,View view,int position,long id){
 							position++;
-							// todo: at next ver. , add new function here. (a little menu?)
 							AlertDialog alertDialog2 = new AlertDialog.Builder(MainActivity.this)
 									.setTitle("Notices")
 									.setMessage("Sure to delete this contact? \n'"+contactsList[position][0]+"'")
@@ -449,7 +460,7 @@ public class MainActivity extends AppCompatActivity{
 	 *      2->No new msg
 	 *      3->Unknown Error..
 	 *
-	 * Todo: this can be optimized !! (1.combine msg, 2. filter some char!)
+	 *
  	 */
 	private int refreshNewMsg() throws JSONException{
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
@@ -486,7 +497,7 @@ public class MainActivity extends AppCompatActivity{
 				mh.insertNewMsg(mh.getReadableDatabase(),friend_id,send_time,jsonTemp.getString("msg_content"));
 				
 				ChatListSQLiteHelper clh=new ChatListSQLiteHelper(MainActivity.this,"chat_list.db",1);
-				clh.updateChatList(clh.getReadableDatabase(),friend_id,send_time);
+				clh.updateChatList(clh.getReadableDatabase(),friend_id,send_time,jsonTemp.getString("msg_content"));
 			}
 			loadChatList();
 			return 0;
@@ -495,11 +506,6 @@ public class MainActivity extends AppCompatActivity{
 		}else{
 			return 3;
 		}
-	}
-	
-	// TODO: 16/03/20 finish this.
-	private int syncContactsList(){
-		return 0;
 	}
 	
 	/**

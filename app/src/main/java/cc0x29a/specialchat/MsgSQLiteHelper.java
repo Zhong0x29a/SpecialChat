@@ -97,19 +97,21 @@ public class MsgSQLiteHelper extends SQLiteOpenHelper{
 	/**
 	 * Fetch latest one message
 	 * @param db SQLiteDatabase
-	 * @return a String
+	 * @return a String[]
 	 */
-	String getLatestMsg(@NotNull SQLiteDatabase db){
+	String[] getLatestMsg(@NotNull SQLiteDatabase db){
 		Cursor cursor=db.query("msg",
-				new String[]{"msg_content"},
+				new String[]{"msg_content","send_time"},
 				null,null,null,null,
 				"send_time desc");
 		if(cursor.moveToFirst()){
-			String temp=MyTools.resolveSpecialChar(cursor.getString(cursor.getColumnIndex("msg_content")));
+			String[] temp=new String[2];
+			temp[0]=MyTools.resolveSpecialChar(cursor.getString(cursor.getColumnIndex("msg_content")));
+			temp[1]=cursor.getInt(cursor.getColumnIndex("send_time"))+"";
 			cursor.close();
 			return temp;
 		}
-		return "";
+		return new String[]{""};
 	}
 	
 	MsgSQLiteHelper(Context context,String name,int version){

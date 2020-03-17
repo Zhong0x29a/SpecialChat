@@ -12,12 +12,13 @@ import org.jetbrains.annotations.NotNull;
  *
  *      database    :chat_list.db
  *      table       :chat_list
- *      column(5)   :
+ *      column(5->6)   :
  *          index_num       INTEGER,primary key,autoincrement   index
  *          user_id         INTEGER,NOT NULL,UNIQUE
  *          nickname        TEXT
- *          last_chat_time  INTEGER,NOT NULL
+ *          last_chat_time  INTEGER
  *          status          INTEGER,(def: 0)    // new msg num?
+ *          last_msg        TEXT    //new add 03.17
  *
  */
 
@@ -31,7 +32,8 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 				"user_id INTEGER NOT NULL UNIQUE,"+
 				"nickname TEXT,"+
 				"last_chat_time INTEGER NOT NULL," +
-				"status INTEGER"+
+				"status INTEGER," +
+				"last_msg TEXT"+
 				")";
 		try{
 			db.execSQL(CREATE_TABLE_SQL);
@@ -40,21 +42,30 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 		}
 	}
 	
+	void syncLastMsg(@NotNull SQLiteDatabase db){
+		//todo
+	}
+	
 	/**
 	 * Update chat list or add new row
 	 * @param db    writeable SQLiteDatabase
 	 * @param user_id   user_id(friend_id)
 	 * @param last_chat_time    last chat time with this friend
+	 * @param last_msg last one msg
 	 */
-	void updateChatList(@NotNull SQLiteDatabase db,String user_id,String last_chat_time){
+	void updateChatList(@NotNull SQLiteDatabase db,String user_id,String last_chat_time,String last_msg){
 		try{
-			Cursor cursor=db.query("chat_list",new String[]{"user_id"},"user_id="+user_id+"",null,null,null,null);
+			Cursor cursor=db.query("chat_list",new String[]{"user_id"},
+					"user_id="+user_id+"",null,null,null,null);
 			if(cursor.moveToFirst()){
 				cursor.close();
 				String SQL="update chat_list "+
 						"set last_chat_time="+
-						last_chat_time+" "+
-						"where user_id="+user_id;
+						last_chat_time+" ";
+				if(last_msg!=null){
+					SQL+=", last_msg='"+last_msg+"' ";
+				}
+				SQL+="where user_id="+user_id;
 				db.execSQL(SQL);
 			}else{
 				insertNewChatListItem(db,user_id,user_id+"",last_chat_time);
@@ -72,12 +83,14 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 	 *         [1]->user_id
 	 *         [2]->nickname
 	 *         [3]->last_chat_time
+	 *         [4]->last_msg
 	 */
 	String[][] fetchChatList(@NotNull SQLiteDatabase db,int position){
-		String[][] chatList=new String[51][4];
+		String[][] chatList=new String[51][5];
 		int index=0;
 		try{
-			Cursor cursor=db.query("chat_list",new String[]{"index_num","user_id","nickname","last_chat_time",},
+			Cursor cursor=db.query("chat_list",
+					new String[]{"index_num","user_id","nickname","last_chat_time","last_msg"},
 					null,null,null,null,"last_chat_time desc");
 			if(cursor.moveToPosition(position)){
 				do{
@@ -86,6 +99,8 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 					chatList[index][1]=cursor.getInt(cursor.getColumnIndex("user_id"))+"";
 					chatList[index][2]=MyTools.resolveSpecialChar(cursor.getString(cursor.getColumnIndex("nickname")));
 					chatList[index][3]=cursor.getInt(cursor.getColumnIndex("last_chat_time"))+"";
+					chatList[index][4]=MyTools.resolveSpecialChar(cursor.getString(cursor.getColumnIndex("last_msg")));
+					
 				}while(index<50 && cursor.moveToNext());
 			}
 			cursor.close();
