@@ -82,8 +82,7 @@ class MsgCacheSQLite{
 		}
 	}
 	
-	//todo: next ver , check whether msg is read by msg_index
-	
+	//next ver , check whether msg is read by msg_index
 	/**
 	 * Check whether message is read.
 	 * @param msg_index msg_index

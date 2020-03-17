@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#333"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="top"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Search new contact"
+        android:textSize="33sp"
+        android:textColor="#eee"
+        android:gravity="center"
+        android:layout_marginVertical="17dp"
+        android:paddingVertical="6dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginHorizontal="6dp">
+        <EditText
+            android:id="@+id/text_user_id"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="77"
+            android:ems="10"
+            android:inputType="number"
+            android:text=""
+            android:textSize="20sp"
+            android:hint="@string/User_ID"
+            android:textColor="#222"
+            android:background="@drawable/set_button_selector"
+            android:paddingHorizontal="18dp"
+            android:paddingVertical="8dp"
+            android:autofillHints="user_id" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/set_button_selector">
+            <Button
+                android:layout_width="43dp"
+                android:layout_height="43dp"
+                android:padding="3dp"
+                android:id="@+id/btn_search"
+                android:background="@drawable/ic_search_black_24dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/search_recyclerView"
+        android:layout_gravity="end"
+        android:layout_weight="1"/>
+
+</LinearLayout>

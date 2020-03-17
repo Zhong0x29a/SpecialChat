@@ -28,7 +28,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 		findViewById(R.id.btn_add_or_chat).setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View v){
-				//todo
+				//todo add contact
 				Toast.makeText(ContactDetailActivity.this,"fine",Toast.LENGTH_SHORT).show();
 			}
 		});
@@ -59,7 +59,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 				}catch(JSONException|NullPointerException e){
 					e.printStackTrace();
 					Looper.prepare();
-					Toast.makeText(getApplicationContext(),"Error!\nData Null!",Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(),"Error!\nData Null! (Exception)",Toast.LENGTH_LONG).show();
 					Looper.loop();
 				}
 			}

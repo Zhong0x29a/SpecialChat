@@ -36,7 +36,8 @@
             android:paddingHorizontal="18dp"
             android:paddingVertical="8dp"
             android:layout_marginVertical="8dp"
-            android:autofillHints="user_id" />
+            android:autofillHints="user_id"
+            android:layout_marginHorizontal="6dp"/>
 
         <EditText
             android:id="@+id/text_password"
@@ -50,7 +51,8 @@
             android:background="@drawable/set_button_selector"
             android:paddingHorizontal="18dp"
             android:paddingVertical="8dp"
-            android:autofillHints="password" />
+            android:autofillHints="password"
+            android:layout_marginHorizontal="6dp"/>
 
         <Button
             android:id="@+id/btn_login"

@@ -10,8 +10,9 @@ package cc0x29a.specialchat;
 * */
 
 /*
-* todo:!!!!!  use service  !!!!!!!
+*
 * */
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -110,7 +111,9 @@ public class MainActivity extends AppCompatActivity{
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.app_bar_search:
-				Toast.makeText(this, "Search! ", Toast.LENGTH_SHORT).show();
+				startActivity(new Intent(MainActivity.this,SearchNewContact.class));
+				cancelRefreshTimers();
+//				Toast.makeText(this, "Search! ", Toast.LENGTH_SHORT).show();
 				return true;
 			case R.id.app_bar_stopRefresh:
 				cancelRefreshTimers();

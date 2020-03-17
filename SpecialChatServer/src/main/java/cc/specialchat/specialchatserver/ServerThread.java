@@ -31,7 +31,7 @@ public class ServerThread extends Thread {
 		OutputStream outputStream = null;
 		
 		try {
-			// get data
+			// get data from client
 			inputStream = socket.getInputStream();
 			inputStreamReader = new InputStreamReader(inputStream);
 			bufferedReader = new BufferedReader(inputStreamReader);
@@ -72,7 +72,7 @@ public class ServerThread extends Thread {
 				case "0008": // fetch contact info.
 					msgSend=ProcessAction.action_0008(dataJsonReturn);
 					break;
-				default:
+				default: // action code error.
 					msgSend="{\"msg\":\"ERROR!! (1000)\"}";
 					break;
 			}
@@ -81,8 +81,9 @@ public class ServerThread extends Thread {
 			//test code:
 //			msgSend="{\"status\":\"true\"}";
 			
-			// send
+			// send data to client
 			outputStream = socket.getOutputStream();
+			assert msgSend!=null; //
 			outputStream.write(msgSend.getBytes(StandardCharsets.UTF_8));
 			outputStream.flush();
 			
@@ -90,7 +91,7 @@ public class ServerThread extends Thread {
 		}catch(IOException|NullPointerException e){
 			e.printStackTrace();
 		}finally{
-			// Release resource
+			// Release unused resource
 			try{
 				if(outputStream != null){
 					outputStream.close();
@@ -111,6 +112,7 @@ public class ServerThread extends Thread {
 				e.printStackTrace();
 			}
 		}
+		
 	}
 	
 }

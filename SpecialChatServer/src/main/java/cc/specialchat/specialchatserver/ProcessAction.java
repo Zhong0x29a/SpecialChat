@@ -188,13 +188,25 @@ class ProcessAction{
 	 */
 	static String action_0008(JSONObject JsonData){
 		try{
-			//todo here
-			return null;
+			String[] info;
+			if(null != JsonData &&
+					JsonData.getString("secret").equals("I love you.") &&
+					null != ( info=UserInfoSQLite.fetchUserInfo(JsonData.getString("ta_id")) )){
+				return "{" +
+						"'status':'true'," +
+						"'user_name':'"+info[3]+"'," +
+						"'user_phone':'"+info[2]+"' " +
+						"}";
+			}else{
+				return "{'status':'false','msg':'Error(PA1008)'}";
+			}
 		}catch(JSONException|NullPointerException e){
 			e.printStackTrace();
-			return "{'status':'false','msg':'Error(PA1008)'}";
+			return "{'status':'false','msg':'Error(PA1008+)'}";
 		}
 	}
+	
+	
 }
 
 /*

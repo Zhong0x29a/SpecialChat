@@ -3,11 +3,10 @@ package cc.specialchat.specialchatserver;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.SQLException;
 
 public class ServerMain{
 	
-	public static void main(String[] args) throws SQLException, ClassNotFoundException{
+	public static void main(String[] args){
 		// test code.
 //		MsgCacheSQLite.init();
 //		exit(0);
@@ -25,7 +24,7 @@ public class ServerMain{
 			while(true){
 				socket = serverSocket.accept();
 				ServerThread serverThread = new ServerThread(socket);
-				System.out.println("New connection: " + socket.getInetAddress().getHostAddress() +"("+count+")");
+				System.out.println("New connection: " + socket.getInetAddress().getHostAddress() +" ("+count+")");
 				serverThread.start();
 				count++;
 			}

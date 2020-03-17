@@ -198,14 +198,15 @@ class UserInfoSQLite{
 			Statement statement=connection.createStatement();
 			String QUERY_SQL="select * from user_info where user_id="+user_id+";";
 			ResultSet resultSet=statement.executeQuery(QUERY_SQL);
-			String[] userInfo=new String[6];
+			String[] userInfo=new String[7];
 			if(resultSet.next()){
 				userInfo[0]=resultSet.getInt("user_index")+"";
 				userInfo[1]=resultSet.getInt("user_id")+"";
-				userInfo[2]=resultSet.getString("user_name");
-				userInfo[3]=resultSet.getString("password");
-				userInfo[4]=resultSet.getInt("login_time")+"";
-				userInfo[5]=resultSet.getString("token_key");
+				userInfo[2]=resultSet.getInt("user_phone")+"";
+				userInfo[3]=resultSet.getString("user_name");
+				userInfo[4]=resultSet.getString("password");
+				userInfo[5]=resultSet.getInt("login_time")+"";
+				userInfo[6]=resultSet.getString("token_key");
 			}else{
 				userInfo=null;
 			}
@@ -228,7 +229,7 @@ class UserInfoSQLite{
 			Statement statement=connection.createStatement();
 			String QUERY_SQL="select * from user_info;";
 			ResultSet resultSet=statement.executeQuery(QUERY_SQL);
-			String[][] allUsersInfo=new String[50][6];
+			String[][] allUsersInfo=new String[50][6]; // todo bug will be here
 			int index=0;
 			while(resultSet.next() && index<50){
 				allUsersInfo[index][0]=resultSet.getInt("user_index")+"";
@@ -248,4 +249,5 @@ class UserInfoSQLite{
 			return null;
 		}
 	}
+	
 }
