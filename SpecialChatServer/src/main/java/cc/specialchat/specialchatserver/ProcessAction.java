@@ -3,8 +3,6 @@ package cc.specialchat.specialchatserver;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 
-import java.sql.SQLException;
-
 class ProcessAction{
 	
 	/**
@@ -162,7 +160,21 @@ class ProcessAction{
 		}
 	}
 	
-	
+	static String action_0007(JSONObject JsonData){
+		try{
+			String user_id=JsonData.getString("user_id");
+			String token_key=JsonData.getString("token_key");
+			if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
+				return null;
+				//todo here
+			}else{
+				return "{'status':'false','msg':'Error(PA1007+inn)'}";
+			}
+		}catch(JSONException|NullPointerException e){
+			e.printStackTrace();
+			return "{'status':'false','msg':'Error(PA1007)'}";
+		}
+	}
 }
 
 /*

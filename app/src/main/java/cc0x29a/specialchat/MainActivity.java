@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity{
 //			ChatListSQLiteHelper c=new ChatListSQLiteHelper(this,"chat_list.db",1);
 //			c.insertNewChatListItem(c.getReadableDatabase(),1123592075+"","Cube.",""+23333);
 //		}
-//		ContactsListSQLiteHelper c=new ContactsListSQLiteHelper(MainActivity.this,"contacts_list.db",1);
+//		ContactListSQLiteHelper c=new ContactListSQLiteHelper(MainActivity.this,"contact_list.db",1);
 //		c.insertNewContact(c.getReadableDatabase(),"1123592075","Apple2","Haaaa pi","13360417480");
 //		String[][] a=new String[][]{{"a","b","a","s"},{"a","b","c"},{"a","b","c"}};
 //		System.out.println(a.length);
@@ -373,10 +373,10 @@ public class MainActivity extends AppCompatActivity{
 		MainActivity.this.runOnUiThread(
 			new Runnable(){
 				public void run(){
-					ContactsListSQLiteHelper contactsListSQLiteHelper=
-							new ContactsListSQLiteHelper(MainActivity.this,"contacts_list.db",1);
+					ContactListSQLiteHelper contactListSQLiteHelper=
+							new ContactListSQLiteHelper(MainActivity.this,"contact_list.db",1);
 					final String[][] contactsList=
-							contactsListSQLiteHelper.fetchContactsList(contactsListSQLiteHelper.getReadableDatabase());
+							contactListSQLiteHelper.fetchContactsList(contactListSQLiteHelper.getReadableDatabase());
 					
 					ListView contacts_listView=findViewById(R.id.main_contacts_listView);
 					ContactsListItemAdapter contactsListItemAdapter=

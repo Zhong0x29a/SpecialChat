@@ -69,6 +69,7 @@ class SocketWithServer{
 				return DataJsonReturn;
 			}
 		}
+		System.out.println("Connection time out. ");
 		return null;
 	}
 }

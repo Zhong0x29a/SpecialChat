@@ -10,9 +10,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 /**
  *
- *      database    :contacts_list.db
- *      table       :contacts_list
- *      column(5->6)   :
+ *      database    :contact_list.db
+ *      table       :contact_list
+ *      column(6)   :
  *          index_num       INTEGER,primary key,autoincrement   index
  *          user_id         INTEGER,NOT NULL,UNIQUE
  *          user_name       TEXT
@@ -22,10 +22,10 @@ import android.database.sqlite.SQLiteOpenHelper;
  *
  */
 
-public class ContactsListSQLiteHelper extends SQLiteOpenHelper{
+public class ContactListSQLiteHelper extends SQLiteOpenHelper{
 	
 	/**
-	 * Fetch contacts list , max num is 50 each time //todo: but total just 50,need complete!!
+	 * Fetch contact list , max num is 50 each time //todo: but total just 50,need complete!!
 	 * @param db SQLite database
 	 * @return a String[][]
 	 */
@@ -33,7 +33,7 @@ public class ContactsListSQLiteHelper extends SQLiteOpenHelper{
 		String[][] contactsList=new String[51][4];
 		int index=0;
 		try{
-			Cursor cursor=db.query("contacts_list",new String[]{"user_id","user_name","nickname","user_phone"},
+			Cursor cursor=db.query("contact_list",new String[]{"user_id","user_name","nickname","user_phone"},
 					null,null,null,null,
 					"user_name asc");
 			while(cursor.moveToNext() && index<50){
@@ -65,7 +65,7 @@ public class ContactsListSQLiteHelper extends SQLiteOpenHelper{
 			if(nickname==null||nickname.equals("")){
 				nickname=user_name;
 			}
-			String INSERT_SQL="insert into contacts_list (user_id,user_name,nickname,user_phone) " +
+			String INSERT_SQL="insert into contact_list (user_id,user_name,nickname,user_phone) " +
 					"values ("+
 					user_id+",'"+
 					user_name+"'," +
@@ -81,7 +81,7 @@ public class ContactsListSQLiteHelper extends SQLiteOpenHelper{
 	@Override
 	public void onCreate(SQLiteDatabase db){
 		String CREATE_TABLE_SQL=
-				"create table contacts_list(" +
+				"create table contact_list(" +
 						"index_num INTEGER primary key autoincrement," +
 						"user_id INTEGER NOT NULL UNIQUE," +
 						"user_name TEXT NOT NULL," +
@@ -97,7 +97,7 @@ public class ContactsListSQLiteHelper extends SQLiteOpenHelper{
 	
 	}
 	
-	ContactsListSQLiteHelper(Context context,String name,int version){
+	ContactListSQLiteHelper(Context context,String name,int version){
 		super(context,name,null,version);
 	}
 }

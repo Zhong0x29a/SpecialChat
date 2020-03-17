@@ -168,9 +168,15 @@ class UserInfoSQLite{
 					MyTools.getCurrentTime()+","+
 					"null"+
 					")";
+			
 			statement.executeUpdate(ADD_NEW_USER_SQL);
 			statement.close();
 			connection.close();
+			System.out.println("---- New added user:"+user_id+","+user_name+"! ----\n");
+			
+			// Create contact table for new user
+			ContactListSQLite.init(user_id);
+			
 			return true;
 		}catch(SQLException|ClassNotFoundException e){
 			e.printStackTrace();

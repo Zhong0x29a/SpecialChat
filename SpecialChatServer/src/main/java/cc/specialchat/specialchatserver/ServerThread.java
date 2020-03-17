@@ -17,7 +17,6 @@ public class ServerThread extends Thread {
 	
 	private Socket socket;
 	private StringBuffer DataGet=new StringBuffer();
-	private static String msgSend;
 	
 	ServerThread(Socket socket) {
 		this.socket = socket;
@@ -47,6 +46,7 @@ public class ServerThread extends Thread {
 			
 			System.out.println(dataJsonReturn.getString("action"));
 			
+			String msgSend;
 			switch(dataJsonReturn.getString("action")){
 				case "0001": // check login status
 					msgSend=ProcessAction.action_0001(dataJsonReturn);
@@ -57,15 +57,17 @@ public class ServerThread extends Thread {
 				case "0003": // client refresh message
 					msgSend=ProcessAction.action_0003(dataJsonReturn);
 					break;
-				case "0004":
+				case "0004": // send message
 					msgSend=ProcessAction.action_0004(dataJsonReturn);
 					break;
-				case "0005":
+				case "0005": // check ID usability
 					msgSend=ProcessAction.action_0005(dataJsonReturn);
 					break;
-				case "0006":
+				case "0006": // sign up new account
 					msgSend=ProcessAction.action_0006(dataJsonReturn);
 					break;
+				case "0007": // add new contact
+					msgSend=ProcessAction.action_0007(dataJsonReturn);
 				default:
 					msgSend="{\"msg\":\"ERROR!! (1000)\"}";
 					break;

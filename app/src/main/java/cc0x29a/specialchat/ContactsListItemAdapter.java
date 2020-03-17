@@ -43,6 +43,7 @@ public class ContactsListItemAdapter extends BaseAdapter{
 	public View getView(int position,View convertView,ViewGroup parent) {
 		ViewHolder holder;
 		
+		int index=position+1;
 		if (convertView == null){
 			convertView = layoutInflater.inflate(R.layout.contacts_list_item,null);
 			
@@ -55,12 +56,12 @@ public class ContactsListItemAdapter extends BaseAdapter{
 			holder = (ViewHolder) convertView.getTag();
 		}
 		
-		if( ! (this.contactsInfo[position][2]==null || this.contactsInfo[position][2].isEmpty())){
-			holder.nickname.setText(MyTools.resolveSpecialChar(this.contactsInfo[position][2]));
-		}else if( ! (this.contactsInfo[position][1]==null || this.contactsInfo[position][1].isEmpty())){
-			holder.nickname.setText(MyTools.resolveSpecialChar(this.contactsInfo[position][1]));
+		if( ! (this.contactsInfo[index][2]==null || this.contactsInfo[index][2].isEmpty())){
+			holder.nickname.setText(MyTools.resolveSpecialChar(this.contactsInfo[index][2]));
+		}else if( ! (this.contactsInfo[index][1]==null || this.contactsInfo[index][1].isEmpty())){
+			holder.nickname.setText(MyTools.resolveSpecialChar(this.contactsInfo[index][1]));
 		}else{
-			holder.nickname.setText(MyTools.resolveSpecialChar(this.contactsInfo[position][0]));
+			holder.nickname.setText(MyTools.resolveSpecialChar(this.contactsInfo[index][0]));
 		}
 		
 		//next ver load user's profile picture

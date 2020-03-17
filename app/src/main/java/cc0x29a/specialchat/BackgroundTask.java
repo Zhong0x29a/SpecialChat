@@ -3,7 +3,6 @@ package cc0x29a.specialchat;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.widget.Toast;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -18,7 +17,7 @@ public class BackgroundTask extends Service{
 	
 	@Override
 	public void onCreate(){
-		Toast.makeText(this,"service started",Toast.LENGTH_SHORT).show();
+//		Toast.makeText(this,"service started",Toast.LENGTH_SHORT).show();
 		
 		syncLM=new Timer();
 		syncCL=new Timer();

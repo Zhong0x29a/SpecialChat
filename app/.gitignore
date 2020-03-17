@@ -23,7 +23,6 @@ build/
 /captures
 .externalNativeBuild
 .cxx
-/SpecialChatServer/src/main/java/cc/specialchat/specialchatserver/lib/
 /app/src/test/
 gardle.properties
 *.db

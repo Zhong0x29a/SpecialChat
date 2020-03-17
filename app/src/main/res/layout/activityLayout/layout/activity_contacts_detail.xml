@@ -18,7 +18,7 @@
         android:id="@+id/detail_userID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="123456789"
+        android:text="4152637"
         android:background="@drawable/set_button_selector"
         android:textSize="20sp"
         android:paddingVertical="3dp"
@@ -44,15 +44,15 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/nickname"
+        android:text="@string/Phone"
         android:textColor="#eee"
         android:textSize="20sp"/>
 
     <TextView
-        android:id="@+id/detail_nickname"
+        android:id="@+id/detail_userPhone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Special Chat"
+        android:text="7362514"
         android:background="@drawable/set_button_selector"
         android:textSize="20sp"
         android:paddingVertical="3dp"
