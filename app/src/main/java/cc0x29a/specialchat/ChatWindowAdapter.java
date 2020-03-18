@@ -61,9 +61,12 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 	@Override
 	public void onBindViewHolder(@NotNull VH holder,final int position) {
 		final int index=position+1;
+		
+		// avoid array index exception
 		if(position>=messages.length-1){
 			return;
 		}
+		
 		holder.chat_msg_tv.setText(messages[index][4]);
 		if(messages[index][1]!=null && messages[index][1].equals(my_id)){
 			holder.chat_msg_container.setGravity(Gravity.END);

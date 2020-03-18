@@ -11,6 +11,8 @@ public class AddNewContactActivity extends AppCompatActivity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_find_new_friends);
 		
+		// not used yet.
+		
 		// todo: search new friends, add new friends
 	}
 }

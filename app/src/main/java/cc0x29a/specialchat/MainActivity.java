@@ -28,6 +28,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,10 +61,10 @@ public class MainActivity extends AppCompatActivity{
 		//test code
 		
 //		MsgSQLiteHelper h=new MsgSQLiteHelper(this,"msg_1123592075.db",1);
-//		for(int i=1;i<=123;i++){
+//		for(int i=1;i<=23;i++){
 //			h.insertNewMsg(h.getReadableDatabase(),1123592075+"",i+"",i+" I love you.");
 //			ChatListSQLiteHelper c=new ChatListSQLiteHelper(this,"chat_list.db",1);
-//			c.insertNewChatListItem(c.getReadableDatabase(),1123592075+"","Cube.",""+23333);
+//			c.insertNewChatListItem(c.getReadableDatabase(),"1123592075","Little hao",""+MyTools.getCurrentTime());
 //		}
 //		ContactListSQLiteHelper c=new ContactListSQLiteHelper(MainActivity.this,"contact_list.db",1);
 //		c.insertNewContact(c.getReadableDatabase(),"1123592075","Apple2","Haaaa pi","13360417480");
@@ -162,7 +165,7 @@ public class MainActivity extends AppCompatActivity{
 			findViewById(R.id.menu_btn_chats).setOnClickListener(new View.OnClickListener(){
 				@Override
 				public void onClick(View v){
-					findViewById(R.id.main_chats_listView).setVisibility(View.VISIBLE);
+					findViewById(R.id.main_chat_recyclerView).setVisibility(View.VISIBLE);
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.GONE);
 					findViewById(R.id.main_me).setVisibility(View.GONE);
@@ -172,7 +175,7 @@ public class MainActivity extends AppCompatActivity{
 			findViewById(R.id.menu_btn_contacts).setOnClickListener(new View.OnClickListener(){
 				@Override
 				public void onClick(View v){
-					findViewById(R.id.main_chats_listView).setVisibility(View.GONE);
+					findViewById(R.id.main_chat_recyclerView).setVisibility(View.GONE);
 					findViewById(R.id.main_contacts).setVisibility(View.VISIBLE);
 					findViewById(R.id.main_moments).setVisibility(View.GONE);
 					findViewById(R.id.main_me).setVisibility(View.GONE);
@@ -182,7 +185,7 @@ public class MainActivity extends AppCompatActivity{
 			findViewById(R.id.menu_btn_moments).setOnClickListener(new View.OnClickListener(){
 				@Override
 				public void onClick(View v){
-					findViewById(R.id.main_chats_listView).setVisibility(View.GONE);
+					findViewById(R.id.main_chat_recyclerView).setVisibility(View.GONE);
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.VISIBLE);
 					findViewById(R.id.main_me).setVisibility(View.GONE);
@@ -192,7 +195,7 @@ public class MainActivity extends AppCompatActivity{
 			findViewById(R.id.menu_btn_me).setOnClickListener(new View.OnClickListener(){
 				@Override
 				public void onClick(View v){
-					findViewById(R.id.main_chats_listView).setVisibility(View.GONE);
+					findViewById(R.id.main_chat_recyclerView).setVisibility(View.GONE);
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.GONE);
 					findViewById(R.id.main_me).setVisibility(View.VISIBLE);
@@ -310,6 +313,19 @@ public class MainActivity extends AppCompatActivity{
 					 * */
 					final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase(),0);
 					
+					
+					final RecyclerView chatList_recycleView=findViewById(R.id.main_chat_recyclerView);
+					LinearLayoutManager layoutManager=new LinearLayoutManager(MainActivity.this);
+					chatList_recycleView.setLayoutManager(layoutManager);
+					
+					final ChatListItemAdapter adapter=new ChatListItemAdapter(chatList);
+					adapter.count=Integer.parseInt(chatList[0][0]);
+					
+					chatList_recycleView.setAdapter(adapter);
+					chatList_recycleView.setItemAnimator(new DefaultItemAnimator());
+					
+					
+					
 					// Fetch last one message.
 //					String[] lastMsg=new String[51];
 //					for(int i=1;i<= (Integer.parseInt(chatList[0][0])) && i<=50;i++){
@@ -318,12 +334,12 @@ public class MainActivity extends AppCompatActivity{
 //						lastMsg[i]=msgSQLiteHelper.getLatestMsg(msgSQLiteHelper.getReadableDatabase());
 //					}
 					
+					/*
 					ChatListItemAdapter cli_adapter=new ChatListItemAdapter(MainActivity.this);
 					cli_adapter.chatListInfo=chatList;
-//					cli_adapter.lastMsg=lastMsg;
 					cli_adapter.count=Integer.parseInt(chatList[0][0]); // item number
 					
-					ListView ml_view=findViewById(R.id.main_chats_listView);
+					final ListView ml_view=findViewById(R.id.main_chat_recyclerView);
 					ml_view.setAdapter(cli_adapter);
 					
 					ml_view.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -352,6 +368,11 @@ public class MainActivity extends AppCompatActivity{
 										@Override
 										public void onClick(DialogInterface dialogInterface, int i) {
 											//todo delete the chat item! by position
+											ChatListSQLiteHelper chatListSQLiteHelper=
+													new ChatListSQLiteHelper(MainActivity.this,"chat_list.db",1);
+											chatListSQLiteHelper.deleteChatListItem(chatListSQLiteHelper.getReadableDatabase(),chatList[finalPosition][1]);
+											loadChatList();
+											ml_view.scrollTo(0,finalPosition*80); //todo bugs
 											Toast.makeText(MainActivity.this, "Deleted. "+finalPosition, Toast.LENGTH_SHORT).show();
 										}
 									})
@@ -363,7 +384,7 @@ public class MainActivity extends AppCompatActivity{
 							alertDialog2.show();
 							return true;
 						}
-					});
+					});*/
 				}
 			}
 		);

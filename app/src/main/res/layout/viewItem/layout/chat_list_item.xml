@@ -12,8 +12,8 @@
         android:layout_width="66dp"
         android:layout_height="66dp"
         android:layout_marginVertical="5dp"
-        android:layout_marginLeft="6dp"
-        android:layout_marginRight="2dp" />
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="2dp" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -23,24 +23,24 @@
             android:layout_width="wrap_content"
             android:layout_height="28dp"
             android:text="Zhong Wenliang"
-            android:textSize="23dp"
+            android:textSize="23sp"
             android:textStyle="bold"
-            android:layout_marginLeft="20dp"/>
+            android:layout_marginStart="20dp"/>
         <TextView
             android:id="@+id/chatListItem_last_msg"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:text="I love you. "
             android:layout_marginVertical="1dp"
-            android:layout_marginLeft="8dp"/>
+            android:layout_marginStart="8dp"/>
         <TextView
             android:id="@+id/chatListItem_last_chat_time"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
-            android:textSize="17dp"
+            android:textSize="17sp"
             android:text="20.03.06 18:49"
-            android:layout_marginLeft="188dp"/>
+            android:layout_marginStart="188dp"/>
     </LinearLayout>
 
 </LinearLayout>

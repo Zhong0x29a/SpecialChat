@@ -53,18 +53,21 @@ public class BackgroundTask extends Service{
 	 * Sync the last_msg under chat_list.db
 	 */
 	private void syncLatestMsg(){
-		ChatListSQLiteHelper cListSQLH=new ChatListSQLiteHelper(this,"chat_list.db",1);
-		String[][] chatList=cListSQLH.fetchChatList(cListSQLH.getReadableDatabase(),0);
-		
-		// Fetch last one message then update
-		String[] lastMsg;
-		for(int i=1;i<= (Integer.parseInt(chatList[0][0])) && i<=50;i++){
-			MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(this,
-					"msg_"+chatList[i][1]+".db",1);
-			lastMsg=msgSQLiteHelper.getLatestMsg(msgSQLiteHelper.getReadableDatabase());
-			cListSQLH.updateChatList(cListSQLH.getReadableDatabase(),chatList[i][1],lastMsg[1],lastMsg[0]);
+		try{
+			ChatListSQLiteHelper cListSQLH=new ChatListSQLiteHelper(this,"chat_list.db",1);
+			String[][] chatList=cListSQLH.fetchChatList(cListSQLH.getReadableDatabase(),0);
+			
+			// Fetch last one message then update
+			String[] lastMsg;
+			for(int i=1;i<=(Integer.parseInt(chatList[0][0]))&&i<=50;i++){
+				MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(this,"msg_"+chatList[i][1]+".db",1);
+				lastMsg=msgSQLiteHelper.getLatestMsg(msgSQLiteHelper.getReadableDatabase());
+				cListSQLH.updateChatList(cListSQLH.getReadableDatabase(),chatList[i][1],lastMsg[1],lastMsg[0]);
+			}
+			//		System.out.println("synced");
+		}catch(ArrayIndexOutOfBoundsException e){
+			e.printStackTrace();
 		}
-//		System.out.println("synced");
 	}
 	
 	// TODO: 16/03/20 finish this.

@@ -13,8 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="visible"
-        android:layout_weight="1">
+        android:visibility="visible">
 
         <!-- Main content -->
         <LinearLayout
@@ -22,12 +21,19 @@
             android:layout_height="0dp"
             android:orientation="vertical"
             android:layout_weight="1">
+
+
             <!-- Chats page -->
-            <ListView
-                android:id="@+id/main_chats_listView"
+            <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </ListView>
+                android:layout_height="wrap_content"
+                android:id="@+id/main_chat_recyclerView" />
+
+<!--            <ListView-->
+<!--                android:id="@+id/main_chats_listView"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content">-->
+<!--            </ListView>-->
 
             <!-- contacts page -->
             <LinearLayout
