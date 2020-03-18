@@ -67,7 +67,10 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 			return;
 		}
 		
+		// message content
 		holder.chat_msg_tv.setText(messages[index][4]);
+		
+		// message by who (style)
 		if(messages[index][1]!=null && messages[index][1].equals(my_id)){
 			holder.chat_msg_container.setGravity(Gravity.END);
 			holder.chat_msg_tv.setBackgroundResource(R.drawable.my_msg_style);
@@ -75,12 +78,16 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 			holder.chat_msg_container.setGravity(Gravity.START);
 			holder.chat_msg_tv.setBackgroundResource(R.drawable.ta_msg_style);
 		}
+		
+		// on item clicked
 		holder.chat_msg_container.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				// nothing to do here.
 			}
 		});
+		
+		// on item long clicked, delete action
 		holder.chat_msg_container.setOnLongClickListener(new View.OnLongClickListener(){
 			@Override
 			public boolean onLongClick(final View v){

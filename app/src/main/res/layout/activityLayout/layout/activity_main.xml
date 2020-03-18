@@ -26,7 +26,8 @@
             <!-- Chats page -->
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:background="#333"
                 android:id="@+id/main_chat_recyclerView" />
 
 <!--            <ListView-->

@@ -43,8 +43,6 @@ public class MainActivity extends AppCompatActivity{
 	static Timer checkLoginTimer;
 	static Timer refreshMsgTimer;
 	
-	Handler toastHandler=new Handler();
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -64,6 +62,8 @@ public class MainActivity extends AppCompatActivity{
 //		for(int i=1;i<=23;i++){
 //			h.insertNewMsg(h.getReadableDatabase(),1123592075+"",i+"",i+" I love you.");
 //			ChatListSQLiteHelper c=new ChatListSQLiteHelper(this,"chat_list.db",1);
+//			c.insertNewChatListItem(c.getReadableDatabase(),"4091"+i,"Little hao","2"+MyTools.getCurrentTime());
+			
 //			c.insertNewChatListItem(c.getReadableDatabase(),"1123592075","Little hao",""+MyTools.getCurrentTime());
 //		}
 //		ContactListSQLiteHelper c=new ContactListSQLiteHelper(MainActivity.this,"contact_list.db",1);
@@ -128,6 +128,7 @@ public class MainActivity extends AppCompatActivity{
 			case R.id.app_bar_login:
 				startActivity(new Intent(MainActivity.this,LoginActivity.class));
 				cancelRefreshTimers();
+//				finish();
 				return true;
 			case R.id.app_bar_about:
 				Toast.makeText(this,"Special Chat-1.0\n" +
@@ -169,7 +170,7 @@ public class MainActivity extends AppCompatActivity{
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.GONE);
 					findViewById(R.id.main_me).setVisibility(View.GONE);
-					loadChatList();
+					reloadChatList();
 				}
 			});
 			findViewById(R.id.menu_btn_contacts).setOnClickListener(new View.OnClickListener(){
@@ -185,6 +186,7 @@ public class MainActivity extends AppCompatActivity{
 			findViewById(R.id.menu_btn_moments).setOnClickListener(new View.OnClickListener(){
 				@Override
 				public void onClick(View v){
+//					loadChatList();
 					findViewById(R.id.main_chat_recyclerView).setVisibility(View.GONE);
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.VISIBLE);
@@ -294,11 +296,12 @@ public class MainActivity extends AppCompatActivity{
 		
 	}
 	
-	// to use recycleView
+	
+	ChatListItemAdapter adapter;
 	/**
 	 * Load Chat list ListView by Adapter
 	 * */
-	private void loadChatList(){
+	void loadChatList(){
 		MainActivity.this.runOnUiThread(
 			new Runnable(){
 				public void run(){
@@ -318,13 +321,11 @@ public class MainActivity extends AppCompatActivity{
 					LinearLayoutManager layoutManager=new LinearLayoutManager(MainActivity.this);
 					chatList_recycleView.setLayoutManager(layoutManager);
 					
-					final ChatListItemAdapter adapter=new ChatListItemAdapter(chatList);
+					adapter=new ChatListItemAdapter(chatList);
 					adapter.count=Integer.parseInt(chatList[0][0]);
 					
 					chatList_recycleView.setAdapter(adapter);
 					chatList_recycleView.setItemAnimator(new DefaultItemAnimator());
-					
-					
 					
 					// Fetch last one message.
 //					String[] lastMsg=new String[51];
@@ -367,12 +368,12 @@ public class MainActivity extends AppCompatActivity{
 									.setPositiveButton("Yeah", new DialogInterface.OnClickListener() {
 										@Override
 										public void onClick(DialogInterface dialogInterface, int i) {
-											//todo delete the chat item! by position
+											//to do delete the chat item! by position
 											ChatListSQLiteHelper chatListSQLiteHelper=
 													new ChatListSQLiteHelper(MainActivity.this,"chat_list.db",1);
 											chatListSQLiteHelper.deleteChatListItem(chatListSQLiteHelper.getReadableDatabase(),chatList[finalPosition][1]);
 											loadChatList();
-											ml_view.scrollTo(0,finalPosition*80); //todo bugs
+											ml_view.scrollTo(0,finalPosition*80); // bugs
 											Toast.makeText(MainActivity.this, "Deleted. "+finalPosition, Toast.LENGTH_SHORT).show();
 										}
 									})
@@ -391,9 +392,26 @@ public class MainActivity extends AppCompatActivity{
 	}
 	
 	/**
+	 * Reload the chat list
+	 */
+	void reloadChatList(){
+		ChatListSQLiteHelper chatListSQLiteHelper=
+				new ChatListSQLiteHelper(MainActivity.this,"chat_list.db",1);
+		/*
+		 * chatList[0][0]    -> total number
+		 * chatList[index][0] -> index (index>0)
+		 * chatList[index][1] -> user_id
+		 * chatList[index][2] -> nickname
+		 * chatList[index][3] -> last_chat_time
+		 * */
+		final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase(),0);
+		adapter.updateData(chatList);
+	}
+	
+	/**
 	 * Load Contacts List ListView by Adapter
 	 */
-	private void loadContactsList(){
+	void loadContactsList(){
 		MainActivity.this.runOnUiThread(
 			new Runnable(){
 				public void run(){
@@ -523,7 +541,7 @@ public class MainActivity extends AppCompatActivity{
 				ChatListSQLiteHelper clh=new ChatListSQLiteHelper(MainActivity.this,"chat_list.db",1);
 				clh.updateChatList(clh.getReadableDatabase(),friend_id,send_time,jsonTemp.getString("msg_content"));
 			}
-			loadChatList();
+			reloadChatList();
 			return 0;
 		}else if(data.getString("is_new_msg").equals("false")){
 			return 2;
@@ -612,6 +630,8 @@ public class MainActivity extends AppCompatActivity{
 		finish();
 	}
 	
+	
+	Handler toastHandler=new Handler();
 	/**
 	 * make a simple toast
 	 * @param info information to show
@@ -625,6 +645,7 @@ public class MainActivity extends AppCompatActivity{
 			}
 		});
 	}
+	
 	
 }
 
