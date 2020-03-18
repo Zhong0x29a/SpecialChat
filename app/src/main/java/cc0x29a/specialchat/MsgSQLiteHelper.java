@@ -10,6 +10,9 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  *
+ * Message SQLite helper
+ * Manager of local cached messages
+ *
  *  database    :msg_[user_id].db
  *  table       :msg
  *  column      :
@@ -22,6 +25,10 @@ import org.jetbrains.annotations.NotNull;
  */
 
 public class MsgSQLiteHelper extends SQLiteOpenHelper{
+	/**
+	 * Init the table at first time
+	 * @param db SQLite database
+	 */
 	@Override
 	public void onCreate(@NotNull SQLiteDatabase db){
 		String CREATE_TABLE_SQL=
@@ -36,7 +43,32 @@ public class MsgSQLiteHelper extends SQLiteOpenHelper{
 	}
 	
 	/**
-	 * Get chat record, 50 pieces is max each time.
+	 * Insert new message into SQLite.
+	 * @param db , the database
+	 * @param msg_by , integer, sender
+	 * @param send_time , integer, msg send time
+	 * @param msg_content , string, msg content
+	 */
+	void insertNewMsg(@NotNull SQLiteDatabase db,String msg_by,String send_time,
+	                  String msg_content){
+		String INSERT_NEW_MSG_SQL=
+				"insert into msg (msg_index,msg_by,is_read,send_time,msg_content) values(" +
+						"null," +
+						msg_by+"," +
+						"0," +
+						send_time+"," +
+						"'"+msg_content+"'" +
+						")";
+		try{
+			db.execSQL(INSERT_NEW_MSG_SQL);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Get chat record, start from position ,
+	 * 50 pieces is max each time.
 	 * @param db , the database.
 	 * @param position , count start from 0, so it should be 50*n (n>=0).
 	 * @return String[][] record
@@ -71,30 +103,6 @@ public class MsgSQLiteHelper extends SQLiteOpenHelper{
 	}
 	
 	/**
-	 * Insert new message into SQLite.
-	 * @param db , the database
-	 * @param msg_by , integer, sender
-	 * @param send_time , integer, msg send time
-	 * @param msg_content , string, msg content
-	 */
-	void insertNewMsg(@NotNull SQLiteDatabase db,String msg_by,String send_time,
-	                  String msg_content){
-		String INSERT_NEW_MSG_SQL=
-				"insert into msg (msg_index,msg_by,is_read,send_time,msg_content) values(" +
-						"null," +
-						msg_by+"," +
-						"0," +
-						send_time+"," +
-						"'"+msg_content+"'" +
-						")";
-		try{
-			db.execSQL(INSERT_NEW_MSG_SQL);
-		}catch(SQLException e){
-			e.printStackTrace();
-		}
-	}
-	
-	/**
 	 * Fetch latest one message
 	 * @param db SQLiteDatabase
 	 * @return a String[]
@@ -111,7 +119,23 @@ public class MsgSQLiteHelper extends SQLiteOpenHelper{
 			cursor.close();
 			return temp;
 		}
-		return new String[]{""};
+		return new String[]{"",""};
+	}
+	
+	/**
+	 * Delete a message by msg_index
+	 * @param db SQLite db
+	 * @param msg_index String msg_index
+	 */
+	void deleteMsg(@NotNull SQLiteDatabase db,String msg_index){
+		String DELETE_MSG_SQL=
+				"DELETE FROM msg WHERE msg_index="+msg_index;
+		
+		try{
+			db.execSQL(DELETE_MSG_SQL);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
 	}
 	
 	MsgSQLiteHelper(Context context,String name,int version){

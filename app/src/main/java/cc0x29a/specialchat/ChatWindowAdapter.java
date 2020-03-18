@@ -15,15 +15,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.jetbrains.annotations.NotNull;
 
 /*
- * Adapter for R.id.chatWindow_listView.
- * To show chat records
- * No more bugs !!!
+ * Adapter for R.id.chatWindow_recyclerView.
+ * To show chat history record
+ * No bugs yet .
  */
 
 public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH>{
-	String my_id;
-	private String[][] messages;
-	int count;
+	
+	String my_id; // my id
+	String ta_id; // ta id (other side)
+	private String[][] messages; // Record data
+	int count; // Item counts
 	
 	static class VH extends RecyclerView.ViewHolder{
 		final TextView chat_msg_tv;
@@ -39,22 +41,46 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 		this.messages = data;
 	}
 	
+	/**
+	 * Load more history record
+	 * @param newRecord new fetched chat history record from SQLite
+	 */
 	void addData(String[][] newRecord) {
 		
+		// if no more record
 		if(Integer.parseInt(newRecord[0][0])==0){
 			return;
 		}
 		
-		String[][] tempRecord=new String[messages.length+Integer.parseInt(newRecord[0][0])][5];
-		System.arraycopy(messages,0,tempRecord,0,messages.length);
+		// Fetch record from SQLite
+		String[][] recordTemp=new String[messages.length+Integer.parseInt(newRecord[0][0])][5];
+		
+		// Combine new fetched data and old data
+		System.arraycopy(messages,0,recordTemp,0,messages.length);
 		int index=1;
 		for(int i=messages.length;i<=messages.length+Integer.parseInt(newRecord[0][0])-1;i++){
-			tempRecord[i]=newRecord[index];
+			recordTemp[i]=newRecord[index];
 			index++;
 		}
-		messages=tempRecord;
+		
+		// set data
+		messages=recordTemp;
+		
+		// item counts
 		count=count+Integer.parseInt(newRecord[0][0]);
 //		notifyItemInserted(Integer.parseInt(newRecord[0][0])-1);
+		
+		// apply changes
+		notifyDataSetChanged();
+	}
+	
+	/**
+	 *  use when chat list updated
+	 * @param new_data new data
+	 */
+	void updateData(String[][] new_data) {
+		this.messages=new_data;
+		this.count=Integer.parseInt(new_data[0][0]);
 		notifyDataSetChanged();
 	}
 	
@@ -67,10 +93,10 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 			return;
 		}
 		
-		// message content
+		// show message content
 		holder.chat_msg_tv.setText(messages[index][4]);
 		
-		// message by who (style)
+		// set message by who (style)
 		if(messages[index][1]!=null && messages[index][1].equals(my_id)){
 			holder.chat_msg_container.setGravity(Gravity.END);
 			holder.chat_msg_tv.setBackgroundResource(R.drawable.my_msg_style);
@@ -97,8 +123,10 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 						.setPositiveButton("Yeah", new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialogInterface, int i) {
-								//todo delete the message! by index !
-								
+								// delete the message by index .
+								MsgSQLiteHelper helper=new MsgSQLiteHelper(v.getContext(),"msg_"+ta_id+".db",1);
+								helper.deleteMsg(helper.getReadableDatabase(),messages[index][0]);
+								//todo update list
 								Toast.makeText(v.getContext(), "Deleted", Toast.LENGTH_SHORT).show();
 							}
 						})
@@ -113,13 +141,16 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 				return true;
 			}
 		});
+		
 	}
 	
+	// Item counts
 	@Override
 	public int getItemCount() {
 		return this.count;
 	}
 	
+	// def method
 	@NotNull
 	@Override
 	public VH onCreateViewHolder(ViewGroup parent,int viewType) {

@@ -10,6 +10,8 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  *
+ * Chat list SQLite cached in local
+ *
  *      database    :chat_list.db
  *      table       :chat_list
  *      column(5->6)   :
@@ -23,7 +25,10 @@ import org.jetbrains.annotations.NotNull;
  */
 
 public class ChatListSQLiteHelper extends SQLiteOpenHelper{
-	
+	/**
+	 * Init the table at first time
+	 * @param db SQLite database
+	 */
 	@Override
 	public void onCreate(@NotNull SQLiteDatabase db){
 		String CREATE_TABLE_SQL=
@@ -42,10 +47,6 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 		}
 	}
 	
-	void syncLastMsg(@NotNull SQLiteDatabase db){
-		//todo
-	}
-	
 	/**
 	 * Update chat list or add new row
 	 * @param db    writeable SQLiteDatabase
@@ -60,8 +61,12 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 			if(cursor.moveToFirst()){
 				cursor.close();
 				String SQL="update chat_list "+
-						"set last_chat_time="+
-						last_chat_time+" ";
+						"set ";
+				if(!"".equals(last_chat_time)){
+					SQL+="last_chat_time="+last_chat_time+" ";
+				}else{
+					SQL+="last_chat_time=0 ";
+				}
 				if(last_msg!=null){
 					SQL+=", last_msg='"+last_msg+"' ";
 				}
@@ -143,6 +148,7 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 	void deleteChatListItem(@NotNull SQLiteDatabase db,String user_id){
 		String DELETE_CHAT_LIST_ITEM_SQL=
 				"DELETE FROM chat_list WHERE user_id="+user_id;
+		
 		try{
 			db.execSQL(DELETE_CHAT_LIST_ITEM_SQL);
 		}catch(SQLException e){

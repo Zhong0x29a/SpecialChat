@@ -72,6 +72,9 @@ public class ServerThread extends Thread {
 				case "0008": // fetch contact info.
 					msgSend=ProcessAction.action_0008(dataJsonReturn);
 					break;
+				case "0009": // search contact.
+					msgSend=ProcessAction.action_0009(dataJsonReturn);
+					break;
 				default: // action code error.
 					msgSend="{\"msg\":\"ERROR!! (1000)\"}";
 					break;
@@ -82,12 +85,14 @@ public class ServerThread extends Thread {
 //			msgSend="{\"status\":\"true\"}";
 			
 			// send data to client
-			outputStream = socket.getOutputStream();
-			assert msgSend!=null; //
-			outputStream.write(msgSend.getBytes(StandardCharsets.UTF_8));
-			outputStream.flush();
-			
-			socket.shutdownOutput();
+			if(msgSend!=null && !msgSend.equals("")){
+				outputStream=socket.getOutputStream();
+				//assert msgSend!=null;
+				outputStream.write(msgSend.getBytes(StandardCharsets.UTF_8));
+				outputStream.flush();
+				
+				socket.shutdownOutput();
+			}
 		}catch(IOException|NullPointerException e){
 			e.printStackTrace();
 		}finally{

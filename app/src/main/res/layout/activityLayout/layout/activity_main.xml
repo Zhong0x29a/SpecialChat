@@ -86,6 +86,7 @@
                     android:textColor="#eee">
                 </TextView>
             </LinearLayout>
+
         </LinearLayout>
 
         <!-- Bottom menu -->

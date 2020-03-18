@@ -92,6 +92,7 @@ class MsgCacheSQLite{
 		return 1;
 	}
 	
+	//todo fetch by is_read/is_fetch !!
 	/**
 	 * Fetch new messages by user_id.
 	 * @param user_id String

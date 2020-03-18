@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,14 +38,15 @@ public class ChatActivity extends AppCompatActivity{
 		super.onStart();
 		init();
 		
+		// where history loaded to
 		history_position=0;
 		
 		Bundle bundle = this.getIntent().getExtras();
 		
-		ta_id= (bundle != null) ? bundle.getString("user_id") : null;
-		nickname= (bundle != null) ? bundle.getString("nickname") : null;
+		ta_id= (null != bundle) ? bundle.getString("user_id") : null;
+		nickname= (null != bundle) ? bundle.getString("nickname") : null;
 		
-		if(nickname!=null){
+		if(null!=nickname){
 			this.setTitle(nickname);
 		}
 		
@@ -63,7 +65,9 @@ public class ChatActivity extends AppCompatActivity{
 			final ChatWindowAdapter adapter=new ChatWindowAdapter(record);
 			adapter.count=Integer.parseInt(record[0][0]);
 			adapter.my_id=my_id;
+			adapter.ta_id=ta_id;
 			recordRecyclerView.setAdapter(adapter);
+			
 			recordRecyclerView.setItemAnimator(new DefaultItemAnimator());
 			
 			layoutManager.setReverseLayout(true);
@@ -74,7 +78,7 @@ public class ChatActivity extends AppCompatActivity{
 				private int firstVisibleItemPosition;
 				
 				@Override
-				public void onScrolled(RecyclerView recyclerView, int dx, int dy){
+				public void onScrolled(@NotNull RecyclerView recyclerView,int dx,int dy){
 					super.onScrolled(recyclerView, dx, dy);
 					
 					RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
@@ -87,16 +91,17 @@ public class ChatActivity extends AppCompatActivity{
 				}
 				
 				@Override
-				public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+				public void onScrollStateChanged(@NotNull RecyclerView recyclerView,int newState) {
 					super.onScrollStateChanged(recyclerView, newState);
 					RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
 					
+					assert layoutManager!=null;
 					int totalItemCount = layoutManager.getItemCount();
 					
 					if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-						if (lastVisibleItemPosition == totalItemCount - 1){
+						if ((totalItemCount - 1) == lastVisibleItemPosition){
 							
-							history_position=history_position+50;
+							history_position+=50;
 							
 							MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,
 									"msg_"+ta_id+".db",1);
@@ -106,14 +111,13 @@ public class ChatActivity extends AppCompatActivity{
 							}else{
 								adapter.addData(record);
 							}
-						} else if (firstVisibleItemPosition == 0) {
-							//at bottom
 						}
+//						else if (firstVisibleItemPosition == 0) {
+//							// when scroll to the bottom
+//						}
 					}
 				}
 			});
-			
-			
 			
 			
 		}else{

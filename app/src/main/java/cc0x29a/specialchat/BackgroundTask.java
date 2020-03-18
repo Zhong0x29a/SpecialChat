@@ -27,7 +27,7 @@ public class BackgroundTask extends Service{
 			public void run(){
 				syncLatestMsg();
 			}
-		},200,60000);
+		},200,5000);
 		
 		syncCL.schedule(new TimerTask(){
 			@Override
@@ -59,12 +59,32 @@ public class BackgroundTask extends Service{
 			
 			// Fetch last one message then update
 			String[] lastMsg;
-			for(int i=1;i<=(Integer.parseInt(chatList[0][0]))&&i<=50;i++){
+			for(int i=1;i<=(Integer.parseInt(chatList[0][0]))&&i<50;i++){
 				MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(this,"msg_"+chatList[i][1]+".db",1);
 				lastMsg=msgSQLiteHelper.getLatestMsg(msgSQLiteHelper.getReadableDatabase());
 				cListSQLH.updateChatList(cListSQLH.getReadableDatabase(),chatList[i][1],lastMsg[1],lastMsg[0]);
 			}
+			
+			Intent intent = new Intent();
+			intent.putExtra("todo_action", "reLoadChatList");
+			intent.setAction("location.action");
+			sendBroadcast(intent);
+			
+			
+//			ChatListSQLiteHelper chatListSQLiteHelper=
+//					new ChatListSQLiteHelper(BackgroundTask.this,"chat_list.db",1);
+			/*
+			 * chatList[0][0]    -> total number
+			 * chatList[index][0] -> index (index>0)
+			 * chatList[index][1] -> user_id
+			 * chatList[index][2] -> nickname
+			 * chatList[index][3] -> last_chat_time
+			 * */
+//			chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase(),0);
+			
+//			MainActivity.adapter.updateData(chatList);
 			//		System.out.println("synced");
+//			MainActivity.reloadChatList();
 		}catch(ArrayIndexOutOfBoundsException e){
 			e.printStackTrace();
 		}

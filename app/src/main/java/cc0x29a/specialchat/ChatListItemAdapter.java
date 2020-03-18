@@ -19,10 +19,11 @@ import org.jetbrains.annotations.NotNull;
 
 
 /*
- * Adapter for ListView of chat list.
+ * the Adapter for RecyclerView of main chat list, R.id.main_chat_recyclerView
  */
 
 public class ChatListItemAdapter extends RecyclerView.Adapter<ChatListItemAdapter.ViewHolder>{
+	
 	private String[][] data;
 	int count;
 	
@@ -44,6 +45,11 @@ public class ChatListItemAdapter extends RecyclerView.Adapter<ChatListItemAdapte
 		this.data=data;
 	}
 	
+	/**
+	 * use when delete data from chat list
+	 * @param new_data new data from SQLite
+	 * @param position deleted data's position
+ 	 */
 	private void deleteData(String[][] new_data,int position) {
 		this.data=new_data;
 		this.count=Integer.parseInt(new_data[0][0]);
@@ -51,6 +57,10 @@ public class ChatListItemAdapter extends RecyclerView.Adapter<ChatListItemAdapte
 		notifyDataSetChanged();
 	}
 	
+	/**
+	 *  use when chat list updated
+	 * @param new_data new data
+	 */
 	void updateData(String[][] new_data) {
 		this.data=new_data;
 		this.count=Integer.parseInt(new_data[0][0]);
@@ -62,6 +72,7 @@ public class ChatListItemAdapter extends RecyclerView.Adapter<ChatListItemAdapte
 		final int index=position+1;
 		
 //		holder.iv_profilePic.setImageResource();
+// 		Glide.with(context).load("http://pic18.nipic.com/20120203/2457331_104836021342_2.jpg").into(holder.imageView);
 		
 		// set Nickname
 		if(this.data[index][2]==null || this.data[index][2].isEmpty()){
@@ -84,6 +95,7 @@ public class ChatListItemAdapter extends RecyclerView.Adapter<ChatListItemAdapte
 		holder.ll_container.setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View v){
+				// Start chat activity, send user_id and ta's nickname by bundle
 				Intent intent=new Intent(v.getContext(),ChatActivity.class);
 				Bundle bundle=new Bundle();
 				bundle.putString("user_id", data[index][1]);
@@ -98,9 +110,9 @@ public class ChatListItemAdapter extends RecyclerView.Adapter<ChatListItemAdapte
 		holder.ll_container.setOnLongClickListener(new View.OnLongClickListener(){
 			@Override
 			public boolean onLongClick(final View v){
-				
+				// show a alert for user to decide whether to delete the chat list item
 				AlertDialog alertDialog2 = new AlertDialog.Builder(v.getContext())
-						.setTitle("Notices")
+						.setTitle("Notice")
 						.setMessage("Sure to delete this chat? \n'"+data[index][1]+"'")
 						.setPositiveButton("Yeah", new DialogInterface.OnClickListener() {
 							@Override
@@ -127,8 +139,10 @@ public class ChatListItemAdapter extends RecyclerView.Adapter<ChatListItemAdapte
 				return true;
 			}
 		});
+		
 	}
 	
+	// items count
 	@Override
 	public int getItemCount(){
 		return this.count;
@@ -215,4 +229,3 @@ public class ChatListItemAdapter extends BaseAdapter{
 	}
 }
 */
-//		Glide.with(context).load("http://pic18.nipic.com/20120203/2457331_104836021342_2.jpg").into(holder.imageView);

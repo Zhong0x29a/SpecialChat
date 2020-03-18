@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- Main layout for ChatActivity -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,19 +10,13 @@
     android:id="@+id/chat_linear"
     android:gravity="bottom">
 
-
+    <!-- Show chat history -->
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:id="@+id/chatWindow_recyclerView"
         android:layout_weight="1"/>
-<!--    <ListView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:id="@+id/chatWindow_listView"-->
-<!--        android:layout_gravity="bottom"-->
-<!--        android:gravity="bottom">-->
-<!--    </ListView>-->
+
     <LinearLayout
         android:id="@+id/chat_input_linear"
         android:layout_width="match_parent"
@@ -28,6 +25,7 @@
         android:padding="0dp"
         android:gravity="center">
 
+        <!-- Message input EditText -->
         <EditText
             android:id="@+id/chat_EditText"
             android:layout_width="wrap_content"
@@ -42,11 +40,26 @@
             android:autofillHints=""
             android:inputType="text" />
 
+        <!-- Send button -->
         <Button
             android:layout_width="wrap_content"
             android:layout_height="54dp"
             android:id="@+id/chat_btn_send"
             android:text="Send"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:background="@drawable/set_button_selector"/>
+
     </LinearLayout>
+
 </LinearLayout>
+
+<!-- Layout end here -->
+
+
+    <!--    <ListView-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:id="@+id/chatWindow_listView"-->
+    <!--        android:layout_gravity="bottom"-->
+    <!--        android:gravity="bottom">-->
+    <!--    </ListView>-->

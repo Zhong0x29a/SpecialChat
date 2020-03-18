@@ -24,8 +24,10 @@
         android:orientation="horizontal"
         android:gravity="center"
         android:layout_marginHorizontal="6dp">
+
+        <!-- Input  -->
         <EditText
-            android:id="@+id/text_user_id"
+            android:id="@+id/search_user_id"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="77"

@@ -9,13 +9,13 @@ package cc0x29a.specialchat;
 *
 * */
 
-/*
-*
-* */
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -40,13 +40,12 @@ import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity{
 	
-	static Timer checkLoginTimer;
-	static Timer refreshMsgTimer;
+	LocationReceiver locationReceiver;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-		// todo: this can set a lunch page !!
+		// next ver to do: this can set a lunch page !!
 		setContentView(R.layout.activity_main);
 		
 		// This would run at the very first lunch.
@@ -56,9 +55,19 @@ public class MainActivity extends AppCompatActivity{
 		init();
 		
 		
-		//test code
-		
-//		MsgSQLiteHelper h=new MsgSQLiteHelper(this,"msg_1123592075.db",1);
+		//test codes
+//		String a="{\"a1\":\"abc1\",\"b\":\"{'c1':'cde1'}\"}";
+//		try{
+//			JSONObject json=new JSONObject(a);
+//			System.out.println(json.getString("a1"));
+//			System.out.println(json.getString("b"));
+//			String b=json.getString("b");
+//			JSONObject json2=new JSONObject(b);
+//			System.out.println(json2.getString("c1"));
+//		}catch(JSONException e){
+//			e.printStackTrace();
+//		}
+		//		MsgSQLiteHelper h=new MsgSQLiteHelper(this,"msg_1123592075.db",1);
 //		for(int i=1;i<=23;i++){
 //			h.insertNewMsg(h.getReadableDatabase(),1123592075+"",i+"",i+" I love you.");
 //			ChatListSQLiteHelper c=new ChatListSQLiteHelper(this,"chat_list.db",1);
@@ -72,31 +81,55 @@ public class MainActivity extends AppCompatActivity{
 //		System.out.println(a.length);
 //		finish();
 		
-		//test code
+		//test codes end
 		
+		
+		locationReceiver = new LocationReceiver();
+		IntentFilter filter = new IntentFilter();
+		filter.addAction("location.action");
+		registerReceiver(locationReceiver, filter);
 		
 	}
 	
+	// choose whether to redirect page
 	@Override
 	protected void onStart(){
 		super.onStart();
 		 redirect();
 	}
 	
+	// run normalMode()
 	@Override
 	protected void onRestart(){
 		super.onRestart();
 		normalMode();
 	}
 	
+	// clear timers & stop background tasks
 	@Override
 	protected void onDestroy(){
 		super.onDestroy();
 		cancelRefreshTimers();
 		stopService(new Intent(this,BackgroundTask.class));
+		unregisterReceiver(locationReceiver);
 	}
 	
-	// set menu.
+	
+	public class LocationReceiver extends BroadcastReceiver{
+		@Override
+		public void onReceive(Context context,Intent intent) {
+			String intentAction = intent.getAction();
+			if(intentAction!=null&&intentAction.equals("location.action")){
+				if("reLoadChatList".equals(intent.getStringExtra("todo_action"))){
+					reloadChatList();
+				}
+			}
+		}
+	}
+	
+	
+	
+	// set action menu.
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater=getMenuInflater();
@@ -186,7 +219,6 @@ public class MainActivity extends AppCompatActivity{
 			findViewById(R.id.menu_btn_moments).setOnClickListener(new View.OnClickListener(){
 				@Override
 				public void onClick(View v){
-//					loadChatList();
 					findViewById(R.id.main_chat_recyclerView).setVisibility(View.GONE);
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.VISIBLE);
@@ -236,14 +268,19 @@ public class MainActivity extends AppCompatActivity{
 		}
 	}
 	
+	// def 2 Timer(s)
+	static Timer checkLoginTimer;
+	static Timer refreshMsgTimer;
 	/**
 	 * Normal mode perform.
 	 */
 	private void normalMode(){
 		startService(new Intent(this,BackgroundTask.class));
 		
+		// to clear timers in front
 		cancelRefreshTimers();
-		// set timer tasks
+		
+		// set (or reset) timer tasks
 		checkLoginTimer=new Timer();
 		refreshMsgTimer=new Timer();
 		
@@ -297,7 +334,7 @@ public class MainActivity extends AppCompatActivity{
 	}
 	
 	
-	ChatListItemAdapter adapter;
+	public static ChatListItemAdapter adapter;
 	/**
 	 * Load Chat list ListView by Adapter
 	 * */
@@ -395,17 +432,23 @@ public class MainActivity extends AppCompatActivity{
 	 * Reload the chat list
 	 */
 	void reloadChatList(){
-		ChatListSQLiteHelper chatListSQLiteHelper=
-				new ChatListSQLiteHelper(MainActivity.this,"chat_list.db",1);
-		/*
-		 * chatList[0][0]    -> total number
-		 * chatList[index][0] -> index (index>0)
-		 * chatList[index][1] -> user_id
-		 * chatList[index][2] -> nickname
-		 * chatList[index][3] -> last_chat_time
-		 * */
-		final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase(),0);
-		adapter.updateData(chatList);
+		MainActivity.this.runOnUiThread(
+				new Runnable(){
+					public void run(){
+						ChatListSQLiteHelper chatListSQLiteHelper=
+								new ChatListSQLiteHelper(MainActivity.this,"chat_list.db",1);
+						/*
+						 * chatList[0][0]    -> total number
+						 * chatList[index][0] -> index (index>0)
+						 * chatList[index][1] -> user_id
+						 * chatList[index][2] -> nickname
+						 * chatList[index][3] -> last_chat_time
+						 * */
+						final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase(),0);
+						adapter.updateData(chatList);
+					}
+				}
+		);
 	}
 	
 	/**
@@ -449,7 +492,7 @@ public class MainActivity extends AppCompatActivity{
 									.setPositiveButton("Yeah", new DialogInterface.OnClickListener() {
 										@Override
 										public void onClick(DialogInterface dialogInterface, int i) {
-											//todo delete the item! by index
+											// next ver to do delete the item! by index
 											Toast.makeText(MainActivity.this, "Deleted", Toast.LENGTH_SHORT).show();
 										}
 									})
@@ -629,7 +672,6 @@ public class MainActivity extends AppCompatActivity{
 		startActivity(new Intent(MainActivity.this,LoginActivity.class));
 		finish();
 	}
-	
 	
 	Handler toastHandler=new Handler();
 	/**
