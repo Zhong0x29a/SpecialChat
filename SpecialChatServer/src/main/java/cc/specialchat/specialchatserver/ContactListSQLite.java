@@ -45,6 +45,7 @@ class ContactListSQLite{
 		System.out.println("---- init table contact_list_"+user_id+" done! ----\n");
 	}
 	
+	// edit two tables
 	static boolean addNewContact(String user_a,String user_b,String nickname_a,String nickname_b){
 		try{
 			Connection co=getConnection();

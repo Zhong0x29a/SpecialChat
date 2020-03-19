@@ -64,7 +64,7 @@ class ProcessAction{
 			String token_key=JsonData.getString("token_key");
 			if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
 				String[][] msg_temp;
-				if((msg_temp=MsgCacheSQLite.fetchMsg(user_id)).length>0){
+				if((msg_temp=MsgCacheSQLite.fetchMsg(user_id)).length>0){ // todo: set is_fetched
 					StringBuffer p;
 					if(msg_temp != null){
 						p=new StringBuffer("{\"new_msg_num\":\""+msg_temp[0][0]+"\",");
@@ -170,6 +170,7 @@ class ProcessAction{
 			String user_id=JsonData.getString("user_id");
 			String token_key=JsonData.getString("token_key");
 			if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
+//				ContactListSQLite.addNewContact();
 				return null;
 				//todo here
 			}else{
@@ -219,16 +220,17 @@ class ProcessAction{
 			String[][] data;
 			if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)
 				&& (data=UserInfoSQLite.searchUsers(search_id))!=null){
-				// todo
-				return "{'status':'true'," +
-						"'number':''," +
-						"'user_id':'"+data[1]+"'," +
-						"'user_name':'"+data[3]+"'" +
-						"}";
+				StringBuilder temp_msg=new StringBuilder("{'status':'true','number':'"+data[0][0]+"'" );
+				for(int i=1;i<=Integer.parseInt(data[0][0]);i++){
+//					temp_msg.append(",\"index_"+i+"\":\"{'user_id':'"+data[i][1]+"','user_name':'"+data[i][3]+"'}\"");
+					temp_msg.append(",\"index_").append(i).append("\":\"{'user_id':'").append(data[i][1])
+							.append("','user_name':'").append(data[i][3]).append("'}\"");
+				}
+				temp_msg.append("}");
 				
-				
+				return temp_msg.toString();
 			}else{
-				return "{'status':'false','msg':'login info error!'}";
+				return "{'status':'false','msg':'something error!'}";
 			}
 		}catch(JSONException|NullPointerException e){
 			e.printStackTrace();

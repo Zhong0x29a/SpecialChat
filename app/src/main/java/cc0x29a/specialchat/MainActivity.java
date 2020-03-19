@@ -331,8 +331,7 @@ public class MainActivity extends AppCompatActivity{
 		
 	}
 	
-	
-	public static ChatListItemAdapter adapter;
+	static ChatListItemAdapter adapter;
 	/**
 	 * Load Chat list ListView by Adapter
 	 * */
@@ -342,6 +341,7 @@ public class MainActivity extends AppCompatActivity{
 				public void run(){
 					ChatListSQLiteHelper chatListSQLiteHelper=
 							new ChatListSQLiteHelper(MainActivity.this,"chat_list.db",1);
+					
 					/*
 					* chatList[0][0]    -> total number
 					* chatList[index][0] -> index (index>0)
