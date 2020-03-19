@@ -41,7 +41,6 @@ import java.util.TimerTask;
 public class MainActivity extends AppCompatActivity{
 	
 	LocationReceiver locationReceiver;
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -86,7 +85,7 @@ public class MainActivity extends AppCompatActivity{
 		
 		locationReceiver = new LocationReceiver();
 		IntentFilter filter = new IntentFilter();
-		filter.addAction("location.action");
+		filter.addAction("location.backgroundTask.action");
 		registerReceiver(locationReceiver, filter);
 		
 	}
@@ -110,23 +109,22 @@ public class MainActivity extends AppCompatActivity{
 	protected void onDestroy(){
 		super.onDestroy();
 		cancelRefreshTimers();
-		stopService(new Intent(this,BackgroundTask.class));
+		stopService(new Intent(this,BackgroundTaskService.class));
 		unregisterReceiver(locationReceiver);
 	}
 	
-	
+	// Communicate with BackgroundTaskService
 	public class LocationReceiver extends BroadcastReceiver{
 		@Override
 		public void onReceive(Context context,Intent intent) {
 			String intentAction = intent.getAction();
-			if(intentAction!=null&&intentAction.equals("location.action")){
+			if(null!=intentAction && intentAction.equals("location.backgroundTask.action")){
 				if("reLoadChatList".equals(intent.getStringExtra("todo_action"))){
 					reloadChatList();
 				}
 			}
 		}
 	}
-	
 	
 	
 	// set action menu.
@@ -275,7 +273,7 @@ public class MainActivity extends AppCompatActivity{
 	 * Normal mode perform.
 	 */
 	private void normalMode(){
-		startService(new Intent(this,BackgroundTask.class));
+		startService(new Intent(this,BackgroundTaskService.class));
 		
 		// to clear timers in front
 		cancelRefreshTimers();

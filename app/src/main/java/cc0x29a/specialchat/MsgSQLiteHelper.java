@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
  */
 
 public class MsgSQLiteHelper extends SQLiteOpenHelper{
+	
 	/**
 	 * Init the table at first time
 	 * @param db SQLite database

@@ -7,12 +7,12 @@ import android.os.IBinder;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class BackgroundTask extends Service{
+public class BackgroundTaskService extends Service{
 	
 	static Timer syncLM;
 	static Timer syncCL;
 	
-	public BackgroundTask(){
+	public BackgroundTaskService(){
 	}
 	
 	@Override
@@ -67,12 +67,12 @@ public class BackgroundTask extends Service{
 			
 			Intent intent = new Intent();
 			intent.putExtra("todo_action", "reLoadChatList");
-			intent.setAction("location.action");
+			intent.setAction("location.backgroundTask.action");
 			sendBroadcast(intent);
 			
 			
 //			ChatListSQLiteHelper chatListSQLiteHelper=
-//					new ChatListSQLiteHelper(BackgroundTask.this,"chat_list.db",1);
+//					new ChatListSQLiteHelper(BackgroundTaskService.this,"chat_list.db",1);
 			/*
 			 * chatList[0][0]    -> total number
 			 * chatList[index][0] -> index (index>0)

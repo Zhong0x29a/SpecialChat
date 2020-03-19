@@ -215,11 +215,20 @@ class ProcessAction{
 		try{
 			String user_id=JsonData.getString("user_id");
 			String token_key=JsonData.getString("token_key");
-			if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
-				return null;
-				//todo here
+			String search_id=JsonData.getString("search_id");
+			String[][] data;
+			if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)
+				&& (data=UserInfoSQLite.searchUsers(search_id))!=null){
+				// todo
+				return "{'status':'true'," +
+						"'number':''," +
+						"'user_id':'"+data[1]+"'," +
+						"'user_name':'"+data[3]+"'" +
+						"}";
+				
+				
 			}else{
-				return "{'status':'false','msg':'Error(PA1009+inn)'}";
+				return "{'status':'false','msg':'login info error!'}";
 			}
 		}catch(JSONException|NullPointerException e){
 			e.printStackTrace();

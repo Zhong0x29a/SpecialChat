@@ -74,6 +74,10 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 		notifyDataSetChanged();
 	}
 	
+	void deleteData(){
+	
+	}
+	
 	/**
 	 *  use when chat list updated
 	 * @param new_data new data

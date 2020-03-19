@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
  */
 
 public class ChatListSQLiteHelper extends SQLiteOpenHelper{
+	
 	/**
 	 * Init the table at first time
 	 * @param db SQLite database
@@ -73,6 +74,7 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 				SQL+="where user_id="+user_id;
 				db.execSQL(SQL);
 			}else{
+				cursor.close();
 				insertNewChatListItem(db,user_id,user_id+"",last_chat_time);
 			}
 		}catch(SQLException e){

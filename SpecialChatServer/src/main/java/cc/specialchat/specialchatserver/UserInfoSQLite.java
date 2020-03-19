@@ -250,4 +250,39 @@ class UserInfoSQLite{
 		}
 	}
 	
+	static String[][] searchUsers(String id){
+		try{
+			Connection co=getConnection();
+			Statement st=co.createStatement();
+			String QUERY_SQL="select * from user_info like '%"+id+"%';"; // search
+			ResultSet re=st.executeQuery(QUERY_SQL);
+			String[][] userInfo=new String[51][7];
+			if(re.next()){
+				int index=0;
+				do{
+					index++;
+					userInfo[index][0]=re.getInt("user_index")+"";
+					userInfo[index][1]=re.getInt("user_id")+"";
+					userInfo[index][2]=re.getInt("user_phone")+"";
+					userInfo[index][3]=re.getString("user_name");
+					userInfo[index][4]=re.getString("password");
+					userInfo[index][5]=re.getInt("login_time")+"";
+					userInfo[index][6]=re.getString("token_key");
+				}while(re.next() && index<50);
+				
+				re.close();
+				st.close();
+				co.close();
+				userInfo[0][0]=index+""; // data counts
+			}else{
+				st.close();
+				co.close();
+			}
+			return userInfo;
+		}catch(SQLException|ClassNotFoundException e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 }
