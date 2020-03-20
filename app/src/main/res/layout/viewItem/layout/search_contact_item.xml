@@ -3,8 +3,9 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="56dp"
-    android:background="#efefef"
-    android:id="@+id/search_contact_container">
+    android:background="@drawable/set_button_selector"
+    android:id="@+id/search_contact_container"
+    android:layout_margin="3dp">
 
     <TextView
         android:id="@+id/search_contact_user_name"

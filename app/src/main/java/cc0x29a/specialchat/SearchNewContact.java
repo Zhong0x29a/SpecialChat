@@ -11,7 +11,11 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SearchNewContact extends AppCompatActivity{
 	
@@ -37,6 +41,13 @@ public class SearchNewContact extends AppCompatActivity{
 					return;
 				}
 				
+				Pattern p_id=Pattern.compile("^[0-9]{4,11}$");
+				Matcher m_id=p_id.matcher(uid);
+				if(!m_id.matches()){
+					Toast.makeText(SearchNewContact.this,"Search key should be 0-9 and 4-11 bits! ",Toast.LENGTH_SHORT).show();
+					return;
+				}
+				
 				if(null!=user_id && null!=token_key){
 					SocketWithServer socket=new SocketWithServer();
 					socket.DataSend="{" +
@@ -48,22 +59,33 @@ public class SearchNewContact extends AppCompatActivity{
 							"}";
 					JSONObject data_temp=socket.startSocket();
 					
+					try{
+						if(data_temp!=null && data_temp.getString("status").equals("true")){
+							int number=Integer.parseInt(data_temp.getString("number"));
+							String[][] data=new String[number][2];
+							//todo: debug
+							for(int i=0;i<number;i++){
+								data[i][0]=data_temp.getString("user_id");
+								data[i][1]=data_temp.getString("user_name");
+							}
+							
+							RecyclerView recyclerView=findViewById(R.id.search_recyclerView);
+							LinearLayoutManager layoutManager=new LinearLayoutManager(SearchNewContact.this);
+							recyclerView.setLayoutManager(layoutManager);
+							
+							SearchContactAdapter adapter=new SearchContactAdapter(data);
+							adapter.count=number;
+							
+							recyclerView.setAdapter(adapter);
+							recyclerView.setItemAnimator(new DefaultItemAnimator());
+						}else{
+							Toast.makeText(SearchNewContact.this,"Perhaps Network made a mistake? ",Toast.LENGTH_SHORT).show();
+						}
+					}catch(JSONException e){
+						e.printStackTrace();
+					}
 					
-					String[][] data=new String[1][1]; //todo
-					//todo: deal with the data upon
-//					for()
 					
-					RecyclerView recyclerView=findViewById(R.id.search_recyclerView);
-					LinearLayoutManager layoutManager=new LinearLayoutManager(SearchNewContact.this);
-					recyclerView.setLayoutManager(layoutManager);
-					
-					SearchContactAdapter adapter=new SearchContactAdapter(data);
-					adapter.count=Integer.parseInt(data[0][0]);
-					
-					recyclerView.setAdapter(adapter);
-					recyclerView.setItemAnimator(new DefaultItemAnimator());
-					
-					return;
 					
 				}else{
 					Toast.makeText(SearchNewContact.this,"login info error!",Toast.LENGTH_LONG).show();

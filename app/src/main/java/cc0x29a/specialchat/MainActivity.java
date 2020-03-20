@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity{
 		//test codes end
 		
 		
+		// listen messages from background task service
 		locationReceiver = new LocationReceiver();
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("location.backgroundTask.action");
@@ -104,7 +105,15 @@ public class MainActivity extends AppCompatActivity{
 		normalMode();
 	}
 	
-	// clear timers & stop background tasks
+	// stop background tasks service
+	@Override
+	protected void onStop(){
+		super.onStop();
+		stopService(new Intent(this,BackgroundTaskService.class));
+		unregisterReceiver(locationReceiver);
+	}
+	
+	// clear timers & stop background tasks service
 	@Override
 	protected void onDestroy(){
 		super.onDestroy();
@@ -147,7 +156,6 @@ public class MainActivity extends AppCompatActivity{
 			case R.id.app_bar_search:
 				startActivity(new Intent(MainActivity.this,SearchNewContact.class));
 				cancelRefreshTimers();
-//				Toast.makeText(this, "Search! ", Toast.LENGTH_SHORT).show();
 				return true;
 			case R.id.app_bar_stopRefresh:
 				cancelRefreshTimers();
@@ -175,24 +183,9 @@ public class MainActivity extends AppCompatActivity{
 	 * init views & some settings
 	 */
 	private void init(){
-		//		LinearLayout main_linear_layout=findViewById(R.id.main_linear_layout);
-		//		int width=MyTools.getViewHeight(main_linear_layout,false);
-		//		int height=MyTools.getViewHeight(main_linear_layout,true);
-		{
-			//			LinearLayout.LayoutParams params=(LinearLayout.LayoutParams)findViewById(R.id.menu_btn_chats).getLayoutParams();
-			//			params.width=width/4;
-			//			findViewById(R.id.menu_btn_chats).setLayoutParams(params);
-			//			params=(LinearLayout.LayoutParams)findViewById(R.id.menu_btn_contacts).getLayoutParams();
-			//			params.width=width/4;
-			//			findViewById(R.id.menu_btn_contacts).setLayoutParams(params);
-			//			params=(LinearLayout.LayoutParams)findViewById(R.id.menu_btn_moments).getLayoutParams();
-			//			params.width=width/4;
-			//			findViewById(R.id.menu_btn_moments).setLayoutParams(params);
-			//			params=(LinearLayout.LayoutParams)findViewById(R.id.menu_btn_me).getLayoutParams();
-			//			params.width=width/4;
-			//			findViewById(R.id.menu_btn_me).setLayoutParams(params);
-		}
 		loadChatList();
+		
+		// init buttons
 		{
 			findViewById(R.id.menu_btn_chats).setOnClickListener(new View.OnClickListener(){
 				@Override
@@ -286,13 +279,14 @@ public class MainActivity extends AppCompatActivity{
 		checkLoginTimer.schedule(new TimerTask(){
 			@Override public void run(){
 				try{
-					if(checkLogin()==2){
+					int status=checkLogin();
+					if(status==2){
 						changeViewToFontLogin();
-					}else if(checkLogin()==1){
+					}else if(status==1){
 						showToast("Ohh! Poor Network... :(",Toast.LENGTH_LONG);
 					}
 				}catch(JSONException e){
-					e.printStackTrace();
+//					e.printStackTrace();
 				}
 			}
 		},17,120000);
@@ -321,10 +315,10 @@ public class MainActivity extends AppCompatActivity{
 									e.printStackTrace();
 								}
 							}
-						},1700,23333);
+						},1888,23333);
 					}
 				}catch(JSONException e){
-					e.printStackTrace();
+//					e.printStackTrace();
 				}
 			}
 		},1700,5888);
@@ -350,7 +344,6 @@ public class MainActivity extends AppCompatActivity{
 					* chatList[index][3] -> last_chat_time
 					 * */
 					final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase(),0);
-					
 					
 					final RecyclerView chatList_recycleView=findViewById(R.id.main_chat_recyclerView);
 					LinearLayoutManager layoutManager=new LinearLayoutManager(MainActivity.this);
@@ -421,6 +414,8 @@ public class MainActivity extends AppCompatActivity{
 							return true;
 						}
 					});*/
+					
+					
 				}
 			}
 		);
@@ -542,7 +537,6 @@ public class MainActivity extends AppCompatActivity{
 	 *      1->Network error
 	 *      2->No new msg
 	 *      3->Unknown Error..
-	 *
 	 *
  	 */
 	private int refreshNewMsg() throws JSONException{

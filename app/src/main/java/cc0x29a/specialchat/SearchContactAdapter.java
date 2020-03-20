@@ -1,5 +1,7 @@
 package cc0x29a.specialchat;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,12 +9,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class SearchContactAdapter extends RecyclerView.Adapter<SearchContactAdapter.ViewHolder>{
 	
 	int count;
-	String[][] data;
+	private String[][] data;
 	
 	@NonNull
 	@Override
@@ -22,11 +25,24 @@ public class SearchContactAdapter extends RecyclerView.Adapter<SearchContactAdap
 	}
 	
 	@Override
-	public void onBindViewHolder(@NonNull ViewHolder holder,int position){
-		final int index=position+1;
+	public void onBindViewHolder(@NonNull ViewHolder holder,final int position){
+//		final int index=position+1;
 		
-		//todo
-//		holder.tv_user_name.setText(data[index][1]);
+		//todo debug!!
+		
+		holder.tv_user_name.setText(data[position][1]);
+		holder.tv_user_id.setText(data[position][0]);
+		
+		holder.ll_container.setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v){
+				Intent intent=new Intent(v.getContext(),ContactDetailActivity.class);
+				Bundle bundle=new Bundle();
+				bundle.putString("user_id",data[position][0]);
+				intent.putExtras(bundle);
+				ContextCompat.startActivity(v.getContext(),intent,bundle);
+			}
+		});
 	}
 	
 	@Override

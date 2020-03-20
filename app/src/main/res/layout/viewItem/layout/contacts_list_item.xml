@@ -3,7 +3,8 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="56dp"
-    android:background="#efefef">
+    android:background="@drawable/set_button_selector"
+    android:paddingHorizontal="12dp">
 
     <ImageView
         android:id="@+id/contactsListItem_profile_pic"
