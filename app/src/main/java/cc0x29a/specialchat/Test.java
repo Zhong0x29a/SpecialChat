@@ -27,7 +27,7 @@ public class Test extends SQLiteOpenHelper{
 		db.execSQL(CREATE_TABLE_SQL);
 	}
 	
-	public String[][] getChatList(SQLiteDatabase db){ //todo need test!!
+	public String[][] getChatList(SQLiteDatabase db){
 		String[][] chatList=new String[50][5];
 		chatList[0][4]="0";
 		int index=0;

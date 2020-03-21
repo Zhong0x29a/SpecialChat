@@ -1,5 +1,6 @@
 package cc0x29a.specialchat;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
@@ -29,7 +30,29 @@ public class ContactDetailActivity extends AppCompatActivity{
 			@Override
 			public void onClick(View v){
 				//todo add contact
-				Toast.makeText(ContactDetailActivity.this,"fine",Toast.LENGTH_SHORT).show();
+				SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
+				String user_id=preferences.getString("user_id",null);
+				String token_key=preferences.getString("token_key",null);
+				if(token_key==null || user_id==null){
+					Toast.makeText(ContactDetailActivity.this,"Login info error!",Toast.LENGTH_LONG).show();
+					return;
+				}
+				SocketWithServer socket=new SocketWithServer();
+				socket.DataSend="{" +
+						"'client':'SCC-1.0'," +
+						"'action':'0007'," +
+						"'ta_id':'"+ta_id+"'," +
+						"'user_id':'"+user_id+"'," +
+						"'token_key':'"+token_key+"'" +
+						"}";
+				JSONObject data=socket.startSocket();
+				try{
+					if(data!=null && data.getString("status").equals("true")){
+						Toast.makeText(ContactDetailActivity.this,"Succeed!",Toast.LENGTH_SHORT).show();
+					}
+				}catch(JSONException e){
+					e.printStackTrace();
+				}
 			}
 		});
 		
@@ -44,7 +67,6 @@ public class ContactDetailActivity extends AppCompatActivity{
 							"'ta_id':'"+ta_id+"'," +
 							"'secret':'I love you.'" +
 							"}";
-					socket.delay=3;
 					JSONObject data=socket.startSocket();
 					if(data!=null && data.getString("status").equals("true")){
 						TextView tv_user_name=findViewById(R.id.detail_userName);

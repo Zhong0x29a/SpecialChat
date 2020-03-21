@@ -596,7 +596,9 @@ public class MainActivity extends AppCompatActivity{
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 		String user_id=preferences.getString("user_id",null);
 		String token_key=preferences.getString("token_key",null);
-		
+		if(token_key==null || user_id==null){
+			return 2;
+		}
 		String jsonMsg="{" +
 				"\"client\":\"SCC-1.0\"," +
 				"\"action\":\"0001\"," +

@@ -169,10 +169,16 @@ class ProcessAction{
 		try{
 			String user_id=JsonData.getString("user_id");
 			String token_key=JsonData.getString("token_key");
+			String ta_id=JsonData.getString("ta_id");
 			if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
-//				ContactListSQLite.addNewContact();
-				return null;
-				//todo here
+				String[] my_info=UserInfoSQLite.fetchUserInfo(user_id);
+				String[] ta_info=UserInfoSQLite.fetchUserInfo(ta_id);
+				if(my_info!=null && ta_info!=null &&
+						ContactListSQLite.addNewContact(my_info[1],ta_info[1],my_info[3],ta_info[3])){
+					return "{'status':'true'}";
+				}else{
+					return "{'status':'false','msg':'Error(PA1007+inn+inn)'}";
+				}
 			}else{
 				return "{'status':'false','msg':'Error(PA1007+inn)'}";
 			}

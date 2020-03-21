@@ -45,7 +45,19 @@ class ContactListSQLite{
 		System.out.println("---- init table contact_list_"+user_id+" done! ----\n");
 	}
 	
+	static boolean checkIsFriend(String user_a,String user_b){
+		return false;// todo here
+	}
+	
 	// edit two tables
+	/**
+	 * Insert two tables to make friend
+	 * @param user_a a
+	 * @param user_b b
+	 * @param nickname_a a
+	 * @param nickname_b b
+	 * @return boolean
+	 */
 	static boolean addNewContact(String user_a,String user_b,String nickname_a,String nickname_b){
 		try{
 			Connection co=getConnection();
