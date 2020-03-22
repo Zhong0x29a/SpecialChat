@@ -18,7 +18,7 @@ import java.nio.charset.StandardCharsets;
  * @version 1.0
  * date: 20.03.05
  *
- * Todo: encrypt all data!!
+ * To do: encrypt all data!!
  * **/
 class SocketWithServer{
 	String DataSend=null;

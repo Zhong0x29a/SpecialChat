@@ -6,7 +6,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-//todo decide whether keep this!
 
 /**
  *
@@ -25,7 +24,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class ContactListSQLiteHelper extends SQLiteOpenHelper{
 	
 	/**
-	 * Fetch contact list , max num is 50 each time //todo: but total just 50,need complete!!
+	 * Fetch contact list , max num is 50 each time //to do: but total just 50,need complete!!
 	 * @param db SQLite database
 	 * @return a String[][]
 	 */

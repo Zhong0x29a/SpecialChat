@@ -92,7 +92,7 @@ public class BackgroundTaskService extends Service{
 	
 	// TODO: 16/03/20 finish this.
 	private void syncContactsList(){
-	
+		SocketWithServer socket=new SocketWithServer();
 	}
 
 }

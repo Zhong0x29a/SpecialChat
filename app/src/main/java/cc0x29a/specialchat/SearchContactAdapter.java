@@ -28,7 +28,6 @@ public class SearchContactAdapter extends RecyclerView.Adapter<SearchContactAdap
 	public void onBindViewHolder(@NonNull ViewHolder holder,final int position){
 //		final int index=position+1;
 		
-		//todo debug!!
 		
 		holder.tv_user_name.setText(data[position][1]);
 		holder.tv_user_id.setText(data[position][0]);

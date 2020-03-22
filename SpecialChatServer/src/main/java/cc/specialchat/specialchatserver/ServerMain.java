@@ -11,6 +11,16 @@ public class ServerMain{
 //		MsgCacheSQLite.init();
 //		exit(0);
 		// start program.
+		
+		// first run, init.
+//		try{
+//			UserInfoSQLite.init();
+//			MsgCacheSQLite.init();
+//			exit(0);
+//		}catch(SQLException|ClassNotFoundException e){
+//			e.printStackTrace();
+//		}
+		
 		try{
 			ServerSocket serverSocket = new ServerSocket(21027);
 			if(args.length>0 && args[0].equals("e")){

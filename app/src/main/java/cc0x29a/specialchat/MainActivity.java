@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity{
 		
 		
 		//test codes
-//		String a="{\"a1\":\"abc1\",\"b\":\"{'c1':'cde1'}\"}";
+/*		String a="{\"a1\":\"abc1\",\"b\":\"{'c1':'cde1'}\"}";
 //		try{
 //			JSONObject json=new JSONObject(a);
 //			System.out.println(json.getString("a1"));
@@ -78,16 +78,9 @@ public class MainActivity extends AppCompatActivity{
 //		c.insertNewContact(c.getReadableDatabase(),"1123592075","Apple2","Haaaa pi","13360417480");
 //		String[][] a=new String[][]{{"a","b","a","s"},{"a","b","c"},{"a","b","c"}};
 //		System.out.println(a.length);
-//		finish();
-		
+//		finish();*/
 		//test codes end
 		
-		
-		// listen messages from background task service
-		locationReceiver = new LocationReceiver();
-		IntentFilter filter = new IntentFilter();
-		filter.addAction("location.backgroundTask.action");
-		registerReceiver(locationReceiver, filter);
 		
 	}
 	
@@ -96,6 +89,12 @@ public class MainActivity extends AppCompatActivity{
 	protected void onStart(){
 		super.onStart();
 		 redirect();
+		 
+		// listen messages from background task service
+		locationReceiver = new LocationReceiver();
+		IntentFilter filter = new IntentFilter();
+		filter.addAction("location.backgroundTask.action");
+		registerReceiver(locationReceiver, filter);
 	}
 	
 	// run normalMode()
@@ -110,7 +109,11 @@ public class MainActivity extends AppCompatActivity{
 	protected void onStop(){
 		super.onStop();
 		stopService(new Intent(this,BackgroundTaskService.class));
-		unregisterReceiver(locationReceiver);
+		try{
+			unregisterReceiver(locationReceiver);
+		}catch(Exception e){
+			//
+		}
 	}
 	
 	// clear timers & stop background tasks service
@@ -119,7 +122,11 @@ public class MainActivity extends AppCompatActivity{
 		super.onDestroy();
 		cancelRefreshTimers();
 		stopService(new Intent(this,BackgroundTaskService.class));
-		unregisterReceiver(locationReceiver);
+		try{
+			unregisterReceiver(locationReceiver);
+		}catch(Exception e){
+			//
+		}
 	}
 	
 	// Communicate with BackgroundTaskService
@@ -325,7 +332,7 @@ public class MainActivity extends AppCompatActivity{
 		
 	}
 	
-	static ChatListItemAdapter adapter;
+	static ChatListItemAdapter adapterChatList;
 	/**
 	 * Load Chat list ListView by Adapter
 	 * */
@@ -349,10 +356,10 @@ public class MainActivity extends AppCompatActivity{
 					LinearLayoutManager layoutManager=new LinearLayoutManager(MainActivity.this);
 					chatList_recycleView.setLayoutManager(layoutManager);
 					
-					adapter=new ChatListItemAdapter(chatList);
-					adapter.count=Integer.parseInt(chatList[0][0]);
+					adapterChatList=new ChatListItemAdapter(chatList);
+					adapterChatList.count=Integer.parseInt(chatList[0][0]);
 					
-					chatList_recycleView.setAdapter(adapter);
+					chatList_recycleView.setAdapter(adapterChatList);
 					chatList_recycleView.setItemAnimator(new DefaultItemAnimator());
 					
 					// Fetch last one message.
@@ -438,12 +445,13 @@ public class MainActivity extends AppCompatActivity{
 						 * chatList[index][3] -> last_chat_time
 						 * */
 						final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase(),0);
-						adapter.updateData(chatList);
+						adapterChatList.updateData(chatList);
 					}
 				}
 		);
 	}
 	
+	static ContactsListItemAdapter contactsListItemAdapter;
 	/**
 	 * Load Contacts List ListView by Adapter
 	 */
@@ -457,7 +465,7 @@ public class MainActivity extends AppCompatActivity{
 							contactListSQLiteHelper.fetchContactsList(contactListSQLiteHelper.getReadableDatabase());
 					
 					ListView contacts_listView=findViewById(R.id.main_contacts_listView);
-					ContactsListItemAdapter contactsListItemAdapter=
+					contactsListItemAdapter=
 							new ContactsListItemAdapter(MainActivity.this);
 					contactsListItemAdapter.contactsInfo=contactsList;
 					contactsListItemAdapter.count=Integer.parseInt(contactsList[0][0]);
@@ -500,6 +508,27 @@ public class MainActivity extends AppCompatActivity{
 					});
 				}
 			}
+		);
+	}
+	
+	//todo here
+	void reloadContactList(){
+		MainActivity.this.runOnUiThread(
+				new Runnable(){
+					public void run(){
+						ChatListSQLiteHelper chatListSQLiteHelper=
+								new ChatListSQLiteHelper(MainActivity.this,"chat_list.db",1);
+						/*
+						 * chatList[0][0]    -> total number
+						 * chatList[index][0] -> index (index>0)
+						 * chatList[index][1] -> user_id
+						 * chatList[index][2] -> nickname
+						 * chatList[index][3] -> last_chat_time
+						 * */
+						final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase(),0);
+//						contactsListItemAdapter.updateData(chatList);
+					}
+				}
 		);
 	}
 	

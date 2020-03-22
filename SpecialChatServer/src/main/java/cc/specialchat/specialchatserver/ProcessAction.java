@@ -246,7 +246,21 @@ class ProcessAction{
 		
 	}
 	
-	
+	static String action_0010(JSONObject JsonData){
+		try{
+			String user_id=JsonData.getString("user_id");
+			String token_key=JsonData.getString("token_key");
+			String[] contacts;
+			if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key) &&
+					(contacts=ContactListSQLite.fetchContacts(user_id))!=null){
+				//todo
+			}
+			return "";
+		}catch(JSONException e){
+			e.printStackTrace();
+			return "{'status':'false','msg':'Error(PA1010)'}";
+		}
+	}
 }
 
 /*

@@ -46,6 +46,12 @@ class ContactListSQLite{
 		System.out.println("---- init table contact_list_"+user_id+" done! ----\n");
 	}
 	
+	/**
+	 * Check two users whether is friend
+	 * @param user_a a
+	 * @param user_b b
+	 * @return boolean
+	 */
 	static boolean checkIsFriend(String user_a,String user_b){
 		try{
 			Connection con=getConnection();
@@ -109,6 +115,24 @@ class ContactListSQLite{
 		}catch(SQLException|ClassNotFoundException e){
 			e.printStackTrace();
 			return false;
+		}
+	}
+	
+	// fetch user's contacts list
+	static String[] fetchContacts(String user_id){
+		try{
+			Connection con=getConnection();
+			Statement st=con.createStatement();
+			String QUERY_SQL="";
+			ResultSet re=st.executeQuery(QUERY_SQL);
+			String[] contacts=new String[50];
+			while(re.next()){
+				//todo fetch
+			}
+			return contacts;
+		}catch(ClassNotFoundException|SQLException e){
+			e.printStackTrace();
+			return null;
 		}
 	}
 	
