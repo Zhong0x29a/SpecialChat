@@ -29,7 +29,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 		findViewById(R.id.btn_add_or_chat).setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View v){
-				//todo add contact
+				//add contact
 				SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 				String user_id=preferences.getString("user_id",null);
 				String token_key=preferences.getString("token_key",null);

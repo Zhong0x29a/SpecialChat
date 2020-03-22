@@ -63,7 +63,7 @@ public class SearchNewContact extends AppCompatActivity{
 						if(data_temp!=null && data_temp.getString("status").equals("true")){
 							int number=Integer.parseInt(data_temp.getString("number"));
 							String[][] data=new String[number][2];
-							//todo: debug
+							//to do: debug
 							for(int i=0;i<number;i++){
 								data[i][0]=data_temp.getString("user_id");
 								data[i][1]=data_temp.getString("user_name");
@@ -93,6 +93,6 @@ public class SearchNewContact extends AppCompatActivity{
 			}
 		});
 		
-		//todo recycleView
+		//to do recycleView
 	}
 }
