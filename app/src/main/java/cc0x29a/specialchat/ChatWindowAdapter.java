@@ -74,10 +74,6 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 		notifyDataSetChanged();
 	}
 	
-	void deleteData(){
-	
-	}
-	
 	/**
 	 *  use when chat list updated
 	 * @param new_data new data
@@ -123,14 +119,14 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 			public boolean onLongClick(final View v){
 				AlertDialog alertDialog2 = new AlertDialog.Builder(v.getContext())
 						.setTitle("Notices")
-						.setMessage("Sure to delete this message? \n'"+messages[index][4]+"'\n"+position)
+						.setMessage("Sure to delete this message? \n'"+messages[index][4]+"'("+position+")\nOnce delete, data cannot be recovered.")
 						.setPositiveButton("Yeah", new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialogInterface, int i) {
 								// delete the message by index .
 								MsgSQLiteHelper helper=new MsgSQLiteHelper(v.getContext(),"msg_"+ta_id+".db",1);
 								helper.deleteMsg(helper.getReadableDatabase(),messages[index][0]);
-								//todo update list
+								notifyItemRemoved(position);
 								Toast.makeText(v.getContext(), "Deleted", Toast.LENGTH_SHORT).show();
 							}
 						})

@@ -2,6 +2,7 @@ package cc.specialchat.specialchatserver;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -46,7 +47,29 @@ class ContactListSQLite{
 	}
 	
 	static boolean checkIsFriend(String user_a,String user_b){
-		return false;// todo here
+		try{
+			Connection con=getConnection();
+			Statement st=con.createStatement();
+			String QUERY_SQL_A="select index_num from contact_list_"+user_a+" where ta_id="+user_b;
+			String QUERY_SQL_B="select index_num from contact_list_"+user_b+" where ta_id="+user_a;
+			ResultSet re_a=st.executeQuery(QUERY_SQL_A);
+			ResultSet re_b=st.executeQuery(QUERY_SQL_B);
+			if(re_a.next() && re_b.next()){
+				re_a.close();
+				re_b.close();
+				st.close();
+				con.close();
+				return true;
+			}
+			re_a.close();
+			re_b.close();
+			st.close();
+			con.close();
+			return false;
+		}catch(ClassNotFoundException|SQLException e){
+			e.printStackTrace();
+			return true;
+		}
 	}
 	
 	// edit two tables

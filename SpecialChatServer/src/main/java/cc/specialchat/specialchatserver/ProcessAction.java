@@ -64,7 +64,7 @@ class ProcessAction{
 			String token_key=JsonData.getString("token_key");
 			if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
 				String[][] msg_temp;
-				if((msg_temp=MsgCacheSQLite.fetchMsg(user_id)).length>0){ // todo: set is_fetched
+				if((msg_temp=MsgCacheSQLite.fetchMsg(user_id)).length>0){
 					StringBuffer p;
 					if(msg_temp != null){
 						p=new StringBuffer("{\"new_msg_num\":\""+msg_temp[0][0]+"\",");
@@ -174,6 +174,7 @@ class ProcessAction{
 				String[] my_info=UserInfoSQLite.fetchUserInfo(user_id);
 				String[] ta_info=UserInfoSQLite.fetchUserInfo(ta_id);
 				if(my_info!=null && ta_info!=null &&
+						!ContactListSQLite.checkIsFriend(my_info[1],ta_info[1]) &&
 						ContactListSQLite.addNewContact(my_info[1],ta_info[1],my_info[3],ta_info[3])){
 					return "{'status':'true'}";
 				}else{

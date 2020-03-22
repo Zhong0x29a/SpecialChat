@@ -85,7 +85,7 @@ public class BackgroundTaskService extends Service{
 //			MainActivity.adapter.updateData(chatList);
 			//		System.out.println("synced");
 //			MainActivity.reloadChatList();
-		}catch(ArrayIndexOutOfBoundsException e){
+		}catch(Exception e){
 			e.printStackTrace();
 		}
 	}

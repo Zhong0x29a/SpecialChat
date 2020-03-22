@@ -92,20 +92,21 @@ class MsgCacheSQLite{
 		return 1;
 	}
 	
-	//todo fetch by is_read/is_fetched !!
 	/**
-	 * Fetch new messages by user_id.
+	 * Fetch new messages by user_id. once fetched , delete the msg
 	 * @param user_id String
 	 * @return String[][] fetched msg and info
 	 */
 	static String[][] fetchMsg(String user_id){
 		try{
 			Connection connection=getConnection();
+//			connection.setAutoCommit(false);
 			Statement statement=connection.createStatement();
 			
 			String QUERY_SQL="select * from msg_cache where to_id="+user_id+";";
 			ResultSet resultSet=statement.executeQuery(QUERY_SQL);
 			String[][] msg=new String[51][4]; // 50 pieces for max each time.
+			String DELETE_SQL;
 			int index=0;
 			while(resultSet.next() && index<50){
 				index++;
@@ -113,7 +114,9 @@ class MsgCacheSQLite{
 				msg[index][1]=resultSet.getInt("from_id")+"";
 				msg[index][2]=resultSet.getString("msg_content");
 				msg[index][3]=resultSet.getInt("send_time")+"";
-				//to do: next ver. , update is_read;
+				DELETE_SQL="delete from msg_cache where msg_index="+msg[index][0];
+				statement.executeUpdate(DELETE_SQL);
+//				connection.commit();
 			}
 			msg[0][0]=index+"";
 			return msg;
