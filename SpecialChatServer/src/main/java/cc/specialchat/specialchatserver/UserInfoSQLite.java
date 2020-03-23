@@ -255,7 +255,7 @@ class UserInfoSQLite{
 		try{
 			Connection co=getConnection();
 			Statement st=co.createStatement();
-			String QUERY_SQL="select * from user_info like '%"+id+"%';"; // search
+			String QUERY_SQL="select * from user_info where user_id like '%"+id+"%';"; // search
 			ResultSet re=st.executeQuery(QUERY_SQL);
 			String[][] userInfo=new String[51][7];
 			if(re.next()){

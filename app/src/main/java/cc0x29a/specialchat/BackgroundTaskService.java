@@ -48,7 +48,7 @@ public class BackgroundTaskService extends Service{
 //					e.printStackTrace();
 				}
 			}
-		},8888,120000);
+		},6666,60000);
 		
 	}
 	
@@ -121,10 +121,12 @@ public class BackgroundTaskService extends Service{
 		JSONObject data=socket.startSocket();
 		
 		ContactListSQLiteHelper helper=new ContactListSQLiteHelper(this,"contact_list.db",1);
+		
 		// parse data;
 		if(data!=null && data.getString("status").equals("true")){
 			for(int i=1;i<=Integer.parseInt(data.getString("number"));i++){
 				helper.updateContactList(helper.getReadableDatabase(),data.getString("user_id"),data.getString("nickname"));
+				
 			}
 			
 			Intent intent = new Intent();
@@ -132,6 +134,10 @@ public class BackgroundTaskService extends Service{
 			intent.setAction("location.backgroundTask.action");
 			sendBroadcast(intent);
 		}
+		
+//		for(int i=0;i<=10;i++){
+//
+//		}
 		
 	}
 

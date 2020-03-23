@@ -60,7 +60,7 @@ class ContactListSQLite{
 			String QUERY_SQL_B="select index_num from contact_list_"+user_b+" where ta_id="+user_a;
 			ResultSet re_a=st.executeQuery(QUERY_SQL_A);
 			ResultSet re_b=st.executeQuery(QUERY_SQL_B);
-			if(re_a.next() && re_b.next()){
+			if(re_a.next() || re_b.next()){
 				re_a.close();
 				re_b.close();
 				st.close();

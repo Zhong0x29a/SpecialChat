@@ -1,184 +1,191 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#333"
-    android:padding="8dp">
-
-    <!-- Title -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/signUp_page"
-        android:textSize="36sp"
-        android:textColor="#eee"
-        android:gravity="center"
-        android:layout_marginVertical="23dp"
-        android:paddingHorizontal="0dp"
-        android:paddingVertical="6dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/User_ID"
-        android:textColor="#eee"
-        android:textSize="18sp"/>
+    android:layout_height="fill_parent"
+    android:fillViewport="true">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
-        <TextView
-            android:id="@+id/sign_user_id"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="80"
-            android:ems="10"
-            android:text=""
-            android:textSize="20sp"
-            android:hint="@string/User_ID"
-            android:textColor="#222"
-            android:background="@drawable/set_button_selector"
-            android:paddingHorizontal="18dp"
-            android:paddingVertical="8dp"
-            android:layout_marginVertical="8dp"
-            android:autofillHints="user_id"
-            android:focusable="false"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="25"
-            android:text="New"
-            android:id="@+id/signUp_btn_new_user_id"/>
+        android:orientation="vertical"
+        android:background="#333"
+        android:padding="8dp">
+
+
+            <!-- Title -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/signUp_page"
+                android:textSize="36sp"
+                android:textColor="#eee"
+                android:gravity="center"
+                android:layout_marginVertical="23dp"
+                android:paddingHorizontal="0dp"
+                android:paddingVertical="6dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/User_ID"
+                android:textColor="#eee"
+                android:textSize="18sp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+                <TextView
+                    android:id="@+id/sign_user_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="80"
+                    android:ems="10"
+                    android:text=""
+                    android:textSize="20sp"
+                    android:hint="@string/User_ID"
+                    android:textColor="#222"
+                    android:background="@drawable/set_button_selector"
+                    android:paddingHorizontal="18dp"
+                    android:paddingVertical="8dp"
+                    android:layout_marginVertical="8dp"
+                    android:autofillHints="user_id"
+                    android:focusable="false"/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="25"
+                    android:text="New"
+                    android:id="@+id/signUp_btn_new_user_id"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Phone"
+                android:textColor="#eee"
+                android:textSize="18sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <EditText
+                    android:id="@+id/sign_user_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="text|phone"
+                    android:textSize="20sp"
+                    android:hint="@string/Phone"
+                    android:textColor="#222"
+                    android:background="@drawable/set_button_selector"
+                    android:paddingHorizontal="18dp"
+                    android:paddingVertical="8dp"
+                    android:autofillHints="phone" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/user_name"
+                android:textColor="#eee"
+                android:textSize="18sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <EditText
+                    android:id="@+id/sign_user_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:textSize="20sp"
+                    android:hint="@string/user_name"
+                    android:textColor="#222"
+                    android:background="@drawable/set_button_selector"
+                    android:paddingHorizontal="18dp"
+                    android:paddingVertical="8dp"
+                    android:autofillHints="user name" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/password"
+                android:textColor="#eee"
+                android:textSize="18sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <EditText
+                    android:id="@+id/sign_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPassword"
+                    android:textSize="20sp"
+                    android:hint="@string/password"
+                    android:textColor="#222"
+                    android:background="@drawable/set_button_selector"
+                    android:paddingHorizontal="18dp"
+                    android:paddingVertical="8dp"
+                    android:autofillHints="password" />
+
+                <EditText
+                    android:id="@+id/sign_confirm_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPassword"
+                    android:textSize="20sp"
+                    android:hint="@string/confirm_password"
+                    android:textColor="#222"
+                    android:background="@drawable/set_button_selector"
+                    android:paddingHorizontal="18dp"
+                    android:paddingVertical="8dp"
+                    android:autofillHints="password" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/invite_code"
+                android:textColor="#eee"
+                android:textSize="18sp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <EditText
+                    android:id="@+id/sign_invite_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:textSize="20sp"
+                    android:hint="@string/invite_code"
+                    android:textColor="#222"
+                    android:background="@drawable/set_button_selector"
+                    android:paddingHorizontal="18dp"
+                    android:paddingVertical="8dp"
+                    android:autofillHints="password" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_signUp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sing_up"
+                android:textSize="21sp"
+                android:layout_marginHorizontal="99dp"
+                android:layout_marginVertical="26dp"
+                android:background="@drawable/set_button_selector"/>
+
+
     </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Phone"
-        android:textColor="#eee"
-        android:textSize="18sp"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <EditText
-            android:id="@+id/sign_user_phone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="text|phone"
-            android:textSize="20sp"
-            android:hint="@string/Phone"
-            android:textColor="#222"
-            android:background="@drawable/set_button_selector"
-            android:paddingHorizontal="18dp"
-            android:paddingVertical="8dp"
-            android:autofillHints="phone" />
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/user_name"
-        android:textColor="#eee"
-        android:textSize="18sp"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <EditText
-            android:id="@+id/sign_user_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="text"
-            android:textSize="20sp"
-            android:hint="@string/user_name"
-            android:textColor="#222"
-            android:background="@drawable/set_button_selector"
-            android:paddingHorizontal="18dp"
-            android:paddingVertical="8dp"
-            android:autofillHints="user name" />
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/password"
-        android:textColor="#eee"
-        android:textSize="18sp"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <EditText
-            android:id="@+id/sign_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPassword"
-            android:textSize="20sp"
-            android:hint="@string/password"
-            android:textColor="#222"
-            android:background="@drawable/set_button_selector"
-            android:paddingHorizontal="18dp"
-            android:paddingVertical="8dp"
-            android:autofillHints="password" />
-
-        <EditText
-            android:id="@+id/sign_confirm_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPassword"
-            android:textSize="20sp"
-            android:hint="@string/confirm_password"
-            android:textColor="#222"
-            android:background="@drawable/set_button_selector"
-            android:paddingHorizontal="18dp"
-            android:paddingVertical="8dp"
-            android:autofillHints="password" />
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/invite_code"
-        android:textColor="#eee"
-        android:textSize="18sp"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <EditText
-            android:id="@+id/sign_invite_code"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="text"
-            android:textSize="20sp"
-            android:hint="@string/invite_code"
-            android:textColor="#222"
-            android:background="@drawable/set_button_selector"
-            android:paddingHorizontal="18dp"
-            android:paddingVertical="8dp"
-            android:autofillHints="password" />
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btn_signUp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/sing_up"
-        android:textSize="21sp"
-        android:layout_marginHorizontal="99dp"
-        android:layout_marginVertical="26dp"
-        android:background="@drawable/set_button_selector"/>
-
-</LinearLayout>
+</ScrollView>

@@ -98,7 +98,7 @@ public class ContactListSQLiteHelper extends SQLiteOpenHelper{
 		}else{
 			cursor.close();
 			// insert
-//			insertNewContact(db,user_id,"",nickname,"");
+			insertNewContact(db,user_id,"",nickname,"");
 		}
 	}
 	

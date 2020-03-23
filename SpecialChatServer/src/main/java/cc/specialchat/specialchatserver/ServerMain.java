@@ -2,10 +2,11 @@ package cc.specialchat.specialchatserver;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 
 public class ServerMain{
 	
-	public static void main(String[] args){
+	public static void main(String[] args) throws SQLException, ClassNotFoundException{
 		// test code.
 //		MsgCacheSQLite.init();
 //		String t="{\"a\":'asd','dsa':\"dsa\"}";
@@ -19,7 +20,7 @@ public class ServerMain{
 //		try{
 //			UserInfoSQLite.init();
 //			MsgCacheSQLite.init();
-//			exit(0);
+//		exit(0);
 //		}catch(SQLException|ClassNotFoundException e){
 //			e.printStackTrace();
 //		}

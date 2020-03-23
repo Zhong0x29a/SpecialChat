@@ -28,7 +28,7 @@ class MsgCacheSQLite{
 	private static Connection getConnection() throws SQLException, ClassNotFoundException{
 		Class.forName("org.sqlite.JDBC");
 		//c.setAutoCommit(false);
-		return DriverManager.getConnection("jdbc:sqlite:user_info.db");
+		return DriverManager.getConnection("jdbc:sqlite:msg_cache.db");
 	}
 	
 	/**

@@ -64,9 +64,11 @@ public class SearchNewContact extends AppCompatActivity{
 							int number=Integer.parseInt(data_temp.getString("number"));
 							String[][] data=new String[number][2];
 							//to do: debug
+							 JSONObject temp;
 							for(int i=0;i<number;i++){
-								data[i][0]=data_temp.getString("user_id");
-								data[i][1]=data_temp.getString("user_name");
+								temp=new JSONObject(data_temp.getString("index_"+(i+1)));
+								data[i][0]=temp.getString("user_id");
+								data[i][1]=temp.getString("user_name");
 							}
 							
 							RecyclerView recyclerView=findViewById(R.id.search_recyclerView);

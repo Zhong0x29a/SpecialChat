@@ -98,7 +98,7 @@ class ProcessAction{
 		try{
 			String user_id=JsonData.getString("user_id");
 			String token_key=JsonData.getString("token_key");
-			String to_id=JsonData.getString("to_id");
+			String to_id=JsonData.getString("to");
 			String msg_content=JsonData.getString("msg_content");
 			int send_time;
 			if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key) &&
@@ -246,6 +246,11 @@ class ProcessAction{
 		
 	}
 	
+	/**
+	 * Fetch user's contact list
+	 * @param JsonData data
+	 * @return msg
+	 */
 	static String action_0010(JSONObject JsonData){
 		try{
 			String user_id=JsonData.getString("user_id");
@@ -267,6 +272,27 @@ class ProcessAction{
 		}catch(JSONException e){
 			e.printStackTrace();
 			return "{'status':'false','msg':'Error(PA1010)'}";
+		}
+	}
+	
+	/**
+	 * Check if is friend
+	 * @param JsonData JSONObject
+	 * @return msg
+	 */
+	static String action_0011(JSONObject JsonData){
+		try{
+			String my_id=JsonData.getString("my_id");
+			String ta_id=JsonData.getString("ta_id");
+			if(my_id!=null && ta_id!=null && JsonData.getString("secret").equals("I love you.") &&
+					ContactListSQLite.checkIsFriend(my_id,ta_id)){
+				return "{'status':'true','is_friend':'true'}";
+			}else{
+				return "{'status':'false','is_friend':'false'}";
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return "{'status':'false','is_friend':'false','msg':'Exception!"+e.toString()+"'}";
 		}
 	}
 }

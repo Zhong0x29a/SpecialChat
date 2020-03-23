@@ -78,6 +78,9 @@ public class ServerThread extends Thread {
 				case "0010": // fetch contacts.
 					msgSend=ProcessAction.action_0010(dataJsonReturn);
 					break;
+				case "0011": // check if is friend.
+					msgSend=ProcessAction.action_0011(dataJsonReturn);
+					break;
 				default: // action code error.
 					msgSend="{\"msg\":\"ERROR!! (1000)\"}";
 					break;

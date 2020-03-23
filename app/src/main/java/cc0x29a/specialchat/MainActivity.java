@@ -517,7 +517,7 @@ public class MainActivity extends AppCompatActivity{
 		);
 	}
 	
-	//todo here
+	//to do here
 	void reloadContactList(){
 		MainActivity.this.runOnUiThread(
 				new Runnable(){
