@@ -50,10 +50,12 @@ public class ContactDetailActivity extends AppCompatActivity{
 				JSONObject data=socket.startSocket();
 				try{
 					if(data!=null && data.getString("status").equals("true")){
-						//todo insert data into contact list
+						// insert data into contact list
+						ContactListSQLiteHelper helper=new ContactListSQLiteHelper(ContactDetailActivity.this,"contact_list.db",1);
+						helper.insertNewContact(helper.getReadableDatabase(),ta_id,ta_name,ta_name,ta_phone);
+						
 						Toast.makeText(ContactDetailActivity.this,"Succeed!"+ta_name+ta_phone,Toast.LENGTH_SHORT).show();
 					}
-//					Toast.makeText(ContactDetailActivity.this,"Succeed!"+ta_name+ta_phone,Toast.LENGTH_SHORT).show();
 				
 				}catch(JSONException e){
 					e.printStackTrace();
@@ -61,6 +63,8 @@ public class ContactDetailActivity extends AppCompatActivity{
 			}
 		});
 		
+		
+		// fetch contact detail.
 		new Thread(){
 			@Override
 			public void run(){
@@ -84,16 +88,12 @@ public class ContactDetailActivity extends AppCompatActivity{
 						tv_user_phone.setText(ta_phone);
 					}else{
 						Looper.prepare();
-						ta_name="Cuberesfsf";
-						ta_phone="124332525";
 						Toast.makeText(getApplicationContext(),"Error!\nData Null!",Toast.LENGTH_LONG).show();
 						Looper.loop();
 					}
 				}catch(JSONException|NullPointerException e){
 					e.printStackTrace();
 					Looper.prepare();
-					ta_name="Cuberesfsf";
-					ta_phone="124332525";
 					Toast.makeText(getApplicationContext(),"Error!\nData Null! (Exception)",Toast.LENGTH_LONG).show();
 					Looper.loop();
 				}

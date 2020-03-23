@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Timer;
@@ -45,11 +44,11 @@ public class BackgroundTaskService extends Service{
 			public void run(){
 				try{
 					syncContactsList();
-				}catch(JSONException e){
+				}catch(Exception e){
 //					e.printStackTrace();
 				}
 			}
-		},177,120000);
+		},8888,120000);
 		
 	}
 	
@@ -106,12 +105,10 @@ public class BackgroundTaskService extends Service{
 		}
 	}
 	
-	// TODO: 16/03/20 finish this.
-	
 	/**
 	 * Fetch contacts list (sync from server)
 	 */
-	private void syncContactsList() throws JSONException{
+	private void syncContactsList() throws Exception{
 		SocketWithServer socket=new SocketWithServer();
 		socket.DataSend="{" +
 				"'client':'SCC-1.0'," +
@@ -124,11 +121,16 @@ public class BackgroundTaskService extends Service{
 		JSONObject data=socket.startSocket();
 		
 		ContactListSQLiteHelper helper=new ContactListSQLiteHelper(this,"contact_list.db",1);
-		//todo parse data;
+		// parse data;
 		if(data!=null && data.getString("status").equals("true")){
 			for(int i=1;i<=Integer.parseInt(data.getString("number"));i++){
 				helper.updateContactList(helper.getReadableDatabase(),data.getString("user_id"),data.getString("nickname"));
 			}
+			
+			Intent intent = new Intent();
+			intent.putExtra("todo_action", "reLoadContactList");
+			intent.setAction("location.backgroundTask.action");
+			sendBroadcast(intent);
 		}
 		
 	}

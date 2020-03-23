@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity{
 		}
 	}
 	
-	// Communicate with BackgroundTaskService
+	// Communicate with BackgroundTaskService.
 	public class LocationReceiver extends BroadcastReceiver{
 		@Override
 		public void onReceive(Context context,Intent intent) {
@@ -144,6 +144,8 @@ public class MainActivity extends AppCompatActivity{
 			if(null!=intentAction && intentAction.equals("location.backgroundTask.action")){
 				if("reLoadChatList".equals(intent.getStringExtra("todo_action"))){
 					reloadChatList();
+				}else if("reLoadContactList".equals(intent.getStringExtra("todo_action"))){
+					loadContactList();
 				}
 			}
 		}
@@ -217,7 +219,7 @@ public class MainActivity extends AppCompatActivity{
 					findViewById(R.id.main_contacts).setVisibility(View.VISIBLE);
 					findViewById(R.id.main_moments).setVisibility(View.GONE);
 					findViewById(R.id.main_me).setVisibility(View.GONE);
-					loadContactsList();
+					loadContactList();
 				}
 			});
 			findViewById(R.id.menu_btn_moments).setOnClickListener(new View.OnClickListener(){
@@ -264,9 +266,6 @@ public class MainActivity extends AppCompatActivity{
 		String is_firstRun=preferences.getString("first_run","yes");
 		
 		if(is_firstRun.equals("yes")){
-			SharedPreferences.Editor e=preferences.edit();
-			e.putString("first_run","no");
-			e.apply();
 			startActivity(new Intent(MainActivity.this,WelcomeActivity.class));
 			finish();
 		}
@@ -461,7 +460,7 @@ public class MainActivity extends AppCompatActivity{
 	/**
 	 * Load Contacts List ListView by Adapter
 	 */
-	void loadContactsList(){
+	void loadContactList(){
 		MainActivity.this.runOnUiThread(
 			new Runnable(){
 				public void run(){
@@ -523,16 +522,16 @@ public class MainActivity extends AppCompatActivity{
 		MainActivity.this.runOnUiThread(
 				new Runnable(){
 					public void run(){
-						ChatListSQLiteHelper chatListSQLiteHelper=
-								new ChatListSQLiteHelper(MainActivity.this,"chat_list.db",1);
-						/*
-						 * chatList[0][0]    -> total number
-						 * chatList[index][0] -> index (index>0)
-						 * chatList[index][1] -> user_id
-						 * chatList[index][2] -> nickname
-						 * chatList[index][3] -> last_chat_time
-						 * */
-						final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase(),0);
+//						ChatListSQLiteHelper chatListSQLiteHelper=
+//								new ChatListSQLiteHelper(MainActivity.this,"chat_list.db",1);
+//						/*
+//						 * chatList[0][0]    -> total number
+//						 * chatList[index][0] -> index (index>0)
+//						 * chatList[index][1] -> user_id
+//						 * chatList[index][2] -> nickname
+//						 * chatList[index][3] -> last_chat_time
+//						 * */
+//						final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase(),0);
 //						contactsListItemAdapter.updateData(chatList);
 					}
 				}

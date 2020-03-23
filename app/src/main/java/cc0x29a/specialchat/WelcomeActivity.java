@@ -1,15 +1,14 @@
 package cc0x29a.specialchat;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.ActionBar;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class WelcomeActivity extends AppCompatActivity{
 	@Override
@@ -60,6 +59,10 @@ public class WelcomeActivity extends AppCompatActivity{
 		findViewById(R.id.btn_start_specialchat).setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View v){
+				SharedPreferences preferences=getSharedPreferences("init_info",MODE_PRIVATE);
+				SharedPreferences.Editor e=preferences.edit();
+				e.putString("first_run","no");
+				e.apply();
 				startActivity(new Intent(WelcomeActivity.this,MainActivity.class));
 			}
 		});
