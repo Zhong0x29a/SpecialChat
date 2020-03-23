@@ -1,7 +1,5 @@
 package cc0x29a.specialchat;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,9 +8,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -109,7 +108,7 @@ public class SignUpActivity extends AppCompatActivity{
 			Pattern pattern_password=Pattern.compile("^[a-zA-Z0-9._]{8,20}$");
 			Matcher m_pass=pattern_password.matcher(password.getText().toString());
 			
-			Pattern pattern_user_name=Pattern.compile("^[a-zA-Z0-9\\u4e00-\\u9fa5_\\-:：.。?？!！()（）]{1,10}$");
+			Pattern pattern_user_name=Pattern.compile("^[a-zA-Z0-9\\u4e00-\\u9fa5_\\-.。?？!！()]{1,10}$");
 			Matcher m_um=pattern_user_name.matcher(user_name.getText().toString());
 			
 			Pattern pattern_user_phone=Pattern.compile("^[1]([3-9])[0-9]{9}$");
@@ -119,7 +118,8 @@ public class SignUpActivity extends AppCompatActivity{
 				Toast.makeText(SignUpActivity.this,"The phone number you input is illegal! ",Toast.LENGTH_LONG).show();
 				return false;
 			}else if(!m_um.matches()){
-				Toast.makeText(SignUpActivity.this,"User name should only be \n"+"(a-zA-Z0-9\\u4e00-\\u9fa5_\\-:：.。?？!！()（）)\n"+"and 1~10 bits !",Toast.LENGTH_LONG).show();
+				Toast.makeText(SignUpActivity.this,"User name should only be \n"+
+						"(a-zA-Z0-9\\u4e00-\\u9fa5_\\-.。?？!！())\n"+"and 1~10 bits!", Toast.LENGTH_LONG).show();
 				return false;
 			}else if(!m_pass.matches()){
 				Toast.makeText(SignUpActivity.this,"Password should only be '0-9a-zA-Z._' and 8~20 bits !",Toast.LENGTH_LONG).show();

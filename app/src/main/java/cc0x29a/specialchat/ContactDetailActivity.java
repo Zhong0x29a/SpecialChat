@@ -15,6 +15,8 @@ import org.json.JSONObject;
 
 public class ContactDetailActivity extends AppCompatActivity{
 	static String ta_id;
+	static String ta_phone;
+	static String ta_name;
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -48,8 +50,11 @@ public class ContactDetailActivity extends AppCompatActivity{
 				JSONObject data=socket.startSocket();
 				try{
 					if(data!=null && data.getString("status").equals("true")){
-						Toast.makeText(ContactDetailActivity.this,"Succeed!",Toast.LENGTH_SHORT).show();
+						//todo insert data into contact list
+						Toast.makeText(ContactDetailActivity.this,"Succeed!"+ta_name+ta_phone,Toast.LENGTH_SHORT).show();
 					}
+//					Toast.makeText(ContactDetailActivity.this,"Succeed!"+ta_name+ta_phone,Toast.LENGTH_SHORT).show();
+				
 				}catch(JSONException e){
 					e.printStackTrace();
 				}
@@ -71,16 +76,24 @@ public class ContactDetailActivity extends AppCompatActivity{
 					if(data!=null && data.getString("status").equals("true")){
 						TextView tv_user_name=findViewById(R.id.detail_userName);
 						TextView tv_user_phone=findViewById(R.id.detail_userPhone);
-						tv_user_name.setText(data.getString("user_name"));
-						tv_user_phone.setText(data.getString("user_phone"));
+						
+						ta_name=data.getString("user_name");
+						ta_phone=data.getString("user_phone");
+						
+						tv_user_name.setText(ta_name);
+						tv_user_phone.setText(ta_phone);
 					}else{
 						Looper.prepare();
+						ta_name="Cuberesfsf";
+						ta_phone="124332525";
 						Toast.makeText(getApplicationContext(),"Error!\nData Null!",Toast.LENGTH_LONG).show();
 						Looper.loop();
 					}
 				}catch(JSONException|NullPointerException e){
 					e.printStackTrace();
 					Looper.prepare();
+					ta_name="Cuberesfsf";
+					ta_phone="124332525";
 					Toast.makeText(getApplicationContext(),"Error!\nData Null! (Exception)",Toast.LENGTH_LONG).show();
 					Looper.loop();
 				}

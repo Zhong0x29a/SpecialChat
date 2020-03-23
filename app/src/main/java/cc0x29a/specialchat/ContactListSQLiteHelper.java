@@ -6,6 +6,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import org.jetbrains.annotations.NotNull;
+
 
 /**
  *
@@ -24,7 +26,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class ContactListSQLiteHelper extends SQLiteOpenHelper{
 	
 	/**
-	 * Fetch contact list , max num is 50 each time //to do: but total just 50,need complete!!
+	 * Fetch contact list , max num is 50 each time //total just 50, need complete!!
 	 * @param db SQLite database
 	 * @return a String[][]
 	 */
@@ -77,6 +79,29 @@ public class ContactListSQLiteHelper extends SQLiteOpenHelper{
 		}
 	}
 	
+	/**
+	 * Update contact list (update nickname only , not insert data)
+	 * @param db database
+	 * @param user_id String
+	 * @param nickname String
+	 */
+	void updateContactList(@NotNull SQLiteDatabase db,String user_id, String nickname){
+		Cursor cursor=db.query("contact_list",new String[]{"user_id"},
+				"user_id="+user_id,null,null,null,null);
+		if(cursor.moveToFirst()){
+			cursor.close();
+			// update
+			String SQL="update contact_list set " +
+					"nickname="+nickname+" "+
+					"where user_id="+user_id;
+			db.execSQL(SQL);
+		}else{
+			cursor.close();
+			// insert
+//			insertNewContact(db,user_id,"",nickname,"");
+		}
+	}
+	
 	@Override
 	public void onCreate(SQLiteDatabase db){
 		String CREATE_TABLE_SQL=
@@ -99,4 +124,5 @@ public class ContactListSQLiteHelper extends SQLiteOpenHelper{
 	ContactListSQLiteHelper(Context context,String name,int version){
 		super(context,name,null,version);
 	}
+	
 }

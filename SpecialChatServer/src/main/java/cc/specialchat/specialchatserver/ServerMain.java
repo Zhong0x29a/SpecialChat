@@ -1,6 +1,5 @@
 package cc.specialchat.specialchatserver;
 
-import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -9,6 +8,10 @@ public class ServerMain{
 	public static void main(String[] args){
 		// test code.
 //		MsgCacheSQLite.init();
+//		String t="{\"a\":'asd','dsa':\"dsa\"}";
+//		JSONObject j=JSONObject.parseObject(t);
+//		System.out.println(j.getString("a")+"\n"+j.getString("dsa"));
+		
 //		exit(0);
 		// start program.
 		
@@ -38,7 +41,7 @@ public class ServerMain{
 				serverThread.start();
 				count++;
 			}
-		}catch(IOException e){
+		}catch(Exception e){
 			e.printStackTrace();
 			main(new String[]{"e"});
 		}

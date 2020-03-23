@@ -48,25 +48,25 @@ public class ServerThread extends Thread {
 			
 			String msgSend;
 			switch(dataJsonReturn.getString("action")){
-				case "0001": // check login status
+				case "0001": // check login status.
 					msgSend=ProcessAction.action_0001(dataJsonReturn);
 					break;
-				case "0002": // perform login
+				case "0002": // perform login.
 					msgSend=ProcessAction.action_0002(dataJsonReturn);
 					break;
-				case "0003": // client refresh message
+				case "0003": // client refresh message.
 					msgSend=ProcessAction.action_0003(dataJsonReturn);
 					break;
-				case "0004": // send message
+				case "0004": // send message.
 					msgSend=ProcessAction.action_0004(dataJsonReturn);
 					break;
-				case "0005": // check ID usability
+				case "0005": // check ID usability.
 					msgSend=ProcessAction.action_0005(dataJsonReturn);
 					break;
-				case "0006": // sign up new account
+				case "0006": // sign up new account.
 					msgSend=ProcessAction.action_0006(dataJsonReturn);
 					break;
-				case "0007": // add new contact
+				case "0007": // add new contact.
 					msgSend=ProcessAction.action_0007(dataJsonReturn);
 					break;
 				case "0008": // fetch contact info.
@@ -74,6 +74,9 @@ public class ServerThread extends Thread {
 					break;
 				case "0009": // search contact.
 					msgSend=ProcessAction.action_0009(dataJsonReturn);
+					break;
+				case "0010": // fetch contacts.
+					msgSend=ProcessAction.action_0010(dataJsonReturn);
 					break;
 				default: // action code error.
 					msgSend="{\"msg\":\"ERROR!! (1000)\"}";
@@ -85,7 +88,8 @@ public class ServerThread extends Thread {
 //			msgSend="{\"status\":\"true\"}";
 			
 			// send data to client
-			if(msgSend!=null && !msgSend.equals("")){
+//			if(msgSend!=null && !msgSend.equals("")){
+			if( !msgSend.equals("") ){
 				outputStream=socket.getOutputStream();
 				//assert msgSend!=null;
 				outputStream.write(msgSend.getBytes(StandardCharsets.UTF_8));
@@ -93,7 +97,7 @@ public class ServerThread extends Thread {
 				
 				socket.shutdownOutput();
 			}
-		}catch(IOException|NullPointerException e){
+		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
 			// Release unused resource

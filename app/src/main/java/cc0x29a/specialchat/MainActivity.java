@@ -40,6 +40,9 @@ import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity{
 	
+	static String user_id;
+	static String token_key;
+	
 	LocationReceiver locationReceiver;
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
@@ -74,11 +77,11 @@ public class MainActivity extends AppCompatActivity{
 			
 //			c.insertNewChatListItem(c.getReadableDatabase(),"1123592075","Little hao",""+MyTools.getCurrentTime());
 //		}
-//		ContactListSQLiteHelper c=new ContactListSQLiteHelper(MainActivity.this,"contact_list.db",1);
-//		c.insertNewContact(c.getReadableDatabase(),"1123592075","Apple2","Haaaa pi","13360417480");
+		ContactListSQLiteHelper c=new ContactListSQLiteHelper(MainActivity.this,"contact_list.db",1);
+		c.insertNewContact(c.getReadableDatabase(),"1123592075","Apple2","Haaaa pi","13360417480");
 //		String[][] a=new String[][]{{"a","b","a","s"},{"a","b","c"},{"a","b","c"}};
 //		System.out.println(a.length);
-//		finish();*/
+		finish();*/
 		//test codes end
 		
 		
@@ -89,6 +92,10 @@ public class MainActivity extends AppCompatActivity{
 	protected void onStart(){
 		super.onStart();
 		 redirect();
+		
+		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
+		user_id=preferences.getString("user_id",null);
+		token_key=preferences.getString("token_key",null);
 		 
 		// listen messages from background task service
 		locationReceiver = new LocationReceiver();
@@ -141,7 +148,6 @@ public class MainActivity extends AppCompatActivity{
 			}
 		}
 	}
-	
 	
 	// set action menu.
 	@Override
@@ -489,7 +495,8 @@ public class MainActivity extends AppCompatActivity{
 							position++;
 							AlertDialog alertDialog2 = new AlertDialog.Builder(MainActivity.this)
 									.setTitle("Notices")
-									.setMessage("Sure to delete this contact? \n'"+contactsList[position][0]+"'")
+//									.setMessage("Sure to delete this contact? \n'"+contactsList[position][0]+"'")
+									.setMessage("Cannot delete contact yet. \n'"+contactsList[position][0]+"'")
 									.setPositiveButton("Yeah", new DialogInterface.OnClickListener() {
 										@Override
 										public void onClick(DialogInterface dialogInterface, int i) {
@@ -569,9 +576,6 @@ public class MainActivity extends AppCompatActivity{
 	 *
  	 */
 	private int refreshNewMsg() throws JSONException{
-		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
-		String user_id=preferences.getString("user_id",null);
-		String token_key=preferences.getString("token_key",null);
 		
 		String jsonMsg;
 		if(user_id != null && token_key != null){
@@ -623,8 +627,7 @@ public class MainActivity extends AppCompatActivity{
 	 * **/
 	private int checkLogin() throws JSONException{
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
-		String user_id=preferences.getString("user_id",null);
-		String token_key=preferences.getString("token_key",null);
+
 		if(token_key==null || user_id==null){
 			return 2;
 		}

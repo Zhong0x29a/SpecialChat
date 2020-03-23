@@ -118,17 +118,25 @@ class ContactListSQLite{
 		}
 	}
 	
-	// fetch user's contacts list
-	static String[] fetchContacts(String user_id){
+	/**
+	 * Fetch user's contacts list , max number is 50
+	 * @param user_id String
+	 * @return String[][]
+	 */
+	static String[][] fetchContacts(String user_id){
 		try{
 			Connection con=getConnection();
 			Statement st=con.createStatement();
-			String QUERY_SQL="";
+			String QUERY_SQL="select ta_id, nickname from contact_list_"+user_id;
 			ResultSet re=st.executeQuery(QUERY_SQL);
-			String[] contacts=new String[50];
-			while(re.next()){
-				//todo fetch
+			String[][] contacts=new String[51][2];
+			int index=0;
+			while(re.next() && index<50){
+				index++;
+				contacts[index][0]=re.getInt("ta_id")+"";
+				contacts[index][1]=re.getString("nickname");
 			}
+			contacts[0][0]=index+"";
 			return contacts;
 		}catch(ClassNotFoundException|SQLException e){
 			e.printStackTrace();

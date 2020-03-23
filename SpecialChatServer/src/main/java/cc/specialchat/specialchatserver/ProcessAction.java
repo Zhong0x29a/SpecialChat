@@ -250,12 +250,20 @@ class ProcessAction{
 		try{
 			String user_id=JsonData.getString("user_id");
 			String token_key=JsonData.getString("token_key");
-			String[] contacts;
+			String[][] contacts;
 			if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key) &&
-					(contacts=ContactListSQLite.fetchContacts(user_id))!=null){
-				//todo
+					(contacts=ContactListSQLite.fetchContacts(user_id))!=null
+					&& !contacts[0][0].equals("0")){
+				StringBuilder msg=new StringBuilder("{'status':'true',");
+				for(int i=1;i<Integer.parseInt(contacts[0][0]);i++){
+					msg.append("\"index_").append(i)
+							.append("\":\"{'user_id':'").append(contacts[i][0])
+							.append("','nickname':'").append(contacts[i][1]).append("'}\",");
+				}
+				msg.append("'number':'").append(contacts[0][0]).append("'}");
+				return msg.toString();
 			}
-			return "";
+			return "{'status':'false','msg':'Error(PA1010inner)'}";
 		}catch(JSONException e){
 			e.printStackTrace();
 			return "{'status':'false','msg':'Error(PA1010)'}";

@@ -2,7 +2,11 @@ package cc0x29a.specialchat;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -12,12 +16,19 @@ public class BackgroundTaskService extends Service{
 	static Timer syncLM;
 	static Timer syncCL;
 	
+	static String user_id;
+	static String token_key;
+	
 	public BackgroundTaskService(){
 	}
 	
 	@Override
 	public void onCreate(){
 //		Toast.makeText(this,"service started",Toast.LENGTH_SHORT).show();
+		
+		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
+		user_id=preferences.getString("user_id",null);
+		token_key=preferences.getString("token_key",null);
 		
 		syncLM=new Timer();
 		syncCL=new Timer();
@@ -32,9 +43,14 @@ public class BackgroundTaskService extends Service{
 		syncCL.schedule(new TimerTask(){
 			@Override
 			public void run(){
-				syncContactsList();
+				try{
+					syncContactsList();
+				}catch(JSONException e){
+//					e.printStackTrace();
+				}
 			}
 		},177,120000);
+		
 	}
 	
 	@Override
@@ -91,8 +107,30 @@ public class BackgroundTaskService extends Service{
 	}
 	
 	// TODO: 16/03/20 finish this.
-	private void syncContactsList(){
+	
+	/**
+	 * Fetch contacts list (sync from server)
+	 */
+	private void syncContactsList() throws JSONException{
 		SocketWithServer socket=new SocketWithServer();
+		socket.DataSend="{" +
+				"'client':'SCC-1.0'," +
+				"'action':'0010'," +
+				"'user_id':'"+user_id+"'," +
+				"'token_key':'"+token_key+"'" +
+				"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
+				"}";
+		
+		JSONObject data=socket.startSocket();
+		
+		ContactListSQLiteHelper helper=new ContactListSQLiteHelper(this,"contact_list.db",1);
+		//todo parse data;
+		if(data!=null && data.getString("status").equals("true")){
+			for(int i=1;i<=Integer.parseInt(data.getString("number"));i++){
+				helper.updateContactList(helper.getReadableDatabase(),data.getString("user_id"),data.getString("nickname"));
+			}
+		}
+		
 	}
 
 }
