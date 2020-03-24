@@ -82,6 +82,7 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 		}
 	}
 	
+	//todo update to listArray
 	/**
 	 * Fetch chat list items. 50 for max each time.
 	 * @param db SQLiteDataBase
