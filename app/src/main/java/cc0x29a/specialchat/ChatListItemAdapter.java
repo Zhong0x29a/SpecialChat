@@ -121,7 +121,7 @@ public class ChatListItemAdapter extends RecyclerView.Adapter<ChatListItemAdapte
 								ChatListSQLiteHelper chatListSQLiteHelper=
 										new ChatListSQLiteHelper(v.getContext(),"chat_list.db",1);
 								chatListSQLiteHelper.deleteChatListItem(chatListSQLiteHelper.getReadableDatabase(),data[index][1]);
-								
+								// todo fix this
 								deleteData(chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase(),0),position);
 								
 								Toast.makeText(v.getContext(), "Deleted. "+index, Toast.LENGTH_SHORT).show();

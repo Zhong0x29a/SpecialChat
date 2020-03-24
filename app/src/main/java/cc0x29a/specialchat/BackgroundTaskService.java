@@ -7,6 +7,7 @@ import android.os.IBinder;
 
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -70,14 +71,16 @@ public class BackgroundTaskService extends Service{
 	private void syncLatestMsg(){
 		try{
 			ChatListSQLiteHelper cListSQLH=new ChatListSQLiteHelper(this,"chat_list.db",1);
-			String[][] chatList=cListSQLH.fetchChatList(cListSQLH.getReadableDatabase(),0);
+			List<String[]> chatList=cListSQLH.fetchChatList(cListSQLH.getReadableDatabase());
 			
 			// Fetch last one message then update
 			String[] lastMsg;
-			for(int i=1;i<=(Integer.parseInt(chatList[0][0]))&&i<50;i++){
-				MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(this,"msg_"+chatList[i][1]+".db",1);
+			String[] temp_d;
+			for(int i=0;i<chatList.size();i++){
+				temp_d=chatList.get(i);
+				MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(this,"msg_"+temp_d[1]+".db",1);
 				lastMsg=msgSQLiteHelper.getLatestMsg(msgSQLiteHelper.getReadableDatabase());
-				cListSQLH.updateChatList(cListSQLH.getReadableDatabase(),chatList[i][1],lastMsg[1],lastMsg[0]);
+				cListSQLH.updateChatList(cListSQLH.getReadableDatabase(),temp_d[1],lastMsg[1],lastMsg[0]);
 			}
 			
 			Intent intent = new Intent();

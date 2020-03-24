@@ -355,7 +355,8 @@ public class MainActivity extends AppCompatActivity{
 					* chatList[index][2] -> nickname
 					* chatList[index][3] -> last_chat_time
 					 * */
-					final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase(),0);
+					//todo fix this
+					final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase());
 					
 					final RecyclerView chatList_recycleView=findViewById(R.id.main_chat_recyclerView);
 					LinearLayoutManager layoutManager=new LinearLayoutManager(MainActivity.this);
@@ -449,7 +450,8 @@ public class MainActivity extends AppCompatActivity{
 						 * chatList[index][2] -> nickname
 						 * chatList[index][3] -> last_chat_time
 						 * */
-						final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase(),0);
+						//todo fix this
+						final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase());
 						adapterChatList.updateData(chatList);
 					}
 				}

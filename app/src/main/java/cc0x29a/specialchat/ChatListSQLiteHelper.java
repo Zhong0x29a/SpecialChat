@@ -8,6 +8,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * Chat list SQLite cached in local
@@ -93,31 +96,27 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 	 *         [3]->last_chat_time
 	 *         [4]->last_msg
 	 */
-	String[][] fetchChatList(@NotNull SQLiteDatabase db,int position){
-		String[][] chatList=new String[51][5];
-		int index=0;
+	List<String[]> fetchChatList(@NotNull SQLiteDatabase db){
 		try{
 			Cursor cursor=db.query("chat_list",
 					new String[]{"index_num","user_id","nickname","last_chat_time","last_msg"},
 					null,null,null,null,"last_chat_time desc");
-			if(cursor.moveToPosition(position)){
-				do{
-					index++;
-					chatList[index][0]=cursor.getInt(cursor.getColumnIndex("index_num"))+"";
-					chatList[index][1]=cursor.getInt(cursor.getColumnIndex("user_id"))+"";
-					chatList[index][2]=MyTools.resolveSpecialChar(cursor.getString(cursor.getColumnIndex("nickname")));
-					chatList[index][3]=cursor.getInt(cursor.getColumnIndex("last_chat_time"))+"";
-					chatList[index][4]=MyTools.resolveSpecialChar(cursor.getString(cursor.getColumnIndex("last_msg")));
-					
-				}while(index<50 && cursor.moveToNext());
+			String[] temp=new String[5];
+			List<String[]> data=new ArrayList<>();
+			while(cursor.moveToNext()){
+				temp[0]=cursor.getInt(cursor.getColumnIndex("index_num"))+"";
+				temp[1]=cursor.getInt(cursor.getColumnIndex("user_id"))+"";
+				temp[2]=MyTools.resolveSpecialChar(cursor.getString(cursor.getColumnIndex("nickname")));
+				temp[3]=cursor.getInt(cursor.getColumnIndex("last_chat_time"))+"";
+				temp[4]=MyTools.resolveSpecialChar(cursor.getString(cursor.getColumnIndex("last_msg")));
+				data.add(temp);
 			}
 			cursor.close();
+			return data;
 		}catch(SQLException e){
 			e.printStackTrace();
+			return null;
 		}
-		chatList[0][0]=index+"";
-		
-		return chatList;
 	}
 	
 	/**
