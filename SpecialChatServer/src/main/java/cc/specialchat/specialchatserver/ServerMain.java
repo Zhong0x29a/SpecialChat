@@ -12,7 +12,19 @@ public class ServerMain{
 //		String t="{\"a\":'asd','dsa':\"dsa\"}";
 //		JSONObject j=JSONObject.parseObject(t);
 //		System.out.println(j.getString("a")+"\n"+j.getString("dsa"));
-		
+//		MsgCacheSQLite.insertNewMsg("123","321","Hello worrld!");
+//		String[][] a= MsgCacheSQLite.fetchMsg("321");
+//		JSONObject jb=JSON.parseObject("{'user_id':'14488542'," +
+//				"'token_key':'96d4549f0bc16919'," +
+//				"'to':'13422891'," +
+//				"'msg_content':'Hello'}");
+//		System.out.println(ProcessAction.action_0004(jb));
+//
+//		JSONObject jb2=JSON.parseObject("{'user_id':'13422891'," +
+//				"'token_key':'880c0e907db4e13f'" +
+//				"}");
+//		System.out.println(ProcessAction.action_0003(jb2));
+//
 //		exit(0);
 		// start program.
 		

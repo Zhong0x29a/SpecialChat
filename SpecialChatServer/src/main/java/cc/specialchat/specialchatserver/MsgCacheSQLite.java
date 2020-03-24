@@ -25,7 +25,7 @@ import java.sql.Statement;
 class MsgCacheSQLite{
 	
 	// Create a SQLite connection.
-	private static Connection getConnection() throws SQLException, ClassNotFoundException{
+	static Connection getConnection() throws SQLException, ClassNotFoundException{
 		Class.forName("org.sqlite.JDBC");
 		//c.setAutoCommit(false);
 		return DriverManager.getConnection("jdbc:sqlite:msg_cache.db");

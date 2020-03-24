@@ -87,6 +87,7 @@ public class ServerThread extends Thread {
 			}
 			System.out.println(DataGet);
 			
+			System.out.println("\n"+msgSend);
 			//test code:
 //			msgSend="{\"status\":\"true\"}";
 			

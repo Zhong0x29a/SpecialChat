@@ -8,6 +8,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * Message SQLite helper
@@ -74,33 +77,32 @@ public class MsgSQLiteHelper extends SQLiteOpenHelper{
 	 * @param position , count start from 0, so it should be 50*n (n>=0).
 	 * @return String[][] record
 	 */
-	String[][] getChatRecord(@NotNull SQLiteDatabase db,int position){
-		String[][] record=new String[51][5];
-		int index=0;
+	List<String[]> getChatRecord(@NotNull SQLiteDatabase db,int position){
 		try{
 			Cursor cursor=db.query("msg",
 					new String[]{"msg_index","msg_by","is_read","send_time","msg_content"},
 					null,null,null,null,
 					"msg_index desc");
-			
+			List<String[]> data=new ArrayList<>();
+			String[] temp=new String[5];
 			if(cursor.moveToPosition(position)){
+				int i=0;
 				do{
-					index++;
-					record[index][0]=cursor.getInt(cursor.getColumnIndex("msg_index"))+"";
-					record[index][1]=cursor.getInt(cursor.getColumnIndex("msg_by"))+"";
-					record[index][2]=cursor.getInt(cursor.getColumnIndex("is_read"))+"";
-					record[index][3]=cursor.getInt(cursor.getColumnIndex("send_time"))+"";
-					record[index][4]=MyTools.resolveSpecialChar(cursor.getString(cursor.getColumnIndex("msg_content")));
-				}while(index < 50 && cursor.moveToNext());
+					temp[0]=cursor.getInt(cursor.getColumnIndex("msg_index"))+"";
+					temp[1]=cursor.getInt(cursor.getColumnIndex("msg_by"))+"";
+					temp[2]=cursor.getInt(cursor.getColumnIndex("is_read"))+"";
+					temp[3]=cursor.getInt(cursor.getColumnIndex("send_time"))+"";
+					temp[4]=MyTools.resolveSpecialChar(cursor.getString(cursor.getColumnIndex("msg_content")));
+					data.add(temp);
+					i++;
+				}while(i < 50 && cursor.moveToNext());
 			}
-			
-		
 			cursor.close();
+			return data;
 		}catch(SQLException e){
 			e.printStackTrace();
+			return null;
 		}
-		record[0][0]=(index)+"";
-		return record;
 	}
 	
 	/**

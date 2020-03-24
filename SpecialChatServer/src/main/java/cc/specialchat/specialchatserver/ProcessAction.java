@@ -66,17 +66,19 @@ class ProcessAction{
 				String[][] msg_temp;
 				if((msg_temp=MsgCacheSQLite.fetchMsg(user_id)).length>0){
 					StringBuffer p;
-					if(msg_temp != null){
+					if(msg_temp != null && !msg_temp[0][0].equals("0")){
 						p=new StringBuffer("{\"new_msg_num\":\""+msg_temp[0][0]+"\",");
 						for(int i=0;i<Integer.parseInt(msg_temp[0][0]);i++){
 							p.append("\"index_").append((i+1)).append("\":" +
-									"\"{'user_id':'").append(msg_temp[i][1]).append("'," +
-									"'send_time':'").append(msg_temp[i][3]).append("'," +
-									"'msg_content':'").append(msg_temp[i][2]).append("'" +
+									"\"{'user_id':'").append(msg_temp[i+1][1]).append("'," +
+									"'send_time':'").append(msg_temp[i+1][3]).append("'," +
+									"'msg_content':'").append(msg_temp[i+1][2]).append("'" +
 									"}\",");
 						}
-						p.append("\"is_new_msg\":\"true\"}");
+						p.append("\"is_new_msg\":\"true\"}"); //todo
 						return p.toString();
+					}else{
+						return "{\"is_new_msg\":\"false\"}";
 					}
 				}else{
 					return "{\"is_new_msg\":\"false\"}";

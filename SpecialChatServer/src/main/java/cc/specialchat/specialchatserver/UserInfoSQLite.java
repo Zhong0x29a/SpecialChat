@@ -25,7 +25,7 @@ import java.sql.Statement;
 class UserInfoSQLite{
 	
 	// Create a SQLite connection.
-	private static Connection getConnection() throws SQLException, ClassNotFoundException{
+	static Connection getConnection() throws SQLException, ClassNotFoundException{
 		Class.forName("org.sqlite.JDBC");
 		//c.setAutoCommit(false);
 		return DriverManager.getConnection("jdbc:sqlite:user_info.db");
@@ -131,9 +131,9 @@ class UserInfoSQLite{
 		try{
 			Connection connection=getConnection();
 			Statement statement=connection.createStatement();
-			String QUERY_SQL="select token_key from user_info where user_id="+user_id+";";
+			String QUERY_SQL="select token_key from user_info where user_id="+user_id;
 			ResultSet resultSet=statement.executeQuery(QUERY_SQL);
-			if(resultSet.next()&&resultSet.getString("token_key").equals(token_key)){
+			if(resultSet.next() && resultSet.getString("token_key").equals(token_key)){
 				resultSet.close();
 				statement.close();
 				connection.close();

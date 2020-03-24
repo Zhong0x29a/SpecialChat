@@ -15,12 +15,16 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 public class ChatActivity extends AppCompatActivity{
 	
 	// this activity lunch mode need to be update! or will cause a little bug!
 	
 	static String ta_id;
 	static String nickname;
+	
+	static ChatWindowAdapter adapter;
 	
 	static int history_position=0;
 	
@@ -43,6 +47,7 @@ public class ChatActivity extends AppCompatActivity{
 		
 		Bundle bundle = this.getIntent().getExtras();
 		
+		//  his/her user_id & name
 		ta_id= (null != bundle) ? bundle.getString("user_id") : null;
 		nickname= (null != bundle) ? bundle.getString("nickname") : null;
 		
@@ -50,10 +55,12 @@ public class ChatActivity extends AppCompatActivity{
 			this.setTitle(nickname);
 		}
 		
+		// init & load chat history
 		if(ta_id!= null && !ta_id.equals("")){
 			MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,
 					"msg_"+ta_id+".db",1);
-			String[][] record=msgSQLiteHelper.getChatRecord(msgSQLiteHelper.getReadableDatabase(),history_position); //position start from 0
+			
+			List<String[]> data=msgSQLiteHelper.getChatRecord(msgSQLiteHelper.getReadableDatabase(),history_position); //position start from 0
 			
 			SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 			String my_id=preferences.getString("user_id",null);
@@ -62,8 +69,8 @@ public class ChatActivity extends AppCompatActivity{
 			LinearLayoutManager layoutManager=new LinearLayoutManager(this);
 			recordRecyclerView.setLayoutManager(layoutManager);
 			
-			final ChatWindowAdapter adapter=new ChatWindowAdapter(record);
-			adapter.count=Integer.parseInt(record[0][0]);
+			adapter=new ChatWindowAdapter(data);
+			adapter.count=data.size();
 			adapter.my_id=my_id;
 			adapter.ta_id=ta_id;
 			recordRecyclerView.setAdapter(adapter);
@@ -105,11 +112,12 @@ public class ChatActivity extends AppCompatActivity{
 							
 							MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,
 									"msg_"+ta_id+".db",1);
-							String[][] record=msgSQLiteHelper.getChatRecord(msgSQLiteHelper.getReadableDatabase(),history_position);
-							if(Integer.parseInt(record[0][0])==0){
+							List<String[]> newData=msgSQLiteHelper.getChatRecord(msgSQLiteHelper.getReadableDatabase(),history_position);
+							
+							if( newData.size() == 0 ){
 								Toast.makeText(ChatActivity.this,"No more! ",Toast.LENGTH_SHORT).show();
 							}else{
-								adapter.addData(record);
+								adapter.addMoreData(newData);
 							}
 						}
 //						else if (firstVisibleItemPosition == 0) {
@@ -121,10 +129,9 @@ public class ChatActivity extends AppCompatActivity{
 			
 			
 		}else{
-			Toast.makeText(ChatActivity.this,"ERROR! (CA55)",Toast.LENGTH_LONG).show();
+			Toast.makeText(ChatActivity.this,"ERROR! (CA125)",Toast.LENGTH_LONG).show();
 			finish();
 		}
-		
 		
 	}
 	
@@ -169,10 +176,18 @@ public class ChatActivity extends AppCompatActivity{
 						if( data==null ){
 							Toast.makeText(ChatActivity.this,"Perhaps Network is lazy? ",Toast.LENGTH_SHORT).show();
 						}else if( data.getString("status").equals("true") ){
-							MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,"msg_"+my_id+".db",1);
+							// store into msg SQLite
+							MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,"msg_"+ta_id+".db",1);
 							msgSQLiteHelper.insertNewMsg(
 									msgSQLiteHelper.getReadableDatabase(),my_id,
 									data.getString("send_time"),msg_content);
+							
+							// update recycler view
+							adapter.addNewData(new String[]{"",my_id,"","",MyTools.resolveSpecialChar(msg_content)});
+							
+							ChatListSQLiteHelper chatListHelper=new ChatListSQLiteHelper(ChatActivity.this,"chat_list.db",1);
+							chatListHelper.updateChatList(chatListHelper.getReadableDatabase(),ta_id,null,msg_content);
+							
 							editText.getText().clear();
 						}else if( data.getString("status").equals("false") ){
 							Toast.makeText(ChatActivity.this,"Something wrong!",Toast.LENGTH_SHORT).show();

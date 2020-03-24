@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 /*
  * Adapter for R.id.chatWindow_recyclerView.
  * To show chat history record
@@ -24,8 +26,11 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 	
 	String my_id; // my id
 	String ta_id; // ta id (other side)
-	private String[][] messages; // Record data
+	
 	int count; // Item counts
+	
+	private List<String[]> data; // RecyclerView's data
+
 	
 	static class VH extends RecyclerView.ViewHolder{
 		final TextView chat_msg_tv;
@@ -37,67 +42,71 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 		}
 	}
 	
-	ChatWindowAdapter(String[][] data) {
-		this.messages = data;
+//	ChatWindowAdapter(String[][] data) {
+//		this.messages = data;
+//	}
+	
+	ChatWindowAdapter(List<String[]> data) {
+		this.data=data;
 	}
 	
 	/**
 	 * Load more history record
-	 * @param newRecord new fetched chat history record from SQLite
+	 * @param newData new fetched chat history record from SQLite
 	 */
-	void addData(String[][] newRecord) {
+	void addMoreData(List<String[]> newData) {
 		
 		// if no more record
-		if(Integer.parseInt(newRecord[0][0])==0){
+		if(newData.size()==0){
 			return;
 		}
 		
-		// Fetch record from SQLite
-		String[][] recordTemp=new String[messages.length+Integer.parseInt(newRecord[0][0])][5];
+		// add data
+		data.addAll(newData.size()-1,newData);
 		
-		// Combine new fetched data and old data
-		System.arraycopy(messages,0,recordTemp,0,messages.length);
-		int index=1;
-		for(int i=messages.length;i<=messages.length+Integer.parseInt(newRecord[0][0])-1;i++){
-			recordTemp[i]=newRecord[index];
-			index++;
-		}
-		
-		// set data
-		messages=recordTemp;
-		
-		// item counts
-		count=count+Integer.parseInt(newRecord[0][0]);
-//		notifyItemInserted(Integer.parseInt(newRecord[0][0])-1);
+		// item number
+		count=newData.size();
 		
 		// apply changes
 		notifyDataSetChanged();
 	}
 	
 	/**
-	 *  use when chat list updated
-	 * @param new_data new data
+	 * When send or receive new message.
+	 * @param newData String[]
 	 */
-	void updateData(String[][] new_data) {
-		this.messages=new_data;
-		this.count=Integer.parseInt(new_data[0][0]);
-		notifyDataSetChanged();
+	void addNewData(String[] newData){
+		// add new data
+		data.add(newData);
+		
+		// item number
+		count+=1;
+		
+		// apply change
+		notifyItemInserted(0);
 	}
+	
+	// abandon func.
+	/**
+	 *  use when chat list updated
+	 * //@param new_data new data
+	 */
+//	void updateData(String[][] new_data) {
+//		this.messages=new_data;
+//		this.count=Integer.parseInt(new_data[0][0]);
+//		notifyDataSetChanged();
+//	}
 	
 	@Override
 	public void onBindViewHolder(@NotNull VH holder,final int position) {
-		final int index=position+1;
 		
-		// avoid array index exception
-		if(position>=messages.length-1){
-			return;
-		}
+		final String[] itemData=data.get(position);
 		
 		// show message content
-		holder.chat_msg_tv.setText(messages[index][4]);
+		holder.chat_msg_tv.setText(itemData[4]);
 		
-		// set message by who (style)
-		if(messages[index][1]!=null && messages[index][1].equals(my_id)){
+		// set message by who (view style)
+		if(itemData[1]!=null && itemData[1].equals(my_id)){
 			holder.chat_msg_container.setGravity(Gravity.END);
 			holder.chat_msg_tv.setBackgroundResource(R.drawable.my_msg_style);
 		}else{
@@ -119,13 +128,13 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 			public boolean onLongClick(final View v){
 				AlertDialog alertDialog2 = new AlertDialog.Builder(v.getContext())
 						.setTitle("Notices")
-						.setMessage("Sure to delete this message? \n'"+messages[index][4]+"'("+position+")\nOnce delete, data cannot be recovered.")
+						.setMessage("Sure to delete this message? \n'"+itemData[4]+"'("+position+")\nOnce delete, data cannot be recovered.")
 						.setPositiveButton("Yeah", new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialogInterface, int i) {
 								// delete the message by index .
 								MsgSQLiteHelper helper=new MsgSQLiteHelper(v.getContext(),"msg_"+ta_id+".db",1);
-								helper.deleteMsg(helper.getReadableDatabase(),messages[index][0]);
+								helper.deleteMsg(helper.getReadableDatabase(),itemData[0]);
 								notifyItemRemoved(position);
 								Toast.makeText(v.getContext(), "Deleted", Toast.LENGTH_SHORT).show();
 							}
