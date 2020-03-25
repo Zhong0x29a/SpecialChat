@@ -84,10 +84,10 @@ public class MsgSQLiteHelper extends SQLiteOpenHelper{
 					null,null,null,null,
 					"msg_index desc");
 			List<String[]> data=new ArrayList<>();
-			String[] temp=new String[5];
 			if(cursor.moveToPosition(position)){
 				int i=0;
 				do{
+					String[] temp=new String[5];
 					temp[0]=cursor.getInt(cursor.getColumnIndex("msg_index"))+"";
 					temp[1]=cursor.getInt(cursor.getColumnIndex("msg_by"))+"";
 					temp[2]=cursor.getInt(cursor.getColumnIndex("is_read"))+"";

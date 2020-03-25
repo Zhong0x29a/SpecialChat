@@ -40,7 +40,7 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 				"index_num INTEGER primary key autoincrement,"+
 				"user_id INTEGER NOT NULL UNIQUE,"+
 				"nickname TEXT,"+
-				"last_chat_time INTEGER NOT NULL," +
+				"last_chat_time INTEGER," +
 				"status INTEGER," +
 				"last_msg TEXT"+
 				")";

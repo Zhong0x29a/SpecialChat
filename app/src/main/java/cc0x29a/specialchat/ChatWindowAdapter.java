@@ -77,13 +77,13 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 	 */
 	void addNewData(String[] newData){
 		// add new data
-		data.add(newData);
+		data.add(0,newData);
 		
 		// item number
 		count+=1;
 		
 		// apply change
-		notifyItemInserted(0);
+		notifyDataSetChanged();
 	}
 	
 	// abandon func.

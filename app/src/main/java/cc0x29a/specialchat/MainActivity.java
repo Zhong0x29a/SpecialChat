@@ -295,9 +295,10 @@ public class MainActivity extends AppCompatActivity{
 					int status=checkLogin();
 					if(status==2){
 						changeViewToFontLogin();
-					}else if(status==1){
-						showToast("Ohh! Poor Network... :(",Toast.LENGTH_LONG);
 					}
+//					else if(status==1){
+//						showToast("Ohh! Poor Network... :(",Toast.LENGTH_LONG);
+//					}
 				}catch(JSONException e){
 //					e.printStackTrace();
 				}
@@ -602,7 +603,7 @@ public class MainActivity extends AppCompatActivity{
 		}else if(data.getString("is_new_msg").equals("true")){
 			int new_msg_num=Integer.parseInt(data.getString("new_msg_num"));
 			for(int i=1;i<=new_msg_num;i++){
-				JSONObject jsonTemp=data.getJSONObject(data.getString("index_"+i));
+				JSONObject jsonTemp=new JSONObject(data.getString("index_"+i));
 				String friend_id=jsonTemp.getString("user_id");
 				String send_time=jsonTemp.getString("send_time");
 				

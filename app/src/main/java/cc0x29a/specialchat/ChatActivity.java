@@ -184,11 +184,11 @@ public class ChatActivity extends AppCompatActivity{
 									msgSQLiteHelper.getReadableDatabase(),my_id,
 									data.getString("send_time"),msg_content);
 							
-							// update recycler view
+							// update recycler view todo bug here
 							adapter.addNewData(new String[]{"",my_id,"","",MyTools.resolveSpecialChar(msg_content)});
 							
 							ChatListSQLiteHelper chatListHelper=new ChatListSQLiteHelper(ChatActivity.this,"chat_list.db",1);
-							chatListHelper.updateChatList(chatListHelper.getReadableDatabase(),ta_id,null,msg_content);
+							chatListHelper.updateChatList(chatListHelper.getReadableDatabase(),ta_id,MyTools.getCurrentTime()+"",msg_content);
 							
 							editText.getText().clear();
 						}else if( data.getString("status").equals("false") ){
