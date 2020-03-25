@@ -35,7 +35,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 		ta_id= (bundle != null) ? bundle.getString("user_id") : null;
 		
 		TextView tv_user_id=findViewById(R.id.detail_userID);
-		tv_user_id.setText(ta_id);
+		tv_user_id.setText(ta_id); //todo phone has bug!
 		
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 		user_id=preferences.getString("user_id",null);
