@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 
 /*
  * the Adapter for RecyclerView of main chat list, R.id.main_chat_recyclerView
@@ -24,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ChatListItemAdapter extends RecyclerView.Adapter<ChatListItemAdapter.ViewHolder>{
 	
-	private String[][] data;
+	private List<String[]> data;
 	int count;
 	
 	static class ViewHolder extends RecyclerView.ViewHolder{
@@ -41,55 +43,52 @@ public class ChatListItemAdapter extends RecyclerView.Adapter<ChatListItemAdapte
 		}
 	}
 	
-	ChatListItemAdapter(String[][] data){
+	ChatListItemAdapter(List<String[]> data){
 		this.data=data;
 	}
 	
 	/**
 	 * use when delete data from chat list
-	 * @param new_data new data from SQLite
 	 * @param position deleted data's position
  	 */
-	private void deleteData(String[][] new_data,int position) {
-		this.data=new_data;
-		this.count=Integer.parseInt(new_data[0][0]);
+	private void deleteData(int position) {
+		this.data.remove(position);
+		this.count=this.data.size();
 		notifyItemRemoved(position);
-		notifyDataSetChanged();
 	}
 	
 	/**
 	 *  use when chat list updated
-	 * @param new_data new data
+	 * @param newData new data
 	 */
-	void updateData(String[][] new_data) {
-		this.data=new_data;
-		this.count=Integer.parseInt(new_data[0][0]);
+	void updateData(List<String[]> newData) {
+		this.data=newData;
+		this.count=newData.size();
 		notifyDataSetChanged();
 	}
 	
 	@Override
 	public void onBindViewHolder(@NotNull ViewHolder holder,final int position){
-		final int index=position+1;
-		
+		final String[] tempData=data.get(position);
 //		holder.iv_profilePic.setImageResource();
 // 		Glide.with(context).load("http://pic18.nipic.com/20120203/2457331_104836021342_2.jpg").into(holder.imageView);
 		
 		// set Nickname
-		if(this.data[index][2]==null || this.data[index][2].isEmpty()){
-			holder.tv_nickname.setText(this.data[index][1]);
+		if(tempData[2]==null || tempData[2].isEmpty()){
+			holder.tv_nickname.setText(tempData[1]);
 		}else{
-			holder.tv_nickname.setText(this.data[index][2]);
+			holder.tv_nickname.setText(tempData[2]);
 		}
 		
 		// set last message
-		if(this.data[index][4]==null||this.data[index][4].isEmpty()){
+		if(tempData[4]==null||tempData[4].isEmpty()){
 			holder.tv_lastMsg.setText(" ");
 		}else{
-			holder.tv_lastMsg.setText(this.data[index][4]);
+			holder.tv_lastMsg.setText(tempData[4]);
 		}
 		
 		// set last chat time
-		holder.tv_lastChatTime.setText(this.data[index][3]);
+		holder.tv_lastChatTime.setText(tempData[3]);
 		
 		// set on clicked listener
 		holder.ll_container.setOnClickListener(new View.OnClickListener(){
@@ -98,8 +97,8 @@ public class ChatListItemAdapter extends RecyclerView.Adapter<ChatListItemAdapte
 				// Start chat activity, send user_id and ta's nickname by bundle
 				Intent intent=new Intent(v.getContext(),ChatActivity.class);
 				Bundle bundle=new Bundle();
-				bundle.putString("user_id", data[index][1]);
-				bundle.putString("nickname",data[index][2]);
+				bundle.putString("user_id", tempData[1]);
+				bundle.putString("nickname",tempData[2]);
 				intent.putExtras(bundle);
 				
 				ContextCompat.startActivity(v.getContext(),intent,bundle);
@@ -113,18 +112,20 @@ public class ChatListItemAdapter extends RecyclerView.Adapter<ChatListItemAdapte
 				// show a alert for user to decide whether to delete the chat list item
 				AlertDialog alertDialog2 = new AlertDialog.Builder(v.getContext())
 						.setTitle("Notice")
-						.setMessage("Sure to delete this chat? \n'"+data[index][1]+"'")
+						.setMessage("Sure to delete this chat? \n'"+tempData[1]+"'")
 						.setPositiveButton("Yeah", new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialogInterface, int i) {
 								// delete the chat item! by position
+								// delete SQLite data
 								ChatListSQLiteHelper chatListSQLiteHelper=
 										new ChatListSQLiteHelper(v.getContext(),"chat_list.db",1);
-								chatListSQLiteHelper.deleteChatListItem(chatListSQLiteHelper.getReadableDatabase(),data[index][1]);
-								// todo fix this
-								deleteData(chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase(),0),position);
+								chatListSQLiteHelper.deleteChatListItem(chatListSQLiteHelper.getReadableDatabase(),tempData[1]);
 								
-								Toast.makeText(v.getContext(), "Deleted. "+index, Toast.LENGTH_SHORT).show();
+								// update recyclerView
+								deleteData(position);
+								
+								Toast.makeText(v.getContext(), "Deleted. "+position, Toast.LENGTH_SHORT).show();
 							}
 						})
 						.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

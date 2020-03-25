@@ -19,7 +19,9 @@ import java.util.List;
 
 public class ChatActivity extends AppCompatActivity{
 	
-	// this activity lunch mode need to be update! or will cause a little bug!
+	// this activity's lunch mode need to be update! or will cause a little bug!
+	
+	// todo refresh message
 	
 	static String ta_id;
 	static String nickname;

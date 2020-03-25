@@ -35,6 +35,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -355,15 +356,15 @@ public class MainActivity extends AppCompatActivity{
 					* chatList[index][2] -> nickname
 					* chatList[index][3] -> last_chat_time
 					 * */
-					//todo fix this
-					final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase());
+					
+					final List<String[]> chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase());
 					
 					final RecyclerView chatList_recycleView=findViewById(R.id.main_chat_recyclerView);
 					LinearLayoutManager layoutManager=new LinearLayoutManager(MainActivity.this);
 					chatList_recycleView.setLayoutManager(layoutManager);
 					
 					adapterChatList=new ChatListItemAdapter(chatList);
-					adapterChatList.count=Integer.parseInt(chatList[0][0]);
+					adapterChatList.count=chatList.size();
 					
 					chatList_recycleView.setAdapter(adapterChatList);
 					chatList_recycleView.setItemAnimator(new DefaultItemAnimator());
@@ -450,9 +451,9 @@ public class MainActivity extends AppCompatActivity{
 						 * chatList[index][2] -> nickname
 						 * chatList[index][3] -> last_chat_time
 						 * */
-						//todo fix this
-						final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase());
+						final List<String[]> chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase());
 						adapterChatList.updateData(chatList);
+						
 					}
 				}
 		);
@@ -540,6 +541,7 @@ public class MainActivity extends AppCompatActivity{
 		);
 	}
 	
+	//todo move to background task
 	/**
 	 * Refresh New Message(s)
 	 * send{
@@ -619,6 +621,7 @@ public class MainActivity extends AppCompatActivity{
 		}
 	}
 	
+	// todo move to background task
 	/**
 	 * Check login status.
 	 * @return int 0->good;1->network;2->bad.
