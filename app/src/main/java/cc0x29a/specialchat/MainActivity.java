@@ -18,7 +18,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -70,6 +69,12 @@ public class MainActivity extends AppCompatActivity{
 //		}catch(JSONException e){
 //			e.printStackTrace();
 //		}
+user_id="12365";
+		Bundle bundle=new Bundle();
+		bundle.putString("login_id",user_id);
+		Intent intent=new Intent(MainActivity.this,LoginActivity.class);
+		intent.putExtras(bundle);
+		startActivity(intent,bundle);
 		//		MsgSQLiteHelper h=new MsgSQLiteHelper(this,"msg_1123592075.db",1);
 //		for(int i=1;i<=23;i++){
 //			h.insertNewMsg(h.getReadableDatabase(),1123592075+"",i+"",i+" I love you.");
@@ -88,40 +93,34 @@ public class MainActivity extends AppCompatActivity{
 		
 	}
 	
-	// choose whether to redirect page
 	@Override
 	protected void onStart(){
 		super.onStart();
-		 redirect();
+		// choose whether to redirect page
+		redirect();
+		
+		normalMode();
 		
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 		user_id=preferences.getString("user_id",null);
 		token_key=preferences.getString("token_key",null);
 		 
-		// listen messages from background task service
+		// listen to messages from background task service
 		locationReceiver = new LocationReceiver();
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("location.backgroundTask.action");
 		registerReceiver(locationReceiver, filter);
 	}
 	
-	// run normalMode()
 	@Override
 	protected void onRestart(){
 		super.onRestart();
-		normalMode();
 	}
 	
 	// stop background tasks service
 	@Override
 	protected void onStop(){
 		super.onStop();
-		stopService(new Intent(this,BackgroundTaskService.class));
-		try{
-			unregisterReceiver(locationReceiver);
-		}catch(Exception e){
-			//
-		}
 	}
 	
 	// clear timers & stop background tasks service
@@ -254,8 +253,6 @@ public class MainActivity extends AppCompatActivity{
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 		if(preferences.getInt("is_login",0)!=1){
 			changeViewToFontLogin();
-		}else if(preferences.getInt("is_login",0)==1){
-			normalMode();
 		}
 	}
 	
@@ -274,7 +271,7 @@ public class MainActivity extends AppCompatActivity{
 	
 	// def 2 Timer(s)
 	static Timer checkLoginTimer;
-	static Timer refreshMsgTimer;
+//	static Timer refreshMsgTimer;
 	/**
 	 * Normal mode perform.
 	 */
@@ -286,7 +283,6 @@ public class MainActivity extends AppCompatActivity{
 		
 		// set (or reset) timer tasks
 		checkLoginTimer=new Timer();
-		refreshMsgTimer=new Timer();
 		
 		// Check login status per 2 minutes.
 		checkLoginTimer.schedule(new TimerTask(){
@@ -295,47 +291,14 @@ public class MainActivity extends AppCompatActivity{
 					int status=checkLogin();
 					if(status==2){
 						changeViewToFontLogin();
+					}else if(status==1){
+						MyTools.showToast(MainActivity.this,"Ohh! Poor Network... :(",Toast.LENGTH_LONG);
 					}
-//					else if(status==1){
-//						showToast("Ohh! Poor Network... :(",Toast.LENGTH_LONG);
-//					}
-				}catch(JSONException e){
-//					e.printStackTrace();
+				}catch(Exception e){
+					e.printStackTrace();
 				}
 			}
-		},17,120000);
-		
-		// Refresh new message(s) per 5.888 seconds.
-		refreshMsgTimer.schedule(new TimerTask(){
-			@Override
-			public void run(){
-				try{
-					if(refreshNewMsg()==1){
-						// if network is not so fine...
-						// 套娃就很皮..哈哈
-						showToast("!Poor Network... :(",Toast.LENGTH_SHORT);
-						refreshMsgTimer.cancel();
-						refreshMsgTimer=new Timer();
-						refreshMsgTimer.schedule(new TimerTask(){
-							@Override
-							public void run(){
-								try{
-									if(refreshNewMsg()==1){
-										showToast("): ...Network Poor!",Toast.LENGTH_LONG);
-									}else{
-										normalMode();
-									}
-								}catch(JSONException e){
-									e.printStackTrace();
-								}
-							}
-						},1888,23333);
-					}
-				}catch(JSONException e){
-//					e.printStackTrace();
-				}
-			}
-		},1700,5888);
+		},17,90000);
 		
 	}
 	
@@ -521,108 +484,6 @@ public class MainActivity extends AppCompatActivity{
 		);
 	}
 	
-	//to do here
-	void reloadContactList(){
-		MainActivity.this.runOnUiThread(
-				new Runnable(){
-					public void run(){
-//						ChatListSQLiteHelper chatListSQLiteHelper=
-//								new ChatListSQLiteHelper(MainActivity.this,"chat_list.db",1);
-//						/*
-//						 * chatList[0][0]    -> total number
-//						 * chatList[index][0] -> index (index>0)
-//						 * chatList[index][1] -> user_id
-//						 * chatList[index][2] -> nickname
-//						 * chatList[index][3] -> last_chat_time
-//						 * */
-//						final String[][] chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase(),0);
-//						contactsListItemAdapter.updateData(chatList);
-					}
-				}
-		);
-	}
-	
-	//todo move to background task
-	/**
-	 * Refresh New Message(s)
-	 * send{
-	 *     client:SCC-1.0,
-	 *     action:0003,
-	 *     user_id:[user_id],
-	 *     token_key:[token_key]
-	 * }
-	 *
-	 * return{
-	 *     is_new_msg:[true|false],
-	 *     new_msg_num:[new_message_number],    // 50 pieces MAX !
-	 *     // below data sort by time, the oldest on top !!
-	 *     index_1:{      //里面用单引号！！
-	 *         user_id:[user_id],
-	 *         send_time:[send_time],
-	 *         msg_content:[msg_content]
-	 *     }
-	 *     index_2:{
-	 *         user_id:[user_id],
-	 *         send_time:[send_time],
-	 *         msg_content:[msg_content]
-	 *     }
-	 *     index_...:{
-	 *         ...
-	 *     }
-	 *     ...
-	 * }
-	 *
-	 * @return int,
-	 *      0->Have new msg
-	 *      1->Network error
-	 *      2->No new msg
-	 *      3->Unknown Error..
-	 *
- 	 */
-	private int refreshNewMsg() throws JSONException{
-		
-		String jsonMsg;
-		if(user_id != null && token_key != null){
-			jsonMsg="{" +
-					"\"client\":\"SCC-1.0\"," +
-					"\"action\":\"0003\"," +
-					"\"user_id\":\""+MyTools.filterSpecialChar(user_id)+"\"," +
-					"\"token_key\":\""+MyTools.filterSpecialChar(token_key)+"\"," +
-					"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
-					"}";
-		}else{
-			jsonMsg="{}";
-		}
-		SocketWithServer SWS=new SocketWithServer();
-		SWS.DataSend=jsonMsg;
-		JSONObject data=SWS.startSocket();
-		
-		if(data==null){
-			System.out.println("Network ERROR! ");
-			return 1;
-		}else if(data.getString("is_new_msg").equals("true")){
-			int new_msg_num=Integer.parseInt(data.getString("new_msg_num"));
-			for(int i=1;i<=new_msg_num;i++){
-				JSONObject jsonTemp=new JSONObject(data.getString("index_"+i));
-				String friend_id=jsonTemp.getString("user_id");
-				String send_time=jsonTemp.getString("send_time");
-				
-				MsgSQLiteHelper mh=new MsgSQLiteHelper(MainActivity.this,"msg_"+friend_id+".db",1);
-				mh.insertNewMsg(mh.getReadableDatabase(),friend_id,send_time,jsonTemp.getString("msg_content"));
-				
-				ChatListSQLiteHelper clh=new ChatListSQLiteHelper(MainActivity.this,"chat_list.db",1);
-				clh.updateChatList(clh.getReadableDatabase(),friend_id,send_time,jsonTemp.getString("msg_content"));
-			}
-			reloadChatList();
-			return 0;
-		}else if(data.getString("is_new_msg").equals("false")){
-			return 2;
-		}else{
-			return 3;
-		}
-	}
-	
-	// todo move to background task
 	/**
 	 * Check login status.
 	 * @return int 0->good;1->network;2->bad.
@@ -670,7 +531,6 @@ public class MainActivity extends AppCompatActivity{
 	 */
 	private void cancelRefreshTimers(){
 		if(checkLoginTimer!=null){checkLoginTimer.cancel();}
-		if(refreshMsgTimer!=null){refreshMsgTimer.cancel();}
 	}
 	
 	/**
@@ -704,20 +564,6 @@ public class MainActivity extends AppCompatActivity{
 		finish();
 	}
 	
-	Handler toastHandler=new Handler();
-	/**
-	 * make a simple toast
-	 * @param info information to show
-	 */
-	public void showToast(final String info,final int duration) {
-		toastHandler.post(new Runnable() {
-			@Override
-			public void run() {
-				Toast.makeText(getApplicationContext(), info,
-						+duration).show();
-			}
-		});
-	}
 	
 	
 }

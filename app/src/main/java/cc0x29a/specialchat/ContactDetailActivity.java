@@ -45,7 +45,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 			@Override
 			public void onClick(View v){
 				
-				if(btn_mode==1){
+				if(btn_mode==1){ // chat
 					// Start chat activity, send user_id and ta's nickname by bundle
 					
 					Intent intent=new Intent(v.getContext(),ChatActivity.class);
@@ -55,9 +55,8 @@ public class ContactDetailActivity extends AppCompatActivity{
 					intent.putExtras(bundle);
 					startActivity(intent);
 					finish();
-				}else if(btn_mode==2){
-				
-					//add contact
+				}else if(btn_mode==2){ // add contact
+					
 					if(token_key==null || user_id==null){
 						Toast.makeText(ContactDetailActivity.this,"Login info error!",Toast.LENGTH_LONG).show();
 						return;
@@ -72,14 +71,22 @@ public class ContactDetailActivity extends AppCompatActivity{
 							"}";
 					JSONObject data=socket.startSocket();
 					try{
-						if(data!=null && data.getString("status").equals("true")){
-							// insert data into contact list
+						if(data==null){
+							Toast.makeText(ContactDetailActivity.this,"Network error.",Toast.LENGTH_SHORT).show();
+						}else if( data.getString("status").equals("true")){
+							// insert data into contact list.
 							ContactListSQLiteHelper helper=new ContactListSQLiteHelper(ContactDetailActivity.this,"contact_list.db",1);
 							helper.insertNewContact(helper.getReadableDatabase(),ta_id,ta_name,ta_name,ta_phone);
 							
+							// insert data into chat list.
+							ChatListSQLiteHelper helper2=new ChatListSQLiteHelper(ContactDetailActivity.this,"chat_list.db",1);
+							helper2.insertNewChatListItem(helper2.getReadableDatabase(),ta_id,ta_name,MyTools.getCurrentTime()+"");
+							
 							Toast.makeText(ContactDetailActivity.this,"Succeed!\n"+ta_name+"\n"+ta_phone,Toast.LENGTH_SHORT).show();
+							finish();
+						}else{
+							Toast.makeText(ContactDetailActivity.this,"Something wrong.",Toast.LENGTH_SHORT).show();
 						}
-					
 					}catch(JSONException e){
 						e.printStackTrace();
 					}
@@ -124,7 +131,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 			}
 		}.start();
 		
-		// check if is friend
+		// Check if is friend & set btn_mode
 		new Thread(){
 			@Override
 			public void run(){
@@ -139,7 +146,10 @@ public class ContactDetailActivity extends AppCompatActivity{
 							"'secret':'I love you.'" +
 							"}";
 					JSONObject data=socket.startSocket();
-					if(data!=null && data.getString("status").equals("true") &&
+					if(data==null){
+						btn_mode=0;
+						Toast.makeText(ContactDetailActivity.this,"Network error.",Toast.LENGTH_SHORT).show();
+					}else if( data.getString("status").equals("true") &&
 							data.getString("is_friend").equals("true")){
 						
 						ContactDetailActivity.this.runOnUiThread(new Runnable() {

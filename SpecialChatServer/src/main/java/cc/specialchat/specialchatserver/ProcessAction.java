@@ -262,7 +262,7 @@ class ProcessAction{
 					(contacts=ContactListSQLite.fetchContacts(user_id))!=null
 					&& !contacts[0][0].equals("0")){
 				StringBuilder msg=new StringBuilder("{'status':'true',");
-				for(int i=1;i<Integer.parseInt(contacts[0][0]);i++){
+				for(int i=1;i<=Integer.parseInt(contacts[0][0]);i++){
 					msg.append("\"index_").append(i)
 							.append("\":\"{'user_id':'").append(contacts[i][0])
 							.append("','nickname':'").append(contacts[i][1]).append("'}\",");

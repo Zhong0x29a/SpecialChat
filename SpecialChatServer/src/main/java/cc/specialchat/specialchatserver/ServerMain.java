@@ -26,13 +26,15 @@ public class ServerMain{
 //		System.out.println(ProcessAction.action_0003(jb2));
 //
 //		exit(0);
+		// test code upon
+		
 		// start program.
 		
 		// first run, init.
 //		try{
 //			UserInfoSQLite.init();
 //			MsgCacheSQLite.init();
-//		exit(0);
+//		    exit(0);
 //		}catch(SQLException|ClassNotFoundException e){
 //			e.printStackTrace();
 //		}

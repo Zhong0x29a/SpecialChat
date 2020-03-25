@@ -1,7 +1,10 @@
 package cc0x29a.specialchat;
 
+import android.content.Context;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Toast;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -34,6 +37,21 @@ class MyTools{
 			result =view.getMeasuredWidth();
 		}
 		return result;
+	}
+	
+	/**
+	 * make a simple toast
+	 * @param info information to show
+	 */
+	static void showToast(final Context context,final String info,final int duration) throws Exception {
+		Handler toastHandler=new Handler();
+		toastHandler.post(new Runnable() {
+			@Override
+			public void run() {
+				Toast.makeText(context, info,
+						+duration).show();
+			}
+		});
 	}
 	
 	/**

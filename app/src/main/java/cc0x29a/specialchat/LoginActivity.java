@@ -1,13 +1,13 @@
 package cc0x29a.specialchat;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,11 +39,20 @@ public class LoginActivity extends AppCompatActivity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 		
+		Bundle bundle=this.getIntent().getExtras();
+		String login_id= (null != bundle) ? bundle.getString("login_id") : null;
+		
+		final EditText ET_user_id=findViewById(R.id.text_user_id);
+		final EditText ET_password=findViewById(R.id.text_password);
+		
+		if(login_id!=null){
+			ET_user_id.setText(login_id);
+		}
+		
 		findViewById(R.id.btn_login).setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View v){
-				EditText ET_user_id=findViewById(R.id.text_user_id);
-				EditText ET_password=findViewById(R.id.text_password);
+				
 				
 				final String user_id=ET_user_id.getText().toString();
 				final String password=MyTools.md5(ET_password.getText().toString()+user_id);
@@ -137,4 +146,13 @@ public class LoginActivity extends AppCompatActivity{
 		
 	}
 	
+	public void onStart(){
+		super.onStart();
+		Bundle bundle=this.getIntent().getExtras();
+		String login_id= (null != bundle) ? bundle.getString("login_id") : null;
+		EditText ET_user_id=findViewById(R.id.text_user_id);
+		if(login_id!=null){
+			ET_user_id.setText(login_id);
+		}
+	}
 }

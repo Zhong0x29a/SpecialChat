@@ -76,8 +76,12 @@ public class SignUpActivity extends AppCompatActivity{
 							Toast.makeText(SignUpActivity.this,
 									"Congratulations!!! \n" +
 									"You are now one of Special Chat's VIPs!! ",Toast.LENGTH_LONG).show();
-							Toast.makeText(SignUpActivity.this,"Now go to login, then enjoy your time! ",Toast.LENGTH_SHORT).show();
-							startActivity(new Intent(SignUpActivity.this,LoginActivity.class));
+							
+							Bundle bundle=new Bundle();
+							bundle.putString("login_id",user_id);
+							Intent intent=new Intent(SignUpActivity.this,LoginActivity.class);
+							intent.putExtras(bundle);
+							startActivity(intent,bundle);
 							finish();
 						}else if(data.getString("status").equals("false")){
 							Toast.makeText(SignUpActivity.this,"Perhaps server made a mistake...",Toast.LENGTH_SHORT).show();
