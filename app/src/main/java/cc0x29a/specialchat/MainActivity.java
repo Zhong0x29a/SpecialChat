@@ -50,6 +50,9 @@ public class MainActivity extends AppCompatActivity{
 		// next ver to do: this can set a lunch page !!
 		setContentView(R.layout.activity_main);
 		
+		// check Application upgrade.
+		checkAppUpgrade();
+		
 		// This would run at the very first lunch.
 		welcomePage();
 		
@@ -94,6 +97,11 @@ user_id="12365";
 	}
 	
 	@Override
+	protected void onRestart(){
+		super.onRestart();
+	}
+	
+	@Override
 	protected void onStart(){
 		super.onStart();
 		// choose whether to redirect page
@@ -110,11 +118,6 @@ user_id="12365";
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("location.backgroundTask.action");
 		registerReceiver(locationReceiver, filter);
-	}
-	
-	@Override
-	protected void onRestart(){
-		super.onRestart();
 	}
 	
 	// stop background tasks service
@@ -195,6 +198,26 @@ user_id="12365";
 	}
 	
 	/**
+	 * Load Welcome page at the first run of app.
+	 */
+	private void welcomePage(){
+		SharedPreferences preferences=getSharedPreferences("init_info",MODE_PRIVATE);
+		String is_firstRun=preferences.getString("first_run","yes");
+		
+		if(is_firstRun.equals("yes")){
+			startActivity(new Intent(MainActivity.this,WelcomeActivity.class));
+			finish();
+		}
+	}
+	
+	/**
+	 * Check Application upgrade
+	 */
+	private void checkAppUpgrade(){
+		//todo check upgrade.
+	}
+	
+	/**
 	 * init views & some settings
 	 */
 	private void init(){
@@ -256,22 +279,8 @@ user_id="12365";
 		}
 	}
 	
-	/**
-	 * Load Welcome page at the first run of app.
-	 */
-	private void welcomePage(){
-		SharedPreferences preferences=getSharedPreferences("init_info",MODE_PRIVATE);
-		String is_firstRun=preferences.getString("first_run","yes");
-		
-		if(is_firstRun.equals("yes")){
-			startActivity(new Intent(MainActivity.this,WelcomeActivity.class));
-			finish();
-		}
-	}
-	
 	// def 2 Timer(s)
 	static Timer checkLoginTimer;
-//	static Timer refreshMsgTimer;
 	/**
 	 * Normal mode perform.
 	 */

@@ -75,7 +75,7 @@ class ProcessAction{
 									"'msg_content':'").append(msg_temp[i+1][2]).append("'" +
 									"}\",");
 						}
-						p.append("\"is_new_msg\":\"true\"}"); //todo
+						p.append("\"is_new_msg\":\"true\"}"); //todo bug: only one msg would be fetched each time?
 						return p.toString();
 					}else{
 						return "{\"is_new_msg\":\"false\"}";

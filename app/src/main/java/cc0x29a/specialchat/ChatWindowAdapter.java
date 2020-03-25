@@ -62,10 +62,10 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 		}
 		
 		// add data
-		data.addAll(newData.size()-1,newData);
+		data.addAll(newData);
 		
 		// item number
-		count=newData.size();
+		count=data.size();
 		
 		// apply changes
 		notifyDataSetChanged();

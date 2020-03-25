@@ -27,7 +27,6 @@ public class BackgroundTaskService extends Service{
 	
 	@Override
 	public void onCreate(){
-//		Toast.makeText(this,"service started",Toast.LENGTH_SHORT).show();
 		
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 		user_id=preferences.getString("user_id",null);
@@ -211,6 +210,7 @@ public class BackgroundTaskService extends Service{
 				"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
 				"}";
 		
+		// Start socket.
 		JSONObject data=socket.startSocket();
 		
 		ContactListSQLiteHelper helper=new ContactListSQLiteHelper(this,"contact_list.db",1);
@@ -218,20 +218,17 @@ public class BackgroundTaskService extends Service{
 		// parse data;
 		if(data!=null && data.getString("status").equals("true")){
 			for(int i=1;i<=Integer.parseInt(data.getString("number"));i++){
+				// Save to/update SQLite data
 				JSONObject temp=new JSONObject(data.getString("index_"+i));
 				helper.updateContactList(helper.getReadableDatabase(),temp.getString("user_id"),temp.getString("nickname"));
-				
 			}
 			
+			// Send broadcast to MainActivity.
 			Intent intent = new Intent();
 			intent.putExtra("todo_action", "reLoadContactList");
 			intent.setAction("location.backgroundTask.action");
 			sendBroadcast(intent);
 		}
-		
-//		for(int i=0;i<=10;i++){
-//
-//		}
 		
 	}
 	

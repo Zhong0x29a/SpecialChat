@@ -100,10 +100,9 @@ class MsgCacheSQLite{
 	static String[][] fetchMsg(String user_id){
 		try{
 			Connection connection=getConnection();
-//			connection.setAutoCommit(false);
 			Statement statement=connection.createStatement();
 			
-			String QUERY_SQL="select * from msg_cache where to_id="+user_id+";";
+			String QUERY_SQL="select * from msg_cache where to_id="+user_id;
 			ResultSet resultSet=statement.executeQuery(QUERY_SQL);
 			String[][] msg=new String[51][4]; // 50 pieces for max each time.
 			String DELETE_SQL;
@@ -114,10 +113,12 @@ class MsgCacheSQLite{
 				msg[index][1]=resultSet.getInt("from_id")+"";
 				msg[index][2]=resultSet.getString("msg_content");
 				msg[index][3]=resultSet.getInt("send_time")+"";
-				DELETE_SQL="delete from msg_cache where msg_index="+msg[index][0];
-				statement.executeUpdate(DELETE_SQL);
-//				connection.commit();
 			}
+			resultSet.close();
+			DELETE_SQL="delete from msg_cache where msg_index="+msg[index][0];
+			statement.executeUpdate(DELETE_SQL);
+			statement.close();
+			connection.close();
 			msg[0][0]=index+"";
 			return msg;
 		}catch(SQLException|ClassNotFoundException e){
