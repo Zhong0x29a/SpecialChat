@@ -94,7 +94,10 @@ user_id="12365";
 		//test codes end
 		
 		
+		
+		
 	}
+	
 	
 	@Override
 	protected void onRestart(){
@@ -118,7 +121,12 @@ user_id="12365";
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("location.backgroundTask.action");
 		registerReceiver(locationReceiver, filter);
+		
 	}
+	
+	
+	
+	
 	
 	// stop background tasks service
 	@Override

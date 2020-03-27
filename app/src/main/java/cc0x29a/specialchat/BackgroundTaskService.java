@@ -1,9 +1,18 @@
 package cc0x29a.specialchat;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.widget.RemoteViews;
+
+import androidx.core.app.NotificationCompat;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -69,6 +78,62 @@ public class BackgroundTaskService extends Service{
 				}
 			}
 		},6666,60000);
+		
+//		showNotification();
+		
+		showRemoteView();
+	
+		showRemoteView();
+	}
+	
+	private static final int PUSH_NOTIFICATION_ID = (0x001);
+	
+	private static final String PUSH_CHANNEL_ID = "PUSH_NOTIFY_ID";
+	private static final String PUSH_CHANNEL_NAME = "PUSH_NOTIFY_NAME";
+	private void showRemoteView() {
+		NotificationManager notificationManager = (NotificationManager) BackgroundTaskService.this.getSystemService(NOTIFICATION_SERVICE);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			NotificationChannel channel = new NotificationChannel(PUSH_CHANNEL_ID, PUSH_CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
+			if (notificationManager != null) {
+				notificationManager.createNotificationChannel(channel);
+			}
+		}
+		
+		
+		Intent intent = new Intent(this, ChatActivity.class);
+		// Start chat activity, send user_id and ta's nickname by bundle
+		Bundle bundle=new Bundle();
+		bundle.putString("user_id", "15462868");
+		bundle.putString("nickname","dsadasd");
+		intent.putExtras(bundle);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent,
+				PendingIntent.FLAG_UPDATE_CURRENT,bundle);
+		
+		RemoteViews remoteViews = new RemoteViews(getPackageName(),
+				R.layout.chat_list_item);
+		remoteViews.setImageViewResource(R.id.chatListItem_profile_pic, R.mipmap.ic_launcher);
+		remoteViews.setTextViewText(R.id.chatListItem_nickname, "New message！");
+		
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+		Intent notificationIntent = new Intent(this, MainActivity.class);
+		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		builder
+//				.setContentTitle("通知标题")//设置通知栏标题
+				.setNumber(2)
+				.setWhen(System.currentTimeMillis())//通知产生的时间，会在通知信息里显示，一般是系统获取到的时间
+				.setSmallIcon(R.mipmap.ic_launcher)//设置通知小ICON
+				.setChannelId(PUSH_CHANNEL_ID)
+				.setDefaults(Notification.DEFAULT_ALL);
+		builder.setContent(remoteViews);
+		builder.setContentIntent(contentIntent);
+		builder.setCustomBigContentView(remoteViews);
+		
+		Notification notification = builder.build();
+		notification.flags |= Notification.FLAG_AUTO_CANCEL;
+		if (notificationManager != null) {
+			notificationManager.notify(PUSH_NOTIFICATION_ID, notification);
+		}
 		
 	}
 	
@@ -231,6 +296,5 @@ public class BackgroundTaskService extends Service{
 		}
 		
 	}
-	
 	
 }
