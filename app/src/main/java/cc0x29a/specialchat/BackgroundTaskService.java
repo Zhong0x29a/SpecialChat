@@ -83,7 +83,7 @@ public class BackgroundTaskService extends Service{
 		
 		showRemoteView();
 	
-		showRemoteView();
+//		showRemoteView();
 	}
 	
 	private static final int PUSH_NOTIFICATION_ID = (0x001);
@@ -119,8 +119,7 @@ public class BackgroundTaskService extends Service{
 		Intent notificationIntent = new Intent(this, MainActivity.class);
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		builder
-//				.setContentTitle("通知标题")//设置通知栏标题
-				.setNumber(2)
+//				.setNumber(2)
 				.setWhen(System.currentTimeMillis())//通知产生的时间，会在通知信息里显示，一般是系统获取到的时间
 				.setSmallIcon(R.mipmap.ic_launcher)//设置通知小ICON
 				.setChannelId(PUSH_CHANNEL_ID)
