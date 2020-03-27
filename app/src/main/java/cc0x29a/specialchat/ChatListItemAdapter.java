@@ -87,8 +87,12 @@ public class ChatListItemAdapter extends RecyclerView.Adapter<ChatListItemAdapte
 			holder.tv_lastMsg.setText(tempData[4]);
 		}
 		
+//		SimpleDateFormat df = new SimpleDateFormat("yy-mm-dd HH:mm:ss",Locale.getDefault());
+////		Date date=new Date();
+//		String d = df.format(MyTools.getCurrentTime());
+//
 		// set last chat time
-		holder.tv_lastChatTime.setText(tempData[3]);
+		holder.tv_lastChatTime.setText(MyTools.formatTime(tempData[3]));
 		
 		// set on clicked listener
 		holder.ll_container.setOnClickListener(new View.OnClickListener(){

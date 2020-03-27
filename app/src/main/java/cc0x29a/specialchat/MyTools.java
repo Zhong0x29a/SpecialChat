@@ -8,6 +8,9 @@ import android.widget.Toast;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Some often used tools packed in methods below.
@@ -18,13 +21,19 @@ import java.security.NoSuchAlgorithmException;
 
 class MyTools{
 	
+	static String formatTime(String time) {
+		SimpleDateFormat sdr = new SimpleDateFormat("MM.dd HH:mm:ss",Locale.getDefault());
+		int i = Integer.parseInt(time);
+		return sdr.format(new Date(i * 1000L));
+	}
+	
 	/**
 	 * Get view's heigth or width
 	 * @param view a view to be measured
 	 * @param isHeight height or width
 	 * @return a integer
 	 */
-	public static int getViewHeight(View view,boolean isHeight){
+	static int getViewHeight(View view,boolean isHeight){
 		int result;
 		if(view==null)return 0;
 		if(isHeight){

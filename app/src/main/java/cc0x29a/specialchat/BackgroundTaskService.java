@@ -103,7 +103,7 @@ public class BackgroundTaskService extends Service{
 		Intent intent = new Intent(this, ChatActivity.class);
 		// Start chat activity, send user_id and ta's nickname by bundle
 		Bundle bundle=new Bundle();
-		bundle.putString("user_id", "15462868");
+		bundle.putString("user_id", "15462868"); //todo
 		bundle.putString("nickname","dsadasd");
 		intent.putExtras(bundle);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -114,6 +114,7 @@ public class BackgroundTaskService extends Service{
 				R.layout.chat_list_item);
 		remoteViews.setImageViewResource(R.id.chatListItem_profile_pic, R.mipmap.ic_launcher);
 		remoteViews.setTextViewText(R.id.chatListItem_nickname, "New message！");
+		remoteViews.setTextViewText(R.id.chatListItem_last_chat_time, MyTools.formatTime(MyTools.getCurrentTime()+""));
 		
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 		Intent notificationIntent = new Intent(this, MainActivity.class);
@@ -121,10 +122,10 @@ public class BackgroundTaskService extends Service{
 		builder.setWhen(System.currentTimeMillis())
 				.setSmallIcon(R.mipmap.ic_launcher)
 				.setChannelId(PUSH_CHANNEL_ID)
-				.setDefaults(Notification.DEFAULT_ALL);
-		builder.setContent(remoteViews);
-		builder.setContentIntent(contentIntent);
-		builder.setCustomBigContentView(remoteViews);
+				.setDefaults(Notification.DEFAULT_ALL)
+				.setContent(remoteViews)
+				.setContentIntent(contentIntent)
+				.setCustomBigContentView(remoteViews);
 		
 		Notification notification = builder.build();
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
