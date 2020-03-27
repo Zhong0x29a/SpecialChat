@@ -86,8 +86,8 @@ public class BackgroundTaskService extends Service{
 //		showRemoteView();
 	}
 	
+	// todo finish this function
 	private static final int PUSH_NOTIFICATION_ID = (0x001);
-	
 	private static final String PUSH_CHANNEL_ID = "PUSH_NOTIFY_ID";
 	private static final String PUSH_CHANNEL_NAME = "PUSH_NOTIFY_NAME";
 	private void showRemoteView() {
