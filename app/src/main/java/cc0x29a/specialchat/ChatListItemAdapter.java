@@ -98,7 +98,7 @@ public class ChatListItemAdapter extends RecyclerView.Adapter<ChatListItemAdapte
 				Intent intent=new Intent(v.getContext(),ChatActivity.class);
 				Bundle bundle=new Bundle();
 				bundle.putString("user_id", tempData[1]);
-				bundle.putString("nickname",tempData[2]);
+				bundle.putString("nickname",tempData[2]); // bug in database!!
 				intent.putExtras(bundle);
 				
 				ContextCompat.startActivity(v.getContext(),intent,bundle);
