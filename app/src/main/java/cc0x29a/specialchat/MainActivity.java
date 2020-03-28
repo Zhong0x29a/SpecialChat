@@ -222,7 +222,7 @@ user_id="12365";
 	 * Check Application upgrade
 	 */
 	private void checkAppUpgrade(){
-		//todo check upgrade.
+		//todo check app upgrade.
 	}
 	
 	/**
@@ -426,11 +426,10 @@ user_id="12365";
 						ChatListSQLiteHelper chatListSQLiteHelper=
 								new ChatListSQLiteHelper(MainActivity.this,"chat_list.db",1);
 						/*
-						 * chatList[0][0]    -> total number
-						 * chatList[index][0] -> index (index>0)
-						 * chatList[index][1] -> user_id
-						 * chatList[index][2] -> nickname
-						 * chatList[index][3] -> last_chat_time
+						 * [0] -> index (index>0)
+						 * [1] -> user_id
+						 * [2] -> nickname
+						 * [3] -> last_chat_time
 						 * */
 						final List<String[]> chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase());
 						adapterChatList.updateData(chatList);

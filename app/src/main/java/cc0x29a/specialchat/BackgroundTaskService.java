@@ -81,16 +81,15 @@ public class BackgroundTaskService extends Service{
 		
 //		showNotification();
 		
-		showRemoteView();
-	
 //		showRemoteView();
+	
 	}
 	
 	// todo finish this function
 	private static final int PUSH_NOTIFICATION_ID = (0x001);
 	private static final String PUSH_CHANNEL_ID = "PUSH_NOTIFY_ID";
 	private static final String PUSH_CHANNEL_NAME = "PUSH_NOTIFY_NAME";
-	private void showRemoteView() {
+	private void showNewMsgNotification(String user_id,String nickname,String msg_content) {
 		NotificationManager notificationManager = (NotificationManager) BackgroundTaskService.this.getSystemService(NOTIFICATION_SERVICE);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			NotificationChannel channel = new NotificationChannel(PUSH_CHANNEL_ID, PUSH_CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);

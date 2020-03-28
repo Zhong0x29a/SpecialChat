@@ -21,10 +21,15 @@ import java.util.Locale;
 
 class MyTools{
 	
+	/**
+	 * Format timestamp to date
+	 * @param time String , 10 bits timestamp
+	 * @return String
+	 */
 	static String formatTime(String time) {
-		SimpleDateFormat sdr = new SimpleDateFormat("MM.dd HH:mm:ss",Locale.getDefault());
+		SimpleDateFormat SDF = new SimpleDateFormat("MM.dd HH:mm:ss",Locale.getDefault());
 		int i = Integer.parseInt(time);
-		return sdr.format(new Date(i * 1000L));
+		return SDF.format(new Date(i * 1000L));
 	}
 	
 	/**
