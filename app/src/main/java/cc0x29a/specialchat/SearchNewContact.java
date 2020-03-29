@@ -68,7 +68,7 @@ public class SearchNewContact extends AppCompatActivity{
 							for(int i=0;i<number;i++){
 								temp=new JSONObject(data_temp.getString("index_"+(i+1)));
 								data[i][0]=temp.getString("user_id");
-								data[i][1]=temp.getString("user_name");
+								data[i][1]=MyTools.resolveSpecialChar(temp.getString("user_name"));
 							}
 							
 							RecyclerView recyclerView=findViewById(R.id.search_recyclerView);

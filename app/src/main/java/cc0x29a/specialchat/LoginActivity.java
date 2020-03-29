@@ -36,18 +36,11 @@ public class LoginActivity extends AppCompatActivity{
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
-		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		
-		Bundle bundle=this.getIntent().getExtras();
-		String login_id= (null != bundle) ? bundle.getString("login_id") : null;
+		super.onCreate(savedInstanceState);
 		
 		final EditText ET_user_id=findViewById(R.id.text_user_id);
 		final EditText ET_password=findViewById(R.id.text_password);
-		
-		if(login_id!=null){
-			ET_user_id.setText(login_id);
-		}
 		
 		findViewById(R.id.btn_login).setOnClickListener(new View.OnClickListener(){
 			@Override
@@ -148,11 +141,11 @@ public class LoginActivity extends AppCompatActivity{
 	
 	public void onStart(){
 		super.onStart();
-		Bundle bundle=this.getIntent().getExtras();
-		String login_id= (null != bundle) ? bundle.getString("login_id") : null;
-		EditText ET_user_id=findViewById(R.id.text_user_id);
-		if(login_id!=null){
-			ET_user_id.setText(login_id);
-		}
+		EditText et_user_id=findViewById(R.id.text_user_id);
+		SharedPreferences preferences=getSharedPreferences("sign_up_info",MODE_PRIVATE);
+		String uid=preferences.getString("user_id",null);
+		
+		et_user_id.setText(uid);
+		
 	}
 }

@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
@@ -53,9 +54,9 @@ public class BackgroundTaskService extends Service{
 				try{
 					if(refreshNewMsg()==1){
 						// if network is not so fine...
-						//showToast("!Poor Network... :(",Toast.LENGTH_SHORT);
+						MyTools.showToast(BackgroundTaskService.this,"!Poor Network... :(",Toast.LENGTH_SHORT);
 					}
-				}catch(JSONException e){
+				}catch(Exception e){
 					//e.printStackTrace();
 				}
 			}
@@ -66,7 +67,7 @@ public class BackgroundTaskService extends Service{
 			public void run(){
 				syncLatestMsg();
 			}
-		},200,5000);
+		},20,5000);
 		
 		syncCL.schedule(new TimerTask(){
 			@Override
@@ -79,16 +80,19 @@ public class BackgroundTaskService extends Service{
 			}
 		},6666,60000);
 		
-//		showNotification();
 		
-//		showRemoteView();
-	
 	}
 	
-	// todo finish this function
+	// notification values
 	private static final int PUSH_NOTIFICATION_ID = (0x001);
 	private static final String PUSH_CHANNEL_ID = "PUSH_NOTIFY_ID";
 	private static final String PUSH_CHANNEL_NAME = "PUSH_NOTIFY_NAME";
+	/**
+	 * Show a new message notification.
+	 * @param user_id uid
+	 * @param nickname nickname
+	 * @param msg_content content
+	 */
 	private void showNewMsgNotification(String user_id,String nickname,String msg_content) {
 		NotificationManager notificationManager = (NotificationManager) BackgroundTaskService.this.getSystemService(NOTIFICATION_SERVICE);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -98,22 +102,22 @@ public class BackgroundTaskService extends Service{
 			}
 		}
 		
-		
 		Intent intent = new Intent(this, ChatActivity.class);
+		
 		// Start chat activity, send user_id and ta's nickname by bundle
 		Bundle bundle=new Bundle();
-		bundle.putString("user_id", "15462868"); //todo
-		bundle.putString("nickname","dsadasd");
+		bundle.putString("user_id", user_id);
+		bundle.putString("nickname",nickname);
 		intent.putExtras(bundle);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent,
 				PendingIntent.FLAG_UPDATE_CURRENT,bundle);
 		
-		RemoteViews remoteViews = new RemoteViews(getPackageName(),
-				R.layout.chat_list_item);
-		remoteViews.setImageViewResource(R.id.chatListItem_profile_pic, R.mipmap.ic_launcher);
-		remoteViews.setTextViewText(R.id.chatListItem_nickname, "New message！");
-		remoteViews.setTextViewText(R.id.chatListItem_last_chat_time, MyTools.formatTime(MyTools.getCurrentTime()+""));
+		RemoteViews remoteViews = new RemoteViews(getPackageName(),R.layout.new_msg_notification);
+		
+		remoteViews.setImageViewResource(R.id.new_msg_notification_profile, R.mipmap.ic_launcher);
+		remoteViews.setTextViewText(R.id.new_msg_notification_title, nickname);
+		remoteViews.setTextViewText(R.id.new_msg_notification_msg, msg_content);
 		
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 		Intent notificationIntent = new Intent(this, MainActivity.class);
@@ -180,11 +184,15 @@ public class BackgroundTaskService extends Service{
 	 *      0->Have new msg
 	 *      1->Network error
 	 *      2->No new msg
-	 *      3->Unknown Error..
+	 *      3->No login info
+	 *      4->Unknown Error..
 	 *
 	 */
 	private int refreshNewMsg() throws JSONException{
 		String jsonMsg;
+		JSONObject data;
+		SocketWithServer SWS=new SocketWithServer();
+		
 		if(user_id != null && token_key != null){
 			jsonMsg="{" +
 					"\"client\":\"SCC-1.0\"," +
@@ -193,12 +201,12 @@ public class BackgroundTaskService extends Service{
 					"\"token_key\":\""+token_key+"\"," +
 					"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
 					"}";
+			SWS.DataSend=jsonMsg;
+			data=SWS.startSocket();
+			
 		}else{
-			jsonMsg="{}";
+			return 3;
 		}
-		SocketWithServer SWS=new SocketWithServer();
-		SWS.DataSend=jsonMsg;
-		JSONObject data=SWS.startSocket();
 		
 		if(data==null){
 			System.out.println("Network ERROR! ");
@@ -209,17 +217,32 @@ public class BackgroundTaskService extends Service{
 				JSONObject jsonTemp=new JSONObject(data.getString("index_"+i));
 				String friend_id=jsonTemp.getString("user_id");
 				String send_time=jsonTemp.getString("send_time");
+				String msg_content=jsonTemp.getString("msg_content");
 				
 				MsgSQLiteHelper mh=new MsgSQLiteHelper(BackgroundTaskService.this,"msg_"+friend_id+".db",1);
-				mh.insertNewMsg(mh.getReadableDatabase(),friend_id,send_time,jsonTemp.getString("msg_content"));
+				mh.insertNewMsg(mh.getReadableDatabase(),friend_id,send_time,msg_content);
+				mh.close();
 				
 				ChatListSQLiteHelper clh=new ChatListSQLiteHelper(BackgroundTaskService.this,"chat_list.db",1);
-				clh.updateChatList(clh.getReadableDatabase(),friend_id,send_time,jsonTemp.getString("msg_content"));
+				clh.updateChatList(clh.getReadableDatabase(),friend_id,send_time,msg_content);
+				clh.close();
+				
+				String[] new_data=new String[]{"",friend_id,"",send_time,MyTools.resolveSpecialChar(msg_content)};
+				
+				// send broadcast to ChatActivity
+				Intent intent2 = new Intent();
+				intent2.putExtra("todo_action", "updateChatRecord"); // ChatActivity
+				intent2.putExtra("new_record",new_data);
+				intent2.setAction("backgroundTask.action");
+				sendBroadcast(intent2);
+				
+				showNewMsgNotification(friend_id,friend_id,msg_content); // todo nickname not set
 			}
 			
+			// send broadcast to MainActivity
 			Intent intent = new Intent();
 			intent.putExtra("todo_action", "reLoadChatList");
-			intent.setAction("location.backgroundTask.action");
+			intent.setAction("backgroundTask.action");
 			sendBroadcast(intent);
 			
 			return 0;
@@ -246,6 +269,7 @@ public class BackgroundTaskService extends Service{
 				MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(this,"msg_"+temp_d[1]+".db",1);
 				lastMsg=msgSQLiteHelper.getLatestMsg(msgSQLiteHelper.getReadableDatabase());
 				cListSQLH.updateChatList(cListSQLH.getReadableDatabase(),temp_d[1],lastMsg[1],lastMsg[0]);
+				msgSQLiteHelper.close();
 			}
 			
 			Intent intent = new Intent();
@@ -264,6 +288,9 @@ public class BackgroundTaskService extends Service{
 	 */
 	private void syncContactsList() throws Exception{
 		SocketWithServer socket=new SocketWithServer();
+		if(user_id==null || token_key==null){
+			return;
+		}
 		socket.DataSend="{" +
 				"'client':'SCC-1.0'," +
 				"'action':'0010'," +

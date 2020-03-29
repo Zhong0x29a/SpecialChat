@@ -43,13 +43,12 @@ public class MainActivity extends AppCompatActivity{
 	static String user_id;
 	static String token_key;
 	
-	LocationReceiver locationReceiver;
+	MainBroadcastReceiver receiver;
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
-		super.onCreate(savedInstanceState);
 		// next ver to do: this can set a lunch page !!
 		setContentView(R.layout.activity_main);
-		
+		super.onCreate(savedInstanceState);
 		// check Application upgrade.
 		checkAppUpgrade();
 		
@@ -94,8 +93,6 @@ user_id="12365";
 		//test codes end
 		
 		
-		
-		
 	}
 	
 	
@@ -117,16 +114,12 @@ user_id="12365";
 		token_key=preferences.getString("token_key",null);
 		 
 		// listen to messages from background task service
-		locationReceiver = new LocationReceiver();
+		receiver= new MainBroadcastReceiver();
 		IntentFilter filter = new IntentFilter();
-		filter.addAction("location.backgroundTask.action");
-		registerReceiver(locationReceiver, filter);
+		filter.addAction("backgroundTask.action");
+		registerReceiver(receiver, filter);
 		
 	}
-	
-	
-	
-	
 	
 	// stop background tasks service
 	@Override
@@ -139,20 +132,20 @@ user_id="12365";
 	protected void onDestroy(){
 		super.onDestroy();
 		cancelRefreshTimers();
-		stopService(new Intent(this,BackgroundTaskService.class));
+		//stopService(new Intent(this,BackgroundTaskService.class));
 		try{
-			unregisterReceiver(locationReceiver);
+			unregisterReceiver(receiver);
 		}catch(Exception e){
 			//
 		}
 	}
 	
 	// Communicate with BackgroundTaskService.
-	public class LocationReceiver extends BroadcastReceiver{
+	public class MainBroadcastReceiver extends BroadcastReceiver{
 		@Override
 		public void onReceive(Context context,Intent intent) {
 			String intentAction = intent.getAction();
-			if(null!=intentAction && intentAction.equals("location.backgroundTask.action")){
+			if(null!=intentAction && intentAction.equals("backgroundTask.action")){
 				if("reLoadChatList".equals(intent.getStringExtra("todo_action"))){
 					reloadChatList();
 				}else if("reLoadContactList".equals(intent.getStringExtra("todo_action"))){
@@ -182,6 +175,7 @@ user_id="12365";
 			case R.id.app_bar_search:
 				startActivity(new Intent(MainActivity.this,SearchNewContact.class));
 				cancelRefreshTimers();
+				stopService(new Intent(this,BackgroundTaskService.class));
 				return true;
 			case R.id.app_bar_stopRefresh:
 				cancelRefreshTimers();
@@ -309,7 +303,7 @@ user_id="12365";
 					if(status==2){
 						changeViewToFontLogin();
 					}else if(status==1){
-						MyTools.showToast(MainActivity.this,"Ohh! Poor Network... :(",Toast.LENGTH_LONG);
+						//MyTools.showToast(MainActivity.this,"Ohh! Poor Network... :(",Toast.LENGTH_LONG);
 					}
 				}catch(Exception e){
 					e.printStackTrace();

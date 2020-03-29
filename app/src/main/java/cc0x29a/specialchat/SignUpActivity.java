@@ -1,6 +1,8 @@
 package cc0x29a.specialchat;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -28,7 +30,7 @@ public class SignUpActivity extends AppCompatActivity{
 			public void run(){
 				refreshNewID();
 			}
-		}, 888);
+		}, 222);
 		
 		findViewById(R.id.signUp_btn_new_user_id).setOnClickListener(new View.OnClickListener(){
 			@Override
@@ -38,6 +40,7 @@ public class SignUpActivity extends AppCompatActivity{
 		});
 		
 		findViewById(R.id.btn_signUp).setOnClickListener(new View.OnClickListener(){
+			@SuppressLint("ApplySharedPref")
 			@Override
 			public void onClick(View v){
 				if(checkInfo() && checkInviteCode()){
@@ -77,11 +80,13 @@ public class SignUpActivity extends AppCompatActivity{
 									"Congratulations!!! \n" +
 									"You are now one of Special Chat's VIPs!! ",Toast.LENGTH_LONG).show();
 							
-							Bundle bundle=new Bundle();
-							bundle.putString("login_id",user_id);
-							Intent intent=new Intent(SignUpActivity.this,LoginActivity.class);
-							intent.putExtras(bundle);
-							startActivity(intent,bundle);
+							SharedPreferences preferences=getSharedPreferences("sign_up_info",MODE_PRIVATE);
+							SharedPreferences.Editor editor=preferences.edit();
+							
+							editor.putString("user_id",user_id);
+							editor.apply();
+							
+							startActivity(new Intent(SignUpActivity.this,LoginActivity.class));
 							finish();
 						}else if(data.getString("status").equals("false")){
 							Toast.makeText(SignUpActivity.this,"Perhaps server made a mistake...",Toast.LENGTH_SHORT).show();
@@ -90,7 +95,7 @@ public class SignUpActivity extends AppCompatActivity{
 						}
 					}catch(JSONException e){
 						e.printStackTrace();
-						Toast.makeText(SignUpActivity.this,"Ohhh, bad luck! Here comes a bug...",Toast.LENGTH_SHORT).show();
+						Toast.makeText(SignUpActivity.this,"Ohhhh, bad luck! Here comes a bug...",Toast.LENGTH_SHORT).show();
 					}
 				}
 				

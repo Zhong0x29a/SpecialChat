@@ -112,7 +112,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 						TextView tv_user_name=findViewById(R.id.detail_userName);
 						TextView tv_user_phone=findViewById(R.id.detail_userPhone);
 						
-						ta_name=data.getString("user_name");
+						ta_name=MyTools.resolveSpecialChar(data.getString("user_name"));
 						ta_phone=data.getString("user_phone");
 						
 						tv_user_name.setText(ta_name);

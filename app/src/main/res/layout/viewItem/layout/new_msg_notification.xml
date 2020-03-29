@@ -3,7 +3,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="66dp"
-    android:background="#00000000"
+    android:background="#88ffffff"
     android:gravity="center_vertical">
 
     <ImageView
@@ -11,7 +11,7 @@
         android:layout_height="55dp"
         android:background="@mipmap/ic_launcher"
         android:layout_marginHorizontal="5dp"
-        />
+        android:id="@+id/new_msg_notification_profile"/>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -20,6 +20,27 @@
         android:orientation="vertical">
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="23dp"/>
+            android:layout_height="24dp"
+            android:text="Title"
+            android:textSize="22sp"
+            android:textColor="#232323"
+            android:layout_marginStart="18dp"
+            android:id="@+id/new_msg_notification_title"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="23dp"
+            android:textSize="17sp"
+            android:text="Message"
+            android:textColor="#232323"
+            android:layout_marginStart="8dp"
+            android:id="@+id/new_msg_notification_msg"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:textColor="#232323"
+            android:layout_height="19dp"
+            android:text="Now"
+            android:gravity="end"
+            android:layout_marginEnd="16dp"/>
+
     </LinearLayout>
 </LinearLayout>

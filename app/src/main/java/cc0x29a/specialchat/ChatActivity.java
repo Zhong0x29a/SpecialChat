@@ -1,5 +1,9 @@
 package cc0x29a.specialchat;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -29,6 +33,8 @@ public class ChatActivity extends AppCompatActivity{
 	static ChatWindowAdapter adapter;
 	
 	static int history_position=0;
+	
+	ChatBroadcastReceiver receiver;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
@@ -135,11 +141,32 @@ public class ChatActivity extends AppCompatActivity{
 			finish();
 		}
 		
+		// listen broadcast from BackgroundTask.
+		receiver=new ChatBroadcastReceiver();
+		IntentFilter filter = new IntentFilter();
+		filter.addAction("backgroundTask.action");
+		registerReceiver(receiver,filter);
 	}
 	
 	@Override
 	protected void onStop(){
 		super.onStop();
+	}
+	
+	// Communicate with BackgroundTaskService.
+	public static class ChatBroadcastReceiver extends BroadcastReceiver{
+		@Override
+		public void onReceive(Context context,Intent intent) {
+			String intentAction = intent.getAction();
+			if(null!=intentAction && intentAction.equals("backgroundTask.action")){
+				String[] new_data;
+				if("updateChatRecord".equals(intent.getStringExtra("todo_action"))&&
+						null!=(new_data=intent.getStringArrayExtra("new_record")) ){
+					// update chat record.
+					adapter.addNewData(new_data);
+				}
+			}
+		}
 	}
 	
 	private void init(){
