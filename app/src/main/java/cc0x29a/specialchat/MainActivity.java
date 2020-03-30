@@ -186,9 +186,9 @@ user_id="12365";
 				Toast.makeText(this,"Settings",Toast.LENGTH_SHORT).show();
 				return true;
 			case R.id.app_bar_login:
-				startActivity(new Intent(MainActivity.this,LoginActivity.class));
-				cancelRefreshTimers();
-//				finish();
+				Toast.makeText(this,"Not support yet.",Toast.LENGTH_SHORT);
+//				startActivity(new Intent(MainActivity.this,LoginActivity.class));
+//				cancelRefreshTimers();
 				return true;
 			case R.id.app_bar_about:
 				Toast.makeText(this,"Special Chat-1.0\n" +
