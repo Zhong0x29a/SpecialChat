@@ -25,7 +25,7 @@ import java.sql.Statement;
 class UserInfoSQLite{
 	
 	// Create a SQLite connection.
-	static Connection getConnection() throws SQLException, ClassNotFoundException{
+	private static Connection getConnection() throws SQLException, ClassNotFoundException{
 		Class.forName("org.sqlite.JDBC");
 		//c.setAutoCommit(false);
 		return DriverManager.getConnection("jdbc:sqlite:user_info.db");

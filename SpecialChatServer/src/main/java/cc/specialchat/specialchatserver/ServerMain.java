@@ -2,11 +2,10 @@ package cc.specialchat.specialchatserver;
 
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.SQLException;
 
 public class ServerMain{
 	
-	public static void main(String[] args) throws SQLException, ClassNotFoundException{
+	public static void main(String[] args) throws Exception{
 		// test code.
 //		MsgCacheSQLite.init();
 //		String t="{\"a\":'asd','dsa':\"dsa\"}";
@@ -29,36 +28,31 @@ public class ServerMain{
 		// test code upon
 		
 		// start program.
-		
-		// first run, init.
-//		try{
-//			UserInfoSQLite.init();
-//			MsgCacheSQLite.init();
-//		    exit(0);
-//		}catch(SQLException|ClassNotFoundException e){
-//			e.printStackTrace();
-//		}
-		
 		try{
+			init();
 			ServerSocket serverSocket = new ServerSocket(21027);
-			if(args.length>0 && args[0].equals("e")){
-				System.out.println("--- Just happened a Error... ---\n---- Special Chat Server restarted ----\n");
-			}else{
-				System.out.println("---- Special Chat Server started ----\n");
-			}
+			System.out.println("------ Special Chat Server started ------\n");
 			int count=1;
 			
 			Socket socket;
 			while(true){
 				socket = serverSocket.accept();
 				ServerThread serverThread = new ServerThread(socket);
-				System.out.println("New connection: " + socket.getInetAddress().getHostAddress() +" ("+count+")");
+				System.out.println("New connection: " + socket.getInetAddress().getHostAddress() +" ("+count+")\n");
 				serverThread.start();
 				count++;
 			}
 		}catch(Exception e){
+			System.out.println("--- Just occurred a ERROR... ---\n---- Special Chat Server restarted ----\n");
 			e.printStackTrace();
+			Thread.sleep(1888);
 			main(new String[]{"e"});
 		}
+		
+	}
+	
+	private static void init() throws Exception{
+		UserInfoSQLite.init();
+		MsgCacheSQLite.init();
 	}
 }
