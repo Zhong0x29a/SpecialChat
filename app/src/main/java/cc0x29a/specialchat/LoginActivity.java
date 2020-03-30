@@ -95,6 +95,7 @@ public class LoginActivity extends AppCompatActivity{
 								"Enjoy your time~",Toast.LENGTH_LONG).show();
 						
 						startActivity(new Intent(LoginActivity.this, MainActivity.class));
+						finish();
 					}else if(data.getString("status").equals("false")){
 						ET_password.getText().clear();
 						Toast.makeText(LoginActivity.this,

@@ -27,9 +27,14 @@ public class ServerMain{
 //		exit(0);
 		// test code upon
 		
-		// start program.
 		try{
 			init();
+		}catch(Exception e){
+//			e.printStackTrace();
+		}
+		
+		// start program.
+		try{
 			ServerSocket serverSocket = new ServerSocket(21027);
 			System.out.println("------ Special Chat Server started ------\n");
 			int count=1;

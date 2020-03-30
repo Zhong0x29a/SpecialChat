@@ -175,10 +175,11 @@ user_id="12365";
 			case R.id.app_bar_search:
 				startActivity(new Intent(MainActivity.this,SearchNewContact.class));
 				cancelRefreshTimers();
-				stopService(new Intent(this,BackgroundTaskService.class));
 				return true;
 			case R.id.app_bar_stopRefresh:
 				cancelRefreshTimers();
+				stopService(new Intent(this,BackgroundTaskService.class));
+				unregisterReceiver(receiver);
 				Toast.makeText(this,"Stopped auto refresh.",Toast.LENGTH_LONG).show();
 				return true;
 			case R.id.app_bar_settings:
@@ -559,6 +560,7 @@ user_id="12365";
 					}
 				});
 				cancelRefreshTimers();
+				stopService(new Intent(MainActivity.this,BackgroundTaskService.class));
 				Toast.makeText(MainActivity.this,"Maybe you haven't login yet? ",
 				Toast.LENGTH_LONG).show();
 			}
@@ -570,6 +572,7 @@ user_id="12365";
 	 */
 	private void goToLogin(){
 		cancelRefreshTimers();
+		stopService(new Intent(MainActivity.this,BackgroundTaskService.class));
 		startActivity(new Intent(MainActivity.this,LoginActivity.class));
 		finish();
 	}

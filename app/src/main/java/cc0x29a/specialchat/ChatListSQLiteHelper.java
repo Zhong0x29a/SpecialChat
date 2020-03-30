@@ -83,9 +83,25 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
+		db.close();
 	}
 	
-	//todo update to listArray
+	//todo temp function , try perfect this
+	void fixNickname(@NotNull SQLiteDatabase db,String user_id,String nickname){
+		try{
+			Cursor cursor=db.query("chat_list",new String[]{"user_id"},
+					"user_id="+user_id,null,null,null,null);
+			if(cursor.moveToNext()){ // todo bug here.
+				cursor.close();
+				String SQL="update chat_list set nickname='"+nickname+"' where user_id='"+user_id+"'";
+				db.execSQL(SQL);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		db.close();
+	}
+	
 	/**
 	 * Fetch chat list items. 50 for max each time.
 	 * @param db SQLiteDataBase
@@ -101,9 +117,9 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 			Cursor cursor=db.query("chat_list",
 					new String[]{"index_num","user_id","nickname","last_chat_time","last_msg"},
 					null,null,null,null,"last_chat_time desc");
-			String[] temp=new String[5];
 			List<String[]> data=new ArrayList<>();
 			while(cursor.moveToNext()){
+				String[] temp=new String[5];
 				temp[0]=cursor.getInt(cursor.getColumnIndex("index_num"))+"";
 				temp[1]=cursor.getInt(cursor.getColumnIndex("user_id"))+"";
 				temp[2]=MyTools.resolveSpecialChar(cursor.getString(cursor.getColumnIndex("nickname")));
@@ -112,9 +128,11 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 				data.add(temp);
 			}
 			cursor.close();
+			db.close();
 			return data;
 		}catch(SQLException e){
 			e.printStackTrace();
+			db.close();
 			return null;
 		}
 	}
@@ -140,6 +158,7 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
+		db.close();
 	}
 	
 	/**
@@ -156,6 +175,7 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
+		db.close();
 	}
 	
 	/**
@@ -170,6 +190,7 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
+		db.close();
 	}
 	
 	@Override

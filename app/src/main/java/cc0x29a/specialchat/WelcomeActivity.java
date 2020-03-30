@@ -64,6 +64,7 @@ public class WelcomeActivity extends AppCompatActivity{
 				e.putString("first_run","no");
 				e.apply();
 				startActivity(new Intent(WelcomeActivity.this,MainActivity.class));
+				finish();
 			}
 		});
 	}

@@ -3,7 +3,6 @@ package cc0x29a.specialchat;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -96,9 +95,9 @@ public class ContactDetailActivity extends AppCompatActivity{
 		
 		
 		// fetch contact detail.
-		new Thread(){
-			@Override
-			public void run(){
+//		new Thread(){
+//			@Override
+//			public void run(){
 				try{
 					SocketWithServer socket=new SocketWithServer();
 					socket.DataSend="{" +
@@ -118,18 +117,18 @@ public class ContactDetailActivity extends AppCompatActivity{
 						tv_user_name.setText(ta_name);
 						tv_user_phone.setText(ta_phone);
 					}else{
-						Looper.prepare();
+//						Looper.prepare();
 						Toast.makeText(getApplicationContext(),"Error!\nData Null!",Toast.LENGTH_LONG).show();
-						Looper.loop();
+//						Looper.loop();
 					}
 				}catch(JSONException|NullPointerException e){
 					e.printStackTrace();
-					Looper.prepare();
+//					Looper.prepare();
 					Toast.makeText(getApplicationContext(),"Error!\nData Null! (Exception)",Toast.LENGTH_LONG).show();
-					Looper.loop();
+//					Looper.loop();
 				}
-			}
-		}.start();
+//			}
+//		}.start();
 		
 		// Check if is friend & set btn_mode
 		new Thread(){

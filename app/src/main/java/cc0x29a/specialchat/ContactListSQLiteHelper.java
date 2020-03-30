@@ -50,7 +50,23 @@ public class ContactListSQLiteHelper extends SQLiteOpenHelper{
 		}
 		contactsList[0][0]=index+"";
 		
+		db.close();
 		return contactsList;
+	}
+	
+	//todo zhushi
+	String fetchNickname(SQLiteDatabase db,String user_id){
+		try{
+			Cursor cursor=db.query("contact_list",new String[]{"nickname"},
+					"user_id="+user_id,null,null,null,null);
+			String nickname;
+			cursor.moveToNext();
+			nickname=cursor.getString(cursor.getColumnIndex("nickname"));
+			cursor.close();
+			return nickname;
+		}catch(Exception e){
+			return "SQLite Error!";
+		}
 	}
 	
 	/**
@@ -77,6 +93,7 @@ public class ContactListSQLiteHelper extends SQLiteOpenHelper{
 		}catch(SQLException|NullPointerException e){
 			e.printStackTrace();
 		}
+		db.close();
 	}
 	
 	/**
@@ -92,7 +109,7 @@ public class ContactListSQLiteHelper extends SQLiteOpenHelper{
 			cursor.close();
 			// update
 			String SQL="update contact_list set " +
-					"nickname="+nickname+" "+
+					"nickname='"+nickname+"' "+
 					"where user_id="+user_id;
 			db.execSQL(SQL);
 		}else{
@@ -100,6 +117,7 @@ public class ContactListSQLiteHelper extends SQLiteOpenHelper{
 			// insert
 			insertNewContact(db,user_id,nickname,nickname,"null");
 		}
+		db.close();
 	}
 	
 	@Override

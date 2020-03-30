@@ -25,7 +25,7 @@ public class ChatActivity extends AppCompatActivity{
 	
 	// this activity's lunch mode need to be update! or will cause a little bug!
 	
-	// todo refresh message
+	// refresh message
 	
 	static String ta_id;
 	static String nickname;
@@ -55,9 +55,14 @@ public class ChatActivity extends AppCompatActivity{
 		
 		Bundle bundle = this.getIntent().getExtras();
 		
+		
 		//  his/her user_id & name
 		ta_id= (null != bundle) ? bundle.getString("user_id") : null;
-		nickname= (null != bundle) ? bundle.getString("nickname") : null;
+//		nickname= (null != bundle) ? bundle.getString("nickname") : null; //todo fetch from sql
+		
+		ContactListSQLiteHelper helper=new ContactListSQLiteHelper(this,"contact_list.db",1);
+		nickname=helper.fetchNickname(helper.getReadableDatabase(),ta_id);
+		
 		
 		if(null!=nickname){
 			this.setTitle(nickname);
@@ -151,6 +156,15 @@ public class ChatActivity extends AppCompatActivity{
 	@Override
 	protected void onStop(){
 		super.onStop();
+	}
+	
+	protected void onDestroy(){
+		try{
+			unregisterReceiver(receiver);
+		}catch(Exception e){
+			//
+		}
+		super.onDestroy();
 	}
 	
 	// Communicate with BackgroundTaskService.

@@ -3,7 +3,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="66dp"
-    android:background="#88ffffff"
+    android:background="#55ffffff"
     android:gravity="center_vertical">
 
     <ImageView
@@ -40,7 +40,8 @@
             android:layout_height="19dp"
             android:text="Now"
             android:gravity="end"
-            android:layout_marginEnd="16dp"/>
+            android:layout_marginEnd="16dp"
+            android:id="@+id/new_msg_notification_time"/>
 
     </LinearLayout>
 </LinearLayout>

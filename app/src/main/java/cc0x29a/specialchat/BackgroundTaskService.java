@@ -57,7 +57,7 @@ public class BackgroundTaskService extends Service{
 						MyTools.showToast(BackgroundTaskService.this,"!Poor Network... :(",Toast.LENGTH_SHORT);
 					}
 				}catch(Exception e){
-					//e.printStackTrace();
+					e.printStackTrace();
 				}
 			}
 		},1700,3666);
@@ -67,7 +67,7 @@ public class BackgroundTaskService extends Service{
 			public void run(){
 				syncLatestMsg();
 			}
-		},20,5000);
+		},20,2888);
 		
 		syncCL.schedule(new TimerTask(){
 			@Override
@@ -75,10 +75,10 @@ public class BackgroundTaskService extends Service{
 				try{
 					syncContactsList();
 				}catch(Exception e){
-//					e.printStackTrace();
+					e.printStackTrace();
 				}
 			}
-		},6666,60000);
+		},8888,25000);
 		
 		
 	}
@@ -93,7 +93,7 @@ public class BackgroundTaskService extends Service{
 	 * @param nickname nickname
 	 * @param msg_content content
 	 */
-	private void showNewMsgNotification(String user_id,String nickname,String msg_content) {
+	private void showNewMsgNotification(String user_id,String nickname,String msg_content,String send_time) {
 		NotificationManager notificationManager = (NotificationManager) BackgroundTaskService.this.getSystemService(NOTIFICATION_SERVICE);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			NotificationChannel channel = new NotificationChannel(PUSH_CHANNEL_ID, PUSH_CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
@@ -118,6 +118,7 @@ public class BackgroundTaskService extends Service{
 		remoteViews.setImageViewResource(R.id.new_msg_notification_profile, R.mipmap.ic_launcher);
 		remoteViews.setTextViewText(R.id.new_msg_notification_title, nickname);
 		remoteViews.setTextViewText(R.id.new_msg_notification_msg, msg_content);
+		remoteViews.setTextViewText(R.id.new_msg_notification_time,send_time);
 		
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 		Intent notificationIntent = new Intent(this, MainActivity.class);
@@ -236,7 +237,7 @@ public class BackgroundTaskService extends Service{
 				intent2.setAction("backgroundTask.action.chatActivity."+friend_id);
 				sendBroadcast(intent2);
 				
-				showNewMsgNotification(friend_id,friend_id,msg_content); // todo nickname not set
+				showNewMsgNotification(friend_id,friend_id,MyTools.resolveSpecialChar(msg_content),MyTools.formatTime(send_time)); // todo nickname not set
 			}
 			
 			// send broadcast to MainActivity
@@ -303,6 +304,7 @@ public class BackgroundTaskService extends Service{
 		JSONObject data=socket.startSocket();
 		
 		ContactListSQLiteHelper helper=new ContactListSQLiteHelper(this,"contact_list.db",1);
+		ChatListSQLiteHelper helper2=new ChatListSQLiteHelper(this,"chat_list.db",1);
 		
 		// parse data;
 		if(data!=null && data.getString("status").equals("true")){
@@ -310,6 +312,7 @@ public class BackgroundTaskService extends Service{
 				// Save to/update SQLite data
 				JSONObject temp=new JSONObject(data.getString("index_"+i));
 				helper.updateContactList(helper.getReadableDatabase(),temp.getString("user_id"),temp.getString("nickname"));
+				helper2.fixNickname(helper2.getReadableDatabase(),temp.getString("user_id"),temp.getString("nickname"));
 			}
 			
 			// Send broadcast to MainActivity.
@@ -317,6 +320,12 @@ public class BackgroundTaskService extends Service{
 			intent.putExtra("todo_action", "reLoadContactList");
 			intent.setAction("location.backgroundTask.action");
 			sendBroadcast(intent);
+			
+			Intent intent2 = new Intent();
+			intent2.putExtra("todo_action", "reLoadChatList");
+			intent2.setAction("backgroundTask.action");
+			sendBroadcast(intent2);
+			
 		}
 		
 	}
