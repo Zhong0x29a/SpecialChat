@@ -60,7 +60,7 @@ public class BackgroundTaskService extends Service{
 					//e.printStackTrace();
 				}
 			}
-		},1700,5000);
+		},1700,3666);
 		
 		syncLM.schedule(new TimerTask(){
 			@Override
@@ -233,7 +233,7 @@ public class BackgroundTaskService extends Service{
 				Intent intent2 = new Intent();
 				intent2.putExtra("todo_action", "updateChatRecord"); // ChatActivity
 				intent2.putExtra("new_record",new_data);
-				intent2.setAction("backgroundTask.action");
+				intent2.setAction("backgroundTask.action.chatActivity."+friend_id);
 				sendBroadcast(intent2);
 				
 				showNewMsgNotification(friend_id,friend_id,msg_content); // todo nickname not set

@@ -144,7 +144,7 @@ public class ChatActivity extends AppCompatActivity{
 		// listen broadcast from BackgroundTask.
 		receiver=new ChatBroadcastReceiver();
 		IntentFilter filter = new IntentFilter();
-		filter.addAction("backgroundTask.action");
+		filter.addAction("backgroundTask.action.chatActivity."+ta_id);
 		registerReceiver(receiver,filter);
 	}
 	
@@ -158,7 +158,7 @@ public class ChatActivity extends AppCompatActivity{
 		@Override
 		public void onReceive(Context context,Intent intent) {
 			String intentAction = intent.getAction();
-			if(null!=intentAction && intentAction.equals("backgroundTask.action")){
+			if(null!=intentAction && intentAction.equals("backgroundTask.action.chatActivity."+ta_id)){
 				String[] new_data;
 				if("updateChatRecord".equals(intent.getStringExtra("todo_action"))&&
 						null!=(new_data=intent.getStringArrayExtra("new_record")) ){
