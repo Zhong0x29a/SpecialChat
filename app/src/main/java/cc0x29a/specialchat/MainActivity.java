@@ -60,6 +60,9 @@ public class MainActivity extends AppCompatActivity{
 		
 		
 		//test codes
+		
+		// nohup java -jar SpecialChatServer.jar > /dev/null 2> log &
+		
 /*		String a="{\"a1\":\"abc1\",\"b\":\"{'c1':'cde1'}\"}";
 //		try{
 //			JSONObject json=new JSONObject(a);
