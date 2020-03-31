@@ -17,7 +17,7 @@ import java.util.List;
  *
  *      database    :chat_list.db
  *      table       :chat_list
- *      column(5->6)   :
+ *      column(6)   :
  *          index_num       INTEGER,primary key,autoincrement   index
  *          user_id         INTEGER,NOT NULL,UNIQUE
  *          nickname        TEXT
@@ -83,7 +83,6 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
-		db.close();
 	}
 	
 	//todo temp function , try perfect this
@@ -100,6 +99,24 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 			e.printStackTrace();
 		}
 		db.close();
+	}
+	
+	/**
+	 * Fetch ta_nickname by user_id
+	 * @param db db
+	 * @param user_id uid
+	 * @return String , nickname or user_id
+	 */
+	String fetchNickname(@NotNull SQLiteDatabase db,String user_id){
+		try{
+			Cursor cursor=db.query("chat_list",new String[]{"nickname"},"user_id="+user_id,
+					null,null,null,null);
+			String nickname=cursor.getString(cursor.getColumnIndex("nickname"));
+			cursor.close();
+			return nickname;
+		}catch(Exception e){
+			return user_id;
+		}
 	}
 	
 	/**

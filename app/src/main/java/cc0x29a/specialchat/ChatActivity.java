@@ -25,13 +25,13 @@ public class ChatActivity extends AppCompatActivity{
 	
 	// this activity's lunch mode need to be update! or will cause a little bug!
 	
-	// refresh message
-	
+	static String my_id;
 	static String ta_id;
 	static String nickname;
 	
 	static ChatWindowAdapter adapter;
 	
+	// where history loaded to
 	static int history_position=0;
 	
 	ChatBroadcastReceiver receiver;
@@ -40,44 +40,29 @@ public class ChatActivity extends AppCompatActivity{
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_chat);
-//		this.setTitle("aa");
-	
 		
-	}
-	
-	@Override
-	protected void onStart(){
-		super.onStart();
 		init();
 		
-		// where history loaded to
-		history_position=0;
-		
+		//  fetch ta user_id & name
 		Bundle bundle = this.getIntent().getExtras();
-		
-		
-		//  his/her user_id & name
 		ta_id= (null != bundle) ? bundle.getString("user_id") : null;
-//		nickname= (null != bundle) ? bundle.getString("nickname") : null; //todo fetch from sql
-		
 		ContactListSQLiteHelper helper=new ContactListSQLiteHelper(this,"contact_list.db",1);
 		nickname=helper.fetchNickname(helper.getReadableDatabase(),ta_id);
 		
+		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
+		my_id=preferences.getString("user_id",null);
 		
-		if(null!=nickname){
-			this.setTitle(nickname);
-		}
+		// set title text
+		if(null!=nickname){ this.setTitle(nickname); }
 		
 		// init & load chat history
 		if(ta_id!= null && !ta_id.equals("")){
+			// fetch data from database
 			MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,
 					"msg_"+ta_id+".db",1);
-			
 			List<String[]> data=msgSQLiteHelper.getChatRecord(msgSQLiteHelper.getReadableDatabase(),history_position); //position start from 0
 			
-			SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
-			String my_id=preferences.getString("user_id",null);
-			
+			// load recyclerView
 			final RecyclerView recordRecyclerView=findViewById(R.id.chatWindow_recyclerView);
 			LinearLayoutManager layoutManager=new LinearLayoutManager(this);
 			recordRecyclerView.setLayoutManager(layoutManager);
@@ -86,16 +71,17 @@ public class ChatActivity extends AppCompatActivity{
 			adapter.count=data.size();
 			adapter.my_id=my_id;
 			adapter.ta_id=ta_id;
-			recordRecyclerView.setAdapter(adapter);
 			
+			recordRecyclerView.setAdapter(adapter);
 			recordRecyclerView.setItemAnimator(new DefaultItemAnimator());
 			
+			// reverse data set
 			layoutManager.setReverseLayout(true);
 			
-			
+			// scroll to top to load more history
 			recordRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 				private int lastVisibleItemPosition;
-				private int firstVisibleItemPosition;
+				//				private int firstVisibleItemPosition;
 				
 				@Override
 				public void onScrolled(@NotNull RecyclerView recyclerView,int dx,int dy){
@@ -103,10 +89,8 @@ public class ChatActivity extends AppCompatActivity{
 					
 					RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
 					if (layoutManager instanceof LinearLayoutManager) {
-						lastVisibleItemPosition = ((LinearLayoutManager) layoutManager)
-								.findLastVisibleItemPosition();
-						firstVisibleItemPosition = ((LinearLayoutManager) layoutManager)
-								.findFirstVisibleItemPosition();
+						lastVisibleItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
+						//						firstVisibleItemPosition = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
 					}
 				}
 				
@@ -114,15 +98,11 @@ public class ChatActivity extends AppCompatActivity{
 				public void onScrollStateChanged(@NotNull RecyclerView recyclerView,int newState) {
 					super.onScrollStateChanged(recyclerView, newState);
 					RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-					
 					assert layoutManager!=null;
 					int totalItemCount = layoutManager.getItemCount();
-					
 					if (newState == RecyclerView.SCROLL_STATE_IDLE) {
 						if ((totalItemCount - 1) == lastVisibleItemPosition){
-							
 							history_position+=50;
-							
 							MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,
 									"msg_"+ta_id+".db",1);
 							List<String[]> newData=msgSQLiteHelper.getChatRecord(msgSQLiteHelper.getReadableDatabase(),history_position);
@@ -133,13 +113,13 @@ public class ChatActivity extends AppCompatActivity{
 								adapter.addMoreData(newData);
 							}
 						}
-//						else if (firstVisibleItemPosition == 0) {
-//							// when scroll to the bottom
-//						}
+						//						else if (firstVisibleItemPosition == 0) {
+						//							// when scroll to the bottom
+						//						}
 					}
 				}
+				
 			});
-			
 			
 		}else{
 			Toast.makeText(ChatActivity.this,"ERROR! (CA125)",Toast.LENGTH_LONG).show();
@@ -151,6 +131,12 @@ public class ChatActivity extends AppCompatActivity{
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("backgroundTask.action.chatActivity."+ta_id);
 		registerReceiver(receiver,filter);
+		
+	}
+	
+	@Override
+	protected void onStart(){
+		super.onStart();
 	}
 	
 	@Override
@@ -172,10 +158,10 @@ public class ChatActivity extends AppCompatActivity{
 		@Override
 		public void onReceive(Context context,Intent intent) {
 			String intentAction = intent.getAction();
-			if(null!=intentAction && intentAction.equals("backgroundTask.action.chatActivity."+ta_id)){
+			if(null != intentAction && intentAction.equals("backgroundTask.action.chatActivity."+ta_id)){
 				String[] new_data;
-				if("updateChatRecord".equals(intent.getStringExtra("todo_action"))&&
-						null!=(new_data=intent.getStringArrayExtra("new_record")) ){
+				if("updateChatRecord".equals( intent.getStringExtra("todo_action") ) &&
+						null!=( new_data=intent.getStringArrayExtra("new_record") ) ){
 					// update chat record.
 					adapter.addNewData(new_data);
 				}
@@ -184,7 +170,6 @@ public class ChatActivity extends AppCompatActivity{
 	}
 	
 	private void init(){
-		
 		// Send message in editText
 		findViewById(R.id.chat_btn_send).setOnClickListener(new View.OnClickListener(){
 			@Override
@@ -197,6 +182,7 @@ public class ChatActivity extends AppCompatActivity{
 					EditText editText=findViewById(R.id.chat_EditText);
 					String msg_content=MyTools.filterSpecialChar(editText.getText().toString());
 					
+					// if content is empty
 					if(msg_content.equals("") || msg_content.equals("&#32;")){
 						Toast.makeText(ChatActivity.this,"Cannot send empty message.",Toast.LENGTH_SHORT).show();
 						return;
@@ -221,16 +207,13 @@ public class ChatActivity extends AppCompatActivity{
 						}else if( data.getString("status").equals("true") ){
 							// store into msg SQLite
 							MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,"msg_"+ta_id+".db",1);
-							msgSQLiteHelper.insertNewMsg(
-									msgSQLiteHelper.getReadableDatabase(),my_id,
-									data.getString("send_time"),msg_content);
-							
-							// update recycler view todo bug here
+							msgSQLiteHelper.insertNewMsg(msgSQLiteHelper.getReadableDatabase(),my_id,data.getString("send_time"),msg_content);
+							// update recycler view
 							adapter.addNewData(new String[]{"",my_id,"","",MyTools.resolveSpecialChar(msg_content)});
-							
+							// update chat list , last msg & last chat time
 							ChatListSQLiteHelper chatListHelper=new ChatListSQLiteHelper(ChatActivity.this,"chat_list.db",1);
 							chatListHelper.updateChatList(chatListHelper.getReadableDatabase(),ta_id,MyTools.getCurrentTime()+"",msg_content);
-							
+							// clear EditText
 							editText.getText().clear();
 						}else if( data.getString("status").equals("false") ){
 							Toast.makeText(ChatActivity.this,"Something wrong!",Toast.LENGTH_SHORT).show();
@@ -244,7 +227,6 @@ public class ChatActivity extends AppCompatActivity{
 					e.printStackTrace();
 					Toast.makeText(ChatActivity.this,"Unknown error! (CA1004)",Toast.LENGTH_SHORT).show();
 				}
-				
 			}
 		});
 	}

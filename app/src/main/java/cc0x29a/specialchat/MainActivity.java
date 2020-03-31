@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity{
 		// next ver to do: this can set a lunch page !!
 		setContentView(R.layout.activity_main);
 		super.onCreate(savedInstanceState);
+		
 		// check Application upgrade.
 		checkAppUpgrade();
 		
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity{
 		
 		// nohup java -jar SpecialChatServer.jar > /dev/null 2> log &
 		
-/*		String a="{\"a1\":\"abc1\",\"b\":\"{'c1':'cde1'}\"}";
+//		String a="{\"a1\":\"abc1\",\"b\":\"{'c1':'cde1'}\"}";
 //		try{
 //			JSONObject json=new JSONObject(a);
 //			System.out.println(json.getString("a1"));
@@ -74,12 +75,12 @@ public class MainActivity extends AppCompatActivity{
 //		}catch(JSONException e){
 //			e.printStackTrace();
 //		}
-user_id="12365";
-		Bundle bundle=new Bundle();
-		bundle.putString("login_id",user_id);
-		Intent intent=new Intent(MainActivity.this,LoginActivity.class);
-		intent.putExtras(bundle);
-		startActivity(intent,bundle);
+//user_id="12365";
+//		Bundle bundle=new Bundle();
+//		bundle.putString("login_id",user_id);
+//		Intent intent=new Intent(MainActivity.this,LoginActivity.class);
+//		intent.putExtras(bundle);
+//		startActivity(intent,bundle);
 		//		MsgSQLiteHelper h=new MsgSQLiteHelper(this,"msg_1123592075.db",1);
 //		for(int i=1;i<=23;i++){
 //			h.insertNewMsg(h.getReadableDatabase(),1123592075+"",i+"",i+" I love you.");
@@ -88,11 +89,11 @@ user_id="12365";
 			
 //			c.insertNewChatListItem(c.getReadableDatabase(),"1123592075","Little hao",""+MyTools.getCurrentTime());
 //		}
-		ContactListSQLiteHelper c=new ContactListSQLiteHelper(MainActivity.this,"contact_list.db",1);
-		c.insertNewContact(c.getReadableDatabase(),"1123592075","Apple2","Haaaa pi","13360417480");
+//		ContactListSQLiteHelper c=new ContactListSQLiteHelper(MainActivity.this,"contact_list.db",1);
+//		c.insertNewContact(c.getReadableDatabase(),"1123592075","Apple2","Haaaa pi","13360417480");
 //		String[][] a=new String[][]{{"a","b","a","s"},{"a","b","c"},{"a","b","c"}};
 //		System.out.println(a.length);
-		finish();*/
+//		finish();
 		//test codes end
 		
 		
@@ -135,7 +136,7 @@ user_id="12365";
 	protected void onDestroy(){
 		super.onDestroy();
 		cancelRefreshTimers();
-		//stopService(new Intent(this,BackgroundTaskService.class));
+		stopService(new Intent(this,BackgroundTaskService.class));
 		try{
 			unregisterReceiver(receiver);
 		}catch(Exception e){
@@ -182,14 +183,15 @@ user_id="12365";
 			case R.id.app_bar_stopRefresh:
 				cancelRefreshTimers();
 				stopService(new Intent(this,BackgroundTaskService.class));
+				stopService(new Intent(this,NetworkService.class));
 				unregisterReceiver(receiver);
-				Toast.makeText(this,"Stopped auto refresh.",Toast.LENGTH_LONG).show();
+				Toast.makeText(this,"Auto refresh stopped.",Toast.LENGTH_LONG).show();
 				return true;
 			case R.id.app_bar_settings:
 				Toast.makeText(this,"Settings",Toast.LENGTH_SHORT).show();
 				return true;
 			case R.id.app_bar_login:
-				Toast.makeText(this,"Not support yet.",Toast.LENGTH_SHORT);
+				Toast.makeText(this,"Not support yet.",Toast.LENGTH_SHORT).show();
 //				startActivity(new Intent(MainActivity.this,LoginActivity.class));
 //				cancelRefreshTimers();
 				return true;
@@ -292,6 +294,7 @@ user_id="12365";
 	 */
 	private void normalMode(){
 		startService(new Intent(this,BackgroundTaskService.class));
+		startService(new Intent(this,NetworkService.class));
 		
 		// to clear timers in front
 		cancelRefreshTimers();

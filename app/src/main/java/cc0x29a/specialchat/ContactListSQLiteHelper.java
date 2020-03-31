@@ -54,7 +54,12 @@ public class ContactListSQLiteHelper extends SQLiteOpenHelper{
 		return contactsList;
 	}
 	
-	//todo zhushi
+	/**
+	 * Fetch user's nickname
+	 * @param db db
+	 * @param user_id uid
+	 * @return nickname in database or user_id
+	 */
 	String fetchNickname(SQLiteDatabase db,String user_id){
 		try{
 			Cursor cursor=db.query("contact_list",new String[]{"nickname"},
@@ -65,7 +70,7 @@ public class ContactListSQLiteHelper extends SQLiteOpenHelper{
 			cursor.close();
 			return nickname;
 		}catch(Exception e){
-			return "SQLite Error!";
+			return user_id;
 		}
 	}
 	

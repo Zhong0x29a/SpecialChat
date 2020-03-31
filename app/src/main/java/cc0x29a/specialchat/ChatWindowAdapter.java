@@ -30,7 +30,6 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 	int count; // Item counts
 	
 	private List<String[]> data; // RecyclerView's data
-
 	
 	static class VH extends RecyclerView.ViewHolder{
 		final TextView chat_msg_tv;
@@ -42,10 +41,6 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 		}
 	}
 	
-//	ChatWindowAdapter(String[][] data) {
-//		this.messages = data;
-//	}
-	
 	ChatWindowAdapter(List<String[]> data) {
 		this.data=data;
 	}
@@ -55,18 +50,14 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 	 * @param newData new fetched chat history record from SQLite
 	 */
 	void addMoreData(List<String[]> newData) {
-		
 		// if no more record
 		if(newData.size()==0){
 			return;
 		}
-		
 		// add data
 		data.addAll(newData);
-		
 		// item number
 		count=data.size();
-		
 		// apply changes
 		notifyDataSetChanged();
 	}
@@ -78,24 +69,11 @@ public class ChatWindowAdapter extends RecyclerView.Adapter<ChatWindowAdapter.VH
 	void addNewData(String[] newData){
 		// add new data
 		data.add(0,newData);
-		
 		// item number
 		count+=1;
-		
 		// apply change
 		notifyDataSetChanged();
 	}
-	
-	// abandon func.
-	/**
-	 *  use when chat list updated
-	 * //@param new_data new data
-	 */
-//	void updateData(String[][] new_data) {
-//		this.messages=new_data;
-//		this.count=Integer.parseInt(new_data[0][0]);
-//		notifyDataSetChanged();
-//	}
 	
 	@Override
 	public void onBindViewHolder(@NotNull VH holder,final int position) {
