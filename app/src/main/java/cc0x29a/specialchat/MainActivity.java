@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity{
 		}
 	}
 	
-	// set action menu.
+	// Load action menu.
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater=getMenuInflater();
@@ -168,8 +168,7 @@ public class MainActivity extends AppCompatActivity{
 	}
 	
 	/**
-	 * the action menu.
-	 *
+	 * When the action menu be clicked.
 	 * @param item menu item
 	 * @return boolean
 	 */
@@ -195,7 +194,7 @@ public class MainActivity extends AppCompatActivity{
 //				startActivity(new Intent(MainActivity.this,LoginActivity.class));
 //				cancelRefreshTimers();
 				return true;
-			case R.id.app_bar_about:
+			case R.id.app_bar_about: //todo start a new activity
 				Toast.makeText(this,"Special Chat-1.0\n" +
 						"Developed by Zhong Wenliang. \n" +
 						"Email: CuberWenliang@0x29a.cc",Toast.LENGTH_LONG).show();
@@ -309,9 +308,10 @@ public class MainActivity extends AppCompatActivity{
 					int status=checkLogin();
 					if(status==2){
 						changeViewToFontLogin();
-					}else if(status==1){
-						//MyTools.showToast(MainActivity.this,"Ohh! Poor Network... :(",Toast.LENGTH_LONG);
 					}
+//					else if(status==1){
+//						//MyTools.showToast(MainActivity.this,"Ohh! Poor Network... :(",Toast.LENGTH_LONG);
+//					}
 				}catch(Exception e){
 					e.printStackTrace();
 				}
@@ -582,7 +582,6 @@ public class MainActivity extends AppCompatActivity{
 		startActivity(new Intent(MainActivity.this,LoginActivity.class));
 		finish();
 	}
-	
 	
 	
 }

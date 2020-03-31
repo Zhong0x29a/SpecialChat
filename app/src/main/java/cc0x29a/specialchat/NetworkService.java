@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
@@ -44,7 +45,7 @@ public class NetworkService extends Service{
 				try{
 					if(refreshNewMsg()==1){
 						// if network is not so fine...
-//						MyTools.showToast(BackgroundTaskService.this,"!Poor Network... :(",Toast.LENGTH_SHORT);
+						MyTools.showToast(NetworkService.this,"!Poor Network... :(",Toast.LENGTH_SHORT);
 					}
 				}catch(Exception e){
 					e.printStackTrace();
@@ -132,20 +133,22 @@ public class NetworkService extends Service{
 				String send_time=jsonTemp.getString("send_time");
 				String msg_content=jsonTemp.getString("msg_content");
 				
+				// insert data to database
 				MsgSQLiteHelper mh=new MsgSQLiteHelper(NetworkService.this,"msg_"+friend_id+".db",1);
 				mh.insertNewMsg(mh.getReadableDatabase(),friend_id,send_time,msg_content);
 				mh.close();
 				
 				SQLiteDatabase chat_list_db=clh.getReadableDatabase();
+				// update info.
 				clh.updateChatList(chat_list_db,friend_id,send_time,msg_content);
 				// fetch nickname.
 				String ta_nickname=clh.fetchNickname(chat_list_db,friend_id);
-				
+				// release resource
 				chat_list_db.close();
 				
 				String[] new_data=new String[]{"",friend_id,"",send_time,MyTools.resolveSpecialChar(msg_content)};
 				
-				// send broadcast to ChatActivity
+				// Send broadcast to ChatActivity
 				Intent intent2 = new Intent();
 				intent2.putExtra("todo_action", "updateChatRecord"); // ChatActivity
 				intent2.putExtra("new_record",new_data);
@@ -156,7 +159,7 @@ public class NetworkService extends Service{
 			}
 			clh.close();
 			
-			// send broadcast to MainActivity
+			// Send broadcast to MainActivity
 			Intent intent = new Intent();
 			intent.putExtra("todo_action", "reLoadChatList");
 			intent.setAction("backgroundTask.action");
@@ -170,10 +173,10 @@ public class NetworkService extends Service{
 		}
 	}
 	
-	// notification values
+	// Notification info
 	private static final int PUSH_NOTIFICATION_ID = (0x001);
-	private static final String PUSH_CHANNEL_ID = "PUSH_NOTIFY_ID";
-	private static final String PUSH_CHANNEL_NAME = "PUSH_NOTIFY_NAME";
+	private static final String PUSH_CHANNEL_ID = "PUSH_NOTIFY_NEW_MESSAGE_ID";
+	private static final String PUSH_CHANNEL_NAME = "PUSH_NOTIFY_NEW_MESSAGE";
 	/**
 	 * Show a new message notification.
 	 * @param user_id uid
@@ -205,7 +208,7 @@ public class NetworkService extends Service{
 		remoteViews.setImageViewResource(R.id.new_msg_notification_profile, R.mipmap.ic_launcher);
 		remoteViews.setTextViewText(R.id.new_msg_notification_title, nickname);
 		remoteViews.setTextViewText(R.id.new_msg_notification_msg, msg_content);
-		remoteViews.setTextViewText(R.id.new_msg_notification_time,send_time);
+		remoteViews.setTextViewText(R.id.new_msg_notification_time, send_time);
 		
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 		Intent notificationIntent = new Intent(this, MainActivity.class);
