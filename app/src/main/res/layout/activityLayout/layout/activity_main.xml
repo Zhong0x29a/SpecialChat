@@ -6,137 +6,203 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#333"
-    android:gravity="bottom">
+    android:gravity="bottom"
+    android:layout_gravity="bottom">
 
-    <LinearLayout
-        android:id="@+id/main_linear_layout"
+    <!-- The main page -->
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="visible">
+        android:id="@+id/main_relative_layout">
 
-        <!-- Main content -->
         <LinearLayout
+            android:id="@+id/main_linear_layout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_weight="1">
+            android:visibility="visible">
 
-
-            <!-- Chat list page -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#333"
-                android:id="@+id/main_chat_recyclerView" />
-
-            <!-- Contact list page -->
+            <!-- todo Customize Title bar -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/main_contacts"
-                android:visibility="gone"
-                android:orientation="vertical">
+                android:layout_height="58dp"
+                android:orientation="horizontal"
+                android:background="@color/colorPrimary"
+                android:gravity="start">
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/contacts"
-                    android:textColor="#eee"/>
-                <ListView
+                    android:layout_height="match_parent"
+                    android:text="Special Chat"
+                    android:layout_marginHorizontal="16dp"
+                    android:textSize="21sp"
+                    android:textColor="#eee"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+                <ImageView
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:background="@mipmap/ic_menu"
+                    android:layout_gravity="center"/>
+            </LinearLayout>
+
+            <!-- Main content -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                android:layout_weight="1">
+
+
+                <!-- Chat list page -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#333"
+                    android:id="@+id/main_chat_recyclerView"
+                    android:visibility="gone"
+                    />
+
+                <!-- Contact list page -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/main_contacts_listView">
-                </ListView>
+                    android:id="@+id/main_contacts"
+                    android:visibility="gone"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/contacts"
+                        android:textColor="#eee"/>
+                    <ListView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/main_contacts_listView">
+                    </ListView>
+                </LinearLayout>
+
+                <!-- moments page -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/main_moments"
+                    android:visibility="gone"
+                    android:orientation="vertical">
+                    <!-- to do: complete this. (next ver.) -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/features_are_still_being_perfected"
+                        android:textColor="#eee">
+                    </TextView>
+                </LinearLayout>
+
+                <!--  me page -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/main_me"
+                    android:visibility="visible"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+                    <!-- todo: complete this. -->
+    <!--                <TextView-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:text="@string/features_are_still_being_perfected"-->
+    <!--                    android:textColor="#eee"/>-->
+
+                    <cc0x29a.specialchat.CircleImageView
+                        android:layout_width="122dp"
+                        android:layout_height="122dp"
+                        android:id="@+id/main_my_profile"
+                        android:src="@mipmap/logo2"
+                        android:layout_marginTop="55dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/main_my_name"
+                        android:text="@string/user_name"
+                        android:textStyle="bold"
+                        android:textSize="32sp"
+                        android:textColor="#eee"
+                        android:layout_marginTop="16dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/main_my_id"
+                        android:text="@string/User_ID"
+                        android:textSize="18sp"
+                        android:textColor="#eee"
+                        />
+
+                </LinearLayout>
+
             </LinearLayout>
 
-            <!-- moments page -->
+            <!-- Bottom menu -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/main_moments"
-                android:visibility="gone"
-                android:orientation="vertical">
-                <!-- to do: complete this. (next ver.) -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/features_are_still_being_perfected"
-                    android:textColor="#eee">
-                </TextView>
-            </LinearLayout>
+                android:layout_height="53dp"
+                android:orientation="horizontal"
+                android:layout_gravity="bottom">
 
-            <!--  me page -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/main_me"
-                android:visibility="gone"
-                android:orientation="vertical">
-                <!-- todo: complete this. -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/features_are_still_being_perfected"
-                    android:textColor="#eee">
-                </TextView>
+                <Button
+                    android:layout_width="88dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/menu_btn_chats"
+                    android:text="@string/chats"
+                    android:textSize="12sp"
+                    android:background="@drawable/set_button_selector"
+                    android:layout_margin="0dp"
+                    tools:ignore="ButtonStyle"
+                    android:layout_weight="1">
+                </Button>
+                <Button
+                    android:layout_width="88dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/menu_btn_contacts"
+                    android:text="@string/contacts"
+                    android:textSize="12sp"
+                    android:background="@drawable/set_button_selector"
+                    android:layout_margin="0dp"
+                    tools:ignore="ButtonStyle"
+                    android:layout_weight="1">
+                </Button>
+                <Button
+                    android:layout_width="88dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/menu_btn_moments"
+                    android:text="@string/moments"
+                    android:textSize="12sp"
+                    android:background="@drawable/set_button_selector"
+                    android:layout_margin="0dp"
+                    tools:ignore="ButtonStyle"
+                    android:layout_weight="1">
+                </Button>
+                <Button
+                    android:layout_width="88dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/menu_btn_me"
+                    android:text="@string/me"
+                    android:textSize="12sp"
+                    android:background="@drawable/set_button_selector"
+                    android:layout_margin="0dp"
+                    tools:ignore="ButtonStyle"
+                    android:layout_weight="1">
+                </Button>
             </LinearLayout>
 
         </LinearLayout>
 
-        <!-- Bottom menu -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="53dp"
-            android:orientation="horizontal"
-            android:padding="0dp"
-            android:layout_margin="0dp">
-            <Button
-                android:layout_width="88dp"
-                android:layout_height="match_parent"
-                android:id="@+id/menu_btn_chats"
-                android:text="@string/chats"
-                android:textSize="12sp"
-                android:background="@drawable/set_button_selector"
-                android:layout_margin="0dp"
-                tools:ignore="ButtonStyle"
-                android:layout_weight="1">
-            </Button>
-            <Button
-                android:layout_width="88dp"
-                android:layout_height="match_parent"
-                android:id="@+id/menu_btn_contacts"
-                android:text="@string/contacts"
-                android:textSize="12sp"
-                android:background="@drawable/set_button_selector"
-                android:layout_margin="0dp"
-                tools:ignore="ButtonStyle"
-                android:layout_weight="1">
-            </Button>
-            <Button
-                android:layout_width="88dp"
-                android:layout_height="match_parent"
-                android:id="@+id/menu_btn_moments"
-                android:text="@string/moments"
-                android:textSize="12sp"
-                android:background="@drawable/set_button_selector"
-                android:layout_margin="0dp"
-                tools:ignore="ButtonStyle"
-                android:layout_weight="1">
-            </Button>
-            <Button
-                android:layout_width="88dp"
-                android:layout_height="match_parent"
-                android:id="@+id/menu_btn_me"
-                android:text="@string/me"
-                android:textSize="12sp"
-                android:background="@drawable/set_button_selector"
-                android:layout_margin="0dp"
-                tools:ignore="ButtonStyle"
-                android:layout_weight="1">
-            </Button>
-        </LinearLayout>
-
-    </LinearLayout>
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="ddddd"-->
+<!--            android:layout_alignParentEnd="true"/>-->
+    </RelativeLayout>
 
     <!-- Font login page -->
     <LinearLayout
@@ -144,22 +210,26 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="bottom"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center">
         <ImageView
-            android:layout_width="233dp"
-            android:layout_height="233dp"
+            android:layout_width="211dp"
+            android:layout_height="211dp"
             android:background="@mipmap/logo"
-            android:layout_gravity="center"
-            android:layout_marginBottom="233dp"
             android:contentDescription="@string/font_login_page_pic" />
+        </LinearLayout>
+
         <Button
             android:id="@+id/btn_front_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:layout_marginHorizontal="30dp"
+            android:layout_marginHorizontal="32dp"
             android:text="@string/login"
             android:background="@drawable/set_button_selector"/>
 
@@ -168,37 +238,3 @@
 </LinearLayout>
 
 <!-- layout end -->
-
-<!--<androidx.constraint layout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:tools="http://schemas.android.com/tools"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="match_parent"-->
-<!--    tools:context=".MainActivity">-->
-
-<!--    -->
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="vertical">-->
-<!--            <ScrollView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent">-->
-<!--                -->
-<!--            </ScrollView>-->
-
-<!--    -->
-<!--&lt;!&ndash;            <TextView&ndash;&gt;-->
-<!--&lt;!&ndash;                android:id="@+id/textView2"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_width="wrap_content"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_height="wrap_content"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:text="TextView2" />&ndash;&gt;-->
-<!--&lt;!&ndash;            <TextView&ndash;&gt;-->
-<!--&lt;!&ndash;                android:id="@+id/textView3"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_width="wrap_content"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_height="wrap_content"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:text="TextView3" />&ndash;&gt;-->
-<!--        </LinearLayout>-->
-
-<!--    -->
-
-<!--</androidx.constraint layout.widget.ConstraintLayout>-->

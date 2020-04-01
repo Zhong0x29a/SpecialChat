@@ -10,6 +10,7 @@ package cc0x29a.specialchat;
 * */
 
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -18,12 +19,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,6 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity{
 	
 	static String user_id;
 	static String token_key;
+	static String user_name;
 	
 	MainBroadcastReceiver receiver;
 	@Override
@@ -109,13 +110,16 @@ public class MainActivity extends AppCompatActivity{
 	protected void onStart(){
 		super.onStart();
 		// choose whether to redirect page
-		redirect();
 		
-		normalMode();
+		//todo test
+//		redirect();
+		
+//		normalMode();
 		
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 		user_id=preferences.getString("user_id",null);
 		token_key=preferences.getString("token_key",null);
+		user_name=preferences.getString("user_name",null);
 		 
 		// listen to messages from background task service
 		receiver= new MainBroadcastReceiver();
@@ -159,6 +163,8 @@ public class MainActivity extends AppCompatActivity{
 		}
 	}
 	
+	// todo menu
+	/*
 	// Load action menu.
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -172,7 +178,7 @@ public class MainActivity extends AppCompatActivity{
 	 * @param item menu item
 	 * @return boolean
 	 */
-	@Override
+	/*@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.app_bar_search:
@@ -203,6 +209,9 @@ public class MainActivity extends AppCompatActivity{
 				return super.onOptionsItemSelected(item);
 		}
 	}
+	*/
+	
+	// todo delete menu
 	
 	/**
 	 * Load Welcome page at the first run of app.
@@ -239,6 +248,7 @@ public class MainActivity extends AppCompatActivity{
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.GONE);
 					findViewById(R.id.main_me).setVisibility(View.GONE);
+					Objects.requireNonNull(getSupportActionBar()).show();
 					reloadChatList();
 				}
 			});
@@ -249,6 +259,7 @@ public class MainActivity extends AppCompatActivity{
 					findViewById(R.id.main_contacts).setVisibility(View.VISIBLE);
 					findViewById(R.id.main_moments).setVisibility(View.GONE);
 					findViewById(R.id.main_me).setVisibility(View.GONE);
+					Objects.requireNonNull(getSupportActionBar()).show();
 					loadContactList();
 				}
 			});
@@ -259,6 +270,7 @@ public class MainActivity extends AppCompatActivity{
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.VISIBLE);
 					findViewById(R.id.main_me).setVisibility(View.GONE);
+					Objects.requireNonNull(getSupportActionBar()).show();
 					// next ver
 				}
 			});
@@ -269,6 +281,7 @@ public class MainActivity extends AppCompatActivity{
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.GONE);
 					findViewById(R.id.main_me).setVisibility(View.VISIBLE);
+					loadMePage();
 					// next ver
 				}
 			});
@@ -501,6 +514,20 @@ public class MainActivity extends AppCompatActivity{
 		);
 	}
 	
+	@SuppressLint("SetTextI18n")
+	void loadMePage(){
+//		MainActivity.this.setTheme(R.style.generalNoTitle);
+////		Animation a=new TranslateAnimation(30.0f, -80.0f, 30.0f, 300.0f);
+//		this.getWindow().setWindowAnimations();
+		Objects.requireNonNull(getSupportActionBar()).hide();
+		
+		TextView my_name=findViewById(R.id.main_my_name);
+		TextView my_id=findViewById(R.id.main_my_id);
+		my_name.setText(user_name);
+		my_id.setText("id:"+user_id);
+	}
+	
+	
 	/**
 	 * Check login status.
 	 * @return int 0->good;1->network;2->bad.
@@ -556,9 +583,11 @@ public class MainActivity extends AppCompatActivity{
 	private void changeViewToFontLogin(){
 		MainActivity.this.runOnUiThread(new Runnable() {
 			public void run() {
-				//login
+				// to font login page
 				findViewById(R.id.font_login_linear_layout).setVisibility(View.VISIBLE);
 				findViewById(R.id.main_linear_layout).setVisibility(View.GONE);
+				findViewById(R.id.main_relative_layout).setVisibility(View.GONE);
+				Objects.requireNonNull(getSupportActionBar()).hide();
 				findViewById(R.id.btn_front_login).setOnClickListener(new View.OnClickListener(){
 					@Override
 					public void onClick(View v){
