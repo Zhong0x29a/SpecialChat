@@ -6,4 +6,6 @@
     <string name="user_name">User name</string>
     <string name="start_journey_in_special_chat">~Start journey in Special Chat~</string>
     <string name="Phone">Phone</string>
+    <string name="menu">Menu</string>
+    <string name="special_chat">Special Chat</string>
 </resources>

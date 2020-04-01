@@ -15,6 +15,7 @@
         android:layout_height="match_parent"
         android:id="@+id/main_relative_layout">
 
+        <!-- Main content -->
         <LinearLayout
             android:id="@+id/main_linear_layout"
             android:layout_width="match_parent"
@@ -22,31 +23,48 @@
             android:orientation="vertical"
             android:visibility="visible">
 
-            <!-- todo Customize Title bar -->
+            <!-- Customize Title bar -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="58dp"
+                android:id="@+id/main_title_bar"
                 android:orientation="horizontal"
-                android:background="@color/colorPrimary"
-                android:gravity="start">
+                android:background="@color/colorPrimary">
+
+                <!-- Title -->
+                <LinearLayout
+                    android:id="@+id/main_title_linear"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="Special Chat"
+                    android:id="@+id/main_title"
+                    android:text="@string/special_chat"
                     android:layout_marginHorizontal="16dp"
                     android:textSize="21sp"
                     android:textColor="#eee"
                     android:textStyle="bold"
                     android:gravity="center"/>
+
+                </LinearLayout>
+
+                <!-- Menu button -->
                 <ImageView
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:id="@+id/main_menu_btn"
                     android:background="@mipmap/ic_menu"
-                    android:layout_gravity="center"/>
+                    android:layout_gravity="center"
+                    android:layout_margin="17dp"
+                    android:contentDescription="@string/menu" />
+
             </LinearLayout>
 
             <!-- Main content -->
             <LinearLayout
+                android:id="@+id/main_content"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:orientation="vertical"
@@ -144,6 +162,7 @@
 
             <!-- Bottom menu -->
             <LinearLayout
+                android:id="@+id/main_bottom_menu"
                 android:layout_width="match_parent"
                 android:layout_height="53dp"
                 android:orientation="horizontal"
@@ -197,11 +216,27 @@
 
         </LinearLayout>
 
-<!--        <TextView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="ddddd"-->
-<!--            android:layout_alignParentEnd="true"/>-->
+        <!-- Top menu -->
+        <LinearLayout
+            android:id="@+id/main_top_menu"
+            android:layout_width="123dp"
+            android:layout_height="188dp"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="8dp"
+            android:paddingVertical="5dp"
+            android:background="@drawable/set_button_selector"
+            android:visibility="gone">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="haha"
+                android:textSize="16sp"
+                android:paddingHorizontal="5dp"
+                android:gravity="center_vertical"
+                android:layout_margin="6dp"
+                android:background="@drawable/title_bar_menu_item_selectr"/>
+        </LinearLayout>
+
     </RelativeLayout>
 
     <!-- Font login page -->

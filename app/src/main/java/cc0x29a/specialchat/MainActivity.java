@@ -20,7 +20,10 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -239,54 +242,124 @@ public class MainActivity extends AppCompatActivity{
 	private void init(){
 		loadChatList();
 		
-		// init buttons
+		// init title bar
+		{
+			findViewById(R.id.main_menu_btn).setOnClickListener(new View.OnClickListener(){
+				@Override
+				public void onClick(View v){
+					// todo show menu
+					LinearLayout top_menu=findViewById(R.id.main_top_menu);
+					if(top_menu.getVisibility()==View.GONE){
+						Animation animation=AnimationUtils.loadAnimation(MainActivity.this,R.anim.anim_top_bar_show);
+						top_menu.setAnimation(animation);
+						top_menu.setVisibility(View.VISIBLE);
+					}else{
+						Animation animation=AnimationUtils.loadAnimation(MainActivity.this,R.anim.anim_top_bar_hide);
+						top_menu.setAnimation(animation);
+						top_menu.setVisibility(View.GONE);
+					}
+//					Toast.makeText(MainActivity.this,"aa",Toast.LENGTH_SHORT).show();
+				}
+			});
+		}
+		
+		// main_linear_layout
+		{
+			View.OnClickListener click_to_hide_top_menu=new View.OnClickListener(){
+				@Override
+				public void onClick(View v){
+					LinearLayout top_menu=findViewById(R.id.main_top_menu);
+					if(top_menu.getVisibility()!=View.GONE){
+						Animation animation=AnimationUtils.loadAnimation(MainActivity.this,R.anim.anim_top_bar_hide);
+						top_menu.setAnimation(animation);
+						top_menu.setVisibility(View.GONE);
+					}
+				}
+			};
+			
+			findViewById(R.id.main_bottom_menu).setOnClickListener(click_to_hide_top_menu);
+			findViewById(R.id.main_content).setOnClickListener(click_to_hide_top_menu);
+			findViewById(R.id.main_title_linear).setOnClickListener(click_to_hide_top_menu);
+		}
+		
+		// init menu buttons
 		{
 			findViewById(R.id.menu_btn_chats).setOnClickListener(new View.OnClickListener(){
 				@Override
 				public void onClick(View v){
+					setMainTitleBarVisibility(1);
+					
 					findViewById(R.id.main_chat_recyclerView).setVisibility(View.VISIBLE);
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.GONE);
 					findViewById(R.id.main_me).setVisibility(View.GONE);
-					Objects.requireNonNull(getSupportActionBar()).show();
 					reloadChatList();
 				}
 			});
 			findViewById(R.id.menu_btn_contacts).setOnClickListener(new View.OnClickListener(){
 				@Override
 				public void onClick(View v){
+					setMainTitleBarVisibility(1);
+					
 					findViewById(R.id.main_chat_recyclerView).setVisibility(View.GONE);
 					findViewById(R.id.main_contacts).setVisibility(View.VISIBLE);
 					findViewById(R.id.main_moments).setVisibility(View.GONE);
 					findViewById(R.id.main_me).setVisibility(View.GONE);
-					Objects.requireNonNull(getSupportActionBar()).show();
 					loadContactList();
 				}
 			});
 			findViewById(R.id.menu_btn_moments).setOnClickListener(new View.OnClickListener(){
 				@Override
 				public void onClick(View v){
+					setMainTitleBarVisibility(1);
+					
 					findViewById(R.id.main_chat_recyclerView).setVisibility(View.GONE);
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.VISIBLE);
 					findViewById(R.id.main_me).setVisibility(View.GONE);
-					Objects.requireNonNull(getSupportActionBar()).show();
 					// next ver
 				}
 			});
 			findViewById(R.id.menu_btn_me).setOnClickListener(new View.OnClickListener(){
 				@Override
 				public void onClick(View v){
+					setMainTitleBarVisibility(0);
+					
 					findViewById(R.id.main_chat_recyclerView).setVisibility(View.GONE);
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.GONE);
 					findViewById(R.id.main_me).setVisibility(View.VISIBLE);
+					
 					loadMePage();
-					// next ver
 				}
 			});
 		}
 		
+	}
+	
+	/**
+	 * Set Main Title Bar Visibility
+	 * 0 -> Gone
+	 * 1 -> Visible
+	 * @param visibility Integer
+	 */
+	private void setMainTitleBarVisibility(int visibility){
+		LinearLayout MainTitleBar = findViewById(R.id.main_title_bar);
+		if(visibility==0){
+			if(MainTitleBar.getVisibility()==View.GONE){
+				return;
+			}
+			Animation animation=AnimationUtils.loadAnimation(this,R.anim.anim_title_bar_hide);
+			MainTitleBar.setAnimation(animation);
+			MainTitleBar.setVisibility(View.GONE);
+		}else{
+			if(MainTitleBar.getVisibility()==View.VISIBLE){
+				return;
+			}
+			Animation animation=AnimationUtils.loadAnimation(this,R.anim.anim_title_bar_show);
+			MainTitleBar.setAnimation(animation);
+			MainTitleBar.setVisibility(View.VISIBLE);
+		}
 	}
 	
 	/**
@@ -516,17 +589,11 @@ public class MainActivity extends AppCompatActivity{
 	
 	@SuppressLint("SetTextI18n")
 	void loadMePage(){
-//		MainActivity.this.setTheme(R.style.generalNoTitle);
-////		Animation a=new TranslateAnimation(30.0f, -80.0f, 30.0f, 300.0f);
-//		this.getWindow().setWindowAnimations();
-		Objects.requireNonNull(getSupportActionBar()).hide();
-		
 		TextView my_name=findViewById(R.id.main_my_name);
 		TextView my_id=findViewById(R.id.main_my_id);
 		my_name.setText(user_name);
 		my_id.setText("id:"+user_id);
 	}
-	
 	
 	/**
 	 * Check login status.
