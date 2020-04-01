@@ -6,11 +6,11 @@
     <corners android:radius="17dp"/>
 
     <!-- 填充颜色 -->
-    <solid android:color="#eeeeee"/>
+    <solid android:color="#efefef"/>
 
     <!-- 边框的宽度,每段虚线的长度，和两段虚线之间的间隔和颜色 -->
     <stroke
-        android:width="2dp"
+        android:width="1dp"
         android:dashWidth="0dp"
         android:dashGap="0dp"
         android:color="#333" />

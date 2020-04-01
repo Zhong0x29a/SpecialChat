@@ -166,56 +166,6 @@ public class MainActivity extends AppCompatActivity{
 		}
 	}
 	
-	// todo menu
-	/*
-	// Load action menu.
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater=getMenuInflater();
-		inflater.inflate(R.menu.main_top_bar, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
-	
-	/**
-	 * When the action menu be clicked.
-	 * @param item menu item
-	 * @return boolean
-	 */
-	/*@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-			case R.id.app_bar_search:
-				startActivity(new Intent(MainActivity.this,SearchNewContact.class));
-				cancelRefreshTimers();
-				return true;
-			case R.id.app_bar_stopRefresh:
-				cancelRefreshTimers();
-				stopService(new Intent(this,BackgroundTaskService.class));
-				stopService(new Intent(this,NetworkService.class));
-				unregisterReceiver(receiver);
-				Toast.makeText(this,"Auto refresh stopped.",Toast.LENGTH_LONG).show();
-				return true;
-			case R.id.app_bar_settings:
-				Toast.makeText(this,"Settings",Toast.LENGTH_SHORT).show();
-				return true;
-			case R.id.app_bar_login:
-				Toast.makeText(this,"Not support yet.",Toast.LENGTH_SHORT).show();
-//				startActivity(new Intent(MainActivity.this,LoginActivity.class));
-//				cancelRefreshTimers();
-				return true;
-			case R.id.app_bar_about: //todo start a new activity
-				Toast.makeText(this,"Special Chat-1.0\n" +
-						"Developed by Zhong Wenliang. \n" +
-						"Email: CuberWenliang@0x29a.cc",Toast.LENGTH_LONG).show();
-				return true;
-			default:
-				return super.onOptionsItemSelected(item);
-		}
-	}
-	*/
-	
-	// todo delete menu
-	
 	/**
 	 * Load Welcome page at the first run of app.
 	 */
@@ -244,11 +194,11 @@ public class MainActivity extends AppCompatActivity{
 		
 		// init title bar
 		{
+			// show or hide top_menu
 			findViewById(R.id.main_menu_btn).setOnClickListener(new View.OnClickListener(){
 				@Override
 				public void onClick(View v){
-					// todo show menu
-					LinearLayout top_menu=findViewById(R.id.main_top_menu);
+					LinearLayout top_menu=findViewById(R.id.main_top_menu_cover);
 					if(top_menu.getVisibility()==View.GONE){
 						Animation animation=AnimationUtils.loadAnimation(MainActivity.this,R.anim.anim_top_bar_show);
 						top_menu.setAnimation(animation);
@@ -258,61 +208,102 @@ public class MainActivity extends AppCompatActivity{
 						top_menu.setAnimation(animation);
 						top_menu.setVisibility(View.GONE);
 					}
-//					Toast.makeText(MainActivity.this,"aa",Toast.LENGTH_SHORT).show();
 				}
 			});
-		}
-		
-		// main_linear_layout
-		{
-			View.OnClickListener click_to_hide_top_menu=new View.OnClickListener(){
+			
+			View.OnClickListener top_menu_listener=new View.OnClickListener(){
 				@Override
 				public void onClick(View v){
-					LinearLayout top_menu=findViewById(R.id.main_top_menu);
+					switch(v.getId()){
+						case R.id.main_menu_add_contact:
+							startActivity(new Intent(MainActivity.this,SearchNewContact.class));
+							cancelRefreshTimers();
+							break;
+						case R.id.main_menu_stop_refresh:
+							cancelRefreshTimers();
+							stopService(new Intent(MainActivity.this,BackgroundTaskService.class));
+							stopService(new Intent(MainActivity.this,NetworkService.class));
+							unregisterReceiver(receiver);
+							Toast.makeText(MainActivity.this,"Auto refresh stopped.",Toast.LENGTH_LONG).show();
+							break;
+						case R.id.main_menu_about:
+							startActivity(new Intent(MainActivity.this,AboutActivity.class));
+							break;
+						default:
+							Toast.makeText(MainActivity.this,"Error occur in Menu bar!",Toast.LENGTH_SHORT).show();
+							break;
+					}
+					LinearLayout top_menu=findViewById(R.id.main_top_menu_cover);
+					Animation animation=AnimationUtils.loadAnimation(MainActivity.this,R.anim.anim_top_bar_hide);
+					top_menu.setAnimation(animation);
+					top_menu.setVisibility(View.GONE);
+				}
+			};
+			// bind.
+			findViewById(R.id.main_menu_add_contact).setOnClickListener(top_menu_listener);
+			findViewById(R.id.main_menu_stop_refresh).setOnClickListener(top_menu_listener);
+			findViewById(R.id.main_menu_about).setOnClickListener(top_menu_listener);
+		}
+		
+		// click main_linear_layout to hide top_menu
+		{
+			findViewById(R.id.main_top_menu_cover).setOnClickListener(new View.OnClickListener(){
+				@Override
+				public void onClick(View v){
+					LinearLayout top_menu=findViewById(R.id.main_top_menu_cover);
 					if(top_menu.getVisibility()!=View.GONE){
 						Animation animation=AnimationUtils.loadAnimation(MainActivity.this,R.anim.anim_top_bar_hide);
 						top_menu.setAnimation(animation);
 						top_menu.setVisibility(View.GONE);
 					}
 				}
-			};
-			
-			findViewById(R.id.main_bottom_menu).setOnClickListener(click_to_hide_top_menu);
-			findViewById(R.id.main_content).setOnClickListener(click_to_hide_top_menu);
-			findViewById(R.id.main_title_linear).setOnClickListener(click_to_hide_top_menu);
+			});
 		}
 		
-		// init menu buttons
+		// init bottom_menu buttons
 		{
 			findViewById(R.id.menu_btn_chats).setOnClickListener(new View.OnClickListener(){
 				@Override
 				public void onClick(View v){
 					setMainTitleBarVisibility(1);
-					
+					setTitle("Special Chat");
 					findViewById(R.id.main_chat_recyclerView).setVisibility(View.VISIBLE);
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.GONE);
 					findViewById(R.id.main_me).setVisibility(View.GONE);
-					reloadChatList();
+					new Thread(){
+						@Override
+						public void run(){
+							super.run();
+							reloadChatList();
+						}
+					}.start();
+					
 				}
 			});
 			findViewById(R.id.menu_btn_contacts).setOnClickListener(new View.OnClickListener(){
 				@Override
 				public void onClick(View v){
 					setMainTitleBarVisibility(1);
-					
+					setTitle("Contacts");
 					findViewById(R.id.main_chat_recyclerView).setVisibility(View.GONE);
 					findViewById(R.id.main_contacts).setVisibility(View.VISIBLE);
 					findViewById(R.id.main_moments).setVisibility(View.GONE);
 					findViewById(R.id.main_me).setVisibility(View.GONE);
-					loadContactList();
+					new Thread(){
+						@Override
+						public void run(){
+							super.run();
+							loadContactList();
+						}
+					}.start();
 				}
 			});
 			findViewById(R.id.menu_btn_moments).setOnClickListener(new View.OnClickListener(){
 				@Override
 				public void onClick(View v){
 					setMainTitleBarVisibility(1);
-					
+					setTitle("Moments");
 					findViewById(R.id.main_chat_recyclerView).setVisibility(View.GONE);
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.VISIBLE);
@@ -324,7 +315,7 @@ public class MainActivity extends AppCompatActivity{
 				@Override
 				public void onClick(View v){
 					setMainTitleBarVisibility(0);
-					
+					setTitle("Me");
 					findViewById(R.id.main_chat_recyclerView).setVisibility(View.GONE);
 					findViewById(R.id.main_contacts).setVisibility(View.GONE);
 					findViewById(R.id.main_moments).setVisibility(View.GONE);
@@ -335,6 +326,15 @@ public class MainActivity extends AppCompatActivity{
 			});
 		}
 		
+	}
+	
+	/**
+	 * Set title bar text
+	 * @param text title
+	 */
+	private void setTitle(String text){
+		TextView main_title=findViewById(R.id.main_title);
+		main_title.setText(text);
 	}
 	
 	/**
@@ -520,7 +520,6 @@ public class MainActivity extends AppCompatActivity{
 						 * */
 						final List<String[]> chatList=chatListSQLiteHelper.fetchChatList(chatListSQLiteHelper.getReadableDatabase());
 						adapterChatList.updateData(chatList);
-						
 					}
 				}
 		);

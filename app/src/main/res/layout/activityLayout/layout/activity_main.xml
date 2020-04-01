@@ -33,7 +33,6 @@
 
                 <!-- Title -->
                 <LinearLayout
-                    android:id="@+id/main_title_linear"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1">
@@ -64,7 +63,6 @@
 
             <!-- Main content -->
             <LinearLayout
-                android:id="@+id/main_content"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:orientation="vertical"
@@ -162,7 +160,6 @@
 
             <!-- Bottom menu -->
             <LinearLayout
-                android:id="@+id/main_bottom_menu"
                 android:layout_width="match_parent"
                 android:layout_height="53dp"
                 android:orientation="horizontal"
@@ -174,6 +171,7 @@
                     android:id="@+id/menu_btn_chats"
                     android:text="@string/chats"
                     android:textSize="12sp"
+                    android:textAllCaps="false"
                     android:background="@drawable/set_button_selector"
                     android:layout_margin="0dp"
                     tools:ignore="ButtonStyle"
@@ -185,6 +183,7 @@
                     android:id="@+id/menu_btn_contacts"
                     android:text="@string/contacts"
                     android:textSize="12sp"
+                    android:textAllCaps="false"
                     android:background="@drawable/set_button_selector"
                     android:layout_margin="0dp"
                     tools:ignore="ButtonStyle"
@@ -196,6 +195,7 @@
                     android:id="@+id/menu_btn_moments"
                     android:text="@string/moments"
                     android:textSize="12sp"
+                    android:textAllCaps="false"
                     android:background="@drawable/set_button_selector"
                     android:layout_margin="0dp"
                     tools:ignore="ButtonStyle"
@@ -207,6 +207,7 @@
                     android:id="@+id/menu_btn_me"
                     android:text="@string/me"
                     android:textSize="12sp"
+                    android:textAllCaps="false"
                     android:background="@drawable/set_button_selector"
                     android:layout_margin="0dp"
                     tools:ignore="ButtonStyle"
@@ -218,23 +219,57 @@
 
         <!-- Top menu -->
         <LinearLayout
-            android:id="@+id/main_top_menu"
-            android:layout_width="123dp"
-            android:layout_height="188dp"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="8dp"
-            android:paddingVertical="5dp"
-            android:background="@drawable/set_button_selector"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="end"
+            android:background="#00ffffff"
+            android:orientation="vertical"
+            android:id="@+id/main_top_menu_cover"
+            android:layout_alignTop="@id/main_linear_layout"
             android:visibility="gone">
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:text="haha"
-                android:textSize="16sp"
-                android:paddingHorizontal="5dp"
-                android:gravity="center_vertical"
-                android:layout_margin="6dp"
-                android:background="@drawable/title_bar_menu_item_selectr"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:id="@+id/main_top_menu"
+                android:paddingVertical="5dp"
+                android:background="@drawable/button_normal"
+                android:orientation="vertical"
+                android:paddingHorizontal="12dp">
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:id="@+id/main_menu_add_contact"
+                    android:text="Add Contacts"
+                    android:textSize="16sp"
+                    android:textAllCaps="false"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/title_bar_menu_item_selector"/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:id="@+id/main_menu_stop_refresh"
+                    android:text="Stop auto refresh"
+                    android:textSize="16sp"
+                    android:textAllCaps="false"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/title_bar_menu_item_selector"/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:id="@+id/main_menu_about"
+                    android:text="About"
+                    android:textSize="16sp"
+                    android:textAllCaps="false"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/title_bar_menu_item_selector"/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@drawable/title_bar_menu_item_selector"/>
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </RelativeLayout>
@@ -265,6 +300,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:layout_marginHorizontal="32dp"
+            android:textAllCaps="false"
             android:text="@string/login"
             android:background="@drawable/set_button_selector"/>
 

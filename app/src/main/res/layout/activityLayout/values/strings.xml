@@ -8,4 +8,5 @@
     <string name="Phone">Phone</string>
     <string name="menu">Menu</string>
     <string name="special_chat">Special Chat</string>
+    <string name="about_info">Special Chat - 1.0.0 Beta\n Developed by Zhong Wenliang. \nEmail: CuberWenliang@0x29a.cc</string>
 </resources>
