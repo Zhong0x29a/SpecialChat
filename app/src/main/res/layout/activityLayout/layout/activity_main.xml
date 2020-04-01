@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -121,17 +119,10 @@
                     android:visibility="visible"
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
-                    <!-- todo: complete this. -->
-    <!--                <TextView-->
-    <!--                    android:layout_width="wrap_content"-->
-    <!--                    android:layout_height="wrap_content"-->
-    <!--                    android:text="@string/features_are_still_being_perfected"-->
-    <!--                    android:textColor="#eee"/>-->
 
                     <cc0x29a.specialchat.CircleImageView
                         android:layout_width="122dp"
                         android:layout_height="122dp"
-                        android:id="@+id/main_my_profile"
                         android:src="@mipmap/logo2"
                         android:layout_marginTop="55dp"/>
 
@@ -151,9 +142,22 @@
                         android:id="@+id/main_my_id"
                         android:text="@string/User_ID"
                         android:textSize="18sp"
-                        android:textColor="#eee"
-                        />
+                        android:textColor="#eee" />
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/main_my_phone"
+                        android:text="@string/Phone"
+                        android:textSize="18sp"
+                        android:textColor="#eee" />
+
+                    <Button
+                        android:layout_margin="123dp"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:textAllCaps="false"
+                        android:text="Edit"/>
                 </LinearLayout>
 
             </LinearLayout>
@@ -161,58 +165,87 @@
             <!-- Bottom menu -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="53dp"
+                android:layout_height="56dp"
                 android:orientation="horizontal"
-                android:layout_gravity="bottom">
+                android:layout_gravity="bottom"
+                android:background="#222222">
 
-                <Button
-                    android:layout_width="88dp"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:paddingTop="3dp"
                     android:id="@+id/menu_btn_chats"
-                    android:text="@string/chats"
-                    android:textSize="12sp"
-                    android:textAllCaps="false"
-                    android:background="@drawable/set_button_selector"
-                    android:layout_margin="0dp"
-                    tools:ignore="ButtonStyle"
-                    android:layout_weight="1">
-                </Button>
-                <Button
-                    android:layout_width="88dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:src="@mipmap/chats"
+                        android:layout_height="36dp"
+                        android:layout_width="36dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/chats"
+                        android:textColor="#eee"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:paddingTop="3dp"
                     android:id="@+id/menu_btn_contacts"
-                    android:text="@string/contacts"
-                    android:textSize="12sp"
-                    android:textAllCaps="false"
-                    android:background="@drawable/set_button_selector"
-                    android:layout_margin="0dp"
-                    tools:ignore="ButtonStyle"
-                    android:layout_weight="1">
-                </Button>
-                <Button
-                    android:layout_width="88dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <ImageView
+                        android:src="@mipmap/contacts"
+                        android:layout_height="36dp"
+                        android:layout_width="36dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/contacts"
+                        android:textColor="#eee"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:id="@+id/menu_btn_moments"
-                    android:text="@string/moments"
-                    android:textSize="12sp"
-                    android:textAllCaps="false"
-                    android:background="@drawable/set_button_selector"
-                    android:layout_margin="0dp"
-                    tools:ignore="ButtonStyle"
-                    android:layout_weight="1">
-                </Button>
-                <Button
-                    android:layout_width="88dp"
+                    android:paddingTop="3dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <ImageView
+                        android:src="@mipmap/moments"
+                        android:layout_height="36dp"
+                        android:layout_width="36dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/moments"
+                        android:textColor="#eee"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:paddingTop="3dp"
                     android:id="@+id/menu_btn_me"
-                    android:text="@string/me"
-                    android:textSize="12sp"
-                    android:textAllCaps="false"
-                    android:background="@drawable/set_button_selector"
-                    android:layout_margin="0dp"
-                    tools:ignore="ButtonStyle"
-                    android:layout_weight="1">
-                </Button>
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <ImageView
+                        android:src="@mipmap/me"
+                        android:layout_height="36dp"
+                        android:layout_width="36dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/me"
+                        android:textColor="#eee"/>
+                </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>
@@ -231,7 +264,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:id="@+id/main_top_menu"
                 android:paddingVertical="5dp"
                 android:background="@drawable/button_normal"
                 android:orientation="vertical"

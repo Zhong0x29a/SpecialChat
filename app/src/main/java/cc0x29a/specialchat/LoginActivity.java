@@ -86,6 +86,7 @@ public class LoginActivity extends AppCompatActivity{
 						
 						editor.putString("user_id",data.getString("user_id")+"");
 						editor.putString("user_name",data.getString("user_name")+"");
+						editor.putString("user_phone",data.getString("user_phone")+"");
 						editor.putString("token_key",data.getString("token_key")+"");
 						editor.putString("login_time",data.getString("login_time")+"");
 						editor.putInt("is_login",1);

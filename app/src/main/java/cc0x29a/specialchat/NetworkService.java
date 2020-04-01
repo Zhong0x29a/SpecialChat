@@ -205,7 +205,7 @@ public class NetworkService extends Service{
 		
 		RemoteViews remoteViews = new RemoteViews(getPackageName(),R.layout.new_msg_notification);
 		
-		remoteViews.setImageViewResource(R.id.new_msg_notification_profile, R.mipmap.ic_launcher);
+		remoteViews.setImageViewResource(R.id.new_msg_notification_profile, R.mipmap.logo2);
 		remoteViews.setTextViewText(R.id.new_msg_notification_title, nickname);
 		remoteViews.setTextViewText(R.id.new_msg_notification_msg, msg_content);
 		remoteViews.setTextViewText(R.id.new_msg_notification_time, send_time);
@@ -214,7 +214,7 @@ public class NetworkService extends Service{
 		Intent notificationIntent = new Intent(this, MainActivity.class);
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		builder.setWhen(System.currentTimeMillis())
-				.setSmallIcon(R.mipmap.ic_launcher)
+				.setSmallIcon(R.mipmap.logo2)
 				.setChannelId(PUSH_CHANNEL_ID)
 				.setDefaults(Notification.DEFAULT_ALL)
 				.setContent(remoteViews)

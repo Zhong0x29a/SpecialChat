@@ -37,7 +37,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -46,6 +45,7 @@ public class MainActivity extends AppCompatActivity{
 	static String user_id;
 	static String token_key;
 	static String user_name;
+	static String user_phone;
 	
 	MainBroadcastReceiver receiver;
 	@Override
@@ -115,14 +115,15 @@ public class MainActivity extends AppCompatActivity{
 		// choose whether to redirect page
 		
 		//todo test
-//		redirect();
+		redirect();
 		
-//		normalMode();
+		normalMode();
 		
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 		user_id=preferences.getString("user_id",null);
 		token_key=preferences.getString("token_key",null);
 		user_name=preferences.getString("user_name",null);
+		user_phone=preferences.getString("user_phone",null);
 		 
 		// listen to messages from background task service
 		receiver= new MainBroadcastReceiver();
@@ -590,8 +591,11 @@ public class MainActivity extends AppCompatActivity{
 	void loadMePage(){
 		TextView my_name=findViewById(R.id.main_my_name);
 		TextView my_id=findViewById(R.id.main_my_id);
+		TextView my_phone=findViewById(R.id.main_my_phone);
+		
 		my_name.setText(user_name);
 		my_id.setText("id:"+user_id);
+		my_phone.setText("phone:"+user_phone);
 	}
 	
 	/**
@@ -653,7 +657,6 @@ public class MainActivity extends AppCompatActivity{
 				findViewById(R.id.font_login_linear_layout).setVisibility(View.VISIBLE);
 				findViewById(R.id.main_linear_layout).setVisibility(View.GONE);
 				findViewById(R.id.main_relative_layout).setVisibility(View.GONE);
-				Objects.requireNonNull(getSupportActionBar()).hide();
 				findViewById(R.id.btn_front_login).setOnClickListener(new View.OnClickListener(){
 					@Override
 					public void onClick(View v){

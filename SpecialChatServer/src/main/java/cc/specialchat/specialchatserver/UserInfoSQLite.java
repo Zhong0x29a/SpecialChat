@@ -71,11 +71,12 @@ class UserInfoSQLite{
 			String QUERY_SQL="select * from user_info where user_id="+user_id+";";
 			ResultSet resultSet=statement.executeQuery(QUERY_SQL);
 			if(resultSet.next()&&resultSet.getString("password").equals(password)){
-				String[] user_info=new String[4];
+				String[] user_info=new String[5];
 				user_info[0]=resultSet.getInt("user_id")+"";
 				user_info[1]=resultSet.getString("user_name");
 				user_info[2]=MyTools.createANewTokenKey();
 				user_info[3]=MyTools.getCurrentTime()+"";
+				user_info[4]=resultSet.getInt("user_phone")+"";
 				String UPDATE_INFO_SQL="update user_info set "+
 										"token_key='"+user_info[2]+"', "+
 										"login_time="+user_info[3]+" "+

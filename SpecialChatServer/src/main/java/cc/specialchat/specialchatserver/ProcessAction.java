@@ -42,7 +42,8 @@ class ProcessAction{
 						"\"user_id\":\""+user_info[0]+"\"," +
 						"\"user_name\":\""+user_info[1]+"\"," +
 						"\"token_key\":\""+user_info[2]+"\"," +
-						"\"login_time\":\""+user_info[3]+"\"" +
+						"\"login_time\":\""+user_info[3]+"\"," +
+						"\"user_phone\":\""+user_info[4]+"\"" +
 						"}";
 			}else{
 				return "{\"msg\":\"What's Wrong?? (PA1002)\"}";

@@ -31,8 +31,8 @@ class SocketWithServer{
 			@Override
 			public void run() {
 				try {
-//todo 					Socket socket = new Socket("specialchat.0x29a.cc", 21027);
-					Socket socket = new Socket("192.168.1.18", 21027); // test
+		Socket socket = new Socket("specialchat.0x29a.cc", 21027);
+					//	//	todo						Socket socket = new Socket("192.168.1.18", 21027); // test
 					
 					// Output, send data to server.
 					OutputStream os = socket.getOutputStream();
