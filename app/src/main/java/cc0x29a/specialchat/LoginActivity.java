@@ -45,9 +45,35 @@ public class LoginActivity extends AppCompatActivity{
 		findViewById(R.id.btn_login).setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View v){
+				Toast.makeText(LoginActivity.this,"Plz wait a moment...",Toast.LENGTH_SHORT).show();
 				
+				String IdOrPhone=ET_user_id.getText().toString();
 				
-				final String user_id=ET_user_id.getText().toString();
+				String user_id="";
+				
+				if(IdOrPhone.length()>8){
+					String data_send="{" +
+							"'client':'SCC-1.0'," +
+							"'action':'0012'," +
+							"'secret':'I love you.'," +
+							"'user_phone':'"+IdOrPhone+"'" +
+							"}";
+					SocketWithServer socket=new SocketWithServer();
+					socket.DataSend=data_send;
+					JSONObject data=socket.startSocket();
+					try{
+						if(data.getString("status").equals("true") && !(user_id=data.getString("user_id")).equals("")){
+							Toast.makeText(LoginActivity.this,"Using mobile phone to login.",Toast.LENGTH_SHORT).show();
+						}
+					}catch(Exception e){
+						e.printStackTrace();
+						Toast.makeText(LoginActivity.this,"Something Error.",Toast.LENGTH_LONG).show();
+						return;
+					}
+				}else{
+					user_id=IdOrPhone;
+				}
+				
 				final String password=MyTools.md5(ET_password.getText().toString()+user_id);
 				
 				if(user_id.equals("") || password==null

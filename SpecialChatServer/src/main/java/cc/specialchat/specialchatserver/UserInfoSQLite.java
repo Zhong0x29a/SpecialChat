@@ -14,7 +14,7 @@ import java.sql.Statement;
  * columns:
  *      user_index      INTEGER,primary key,autoincrement   //index
  *      user_id         INTEGER,NOT NULL,UNIQUE
- *      user_phone      INTEGER,NOT NULL    //new added !! 20.03.15
+ *      user_phone          TEXT,NOT NULL    //todo change to string!!
  *      user_name       TEXT,NOT NULL   // string filtered by MyTools.filterSpecialChar()
  *      password        TEXT,NOT NULL
  *      login_time      INTEGER
@@ -43,7 +43,7 @@ class UserInfoSQLite{
 				"create table user_info (" +
 						"user_index INTEGER primary key autoincrement," +
 						"user_id INTEGER NOT NULL UNIQUE," +
-						"user_phone INTEGER NOT NULL," +
+						"user_phone TEXT NOT NULL," +
 						"user_name TEXT NOT NULL," +
 						"password TEXT NOT NULL," +
 						"login_time INTEGER," +
@@ -68,19 +68,19 @@ class UserInfoSQLite{
 			Connection connection=getConnection();
 			Statement statement=connection.createStatement();
 			
-			String QUERY_SQL="select * from user_info where user_IdOrPhone="+user_IdOrPhone+";";
+			String QUERY_SQL="select * from user_info where user_id="+user_IdOrPhone+";";
 			ResultSet resultSet=statement.executeQuery(QUERY_SQL);
 			if(resultSet.next() && resultSet.getString("password").equals(password)){
 				String[] user_info=new String[5];
-				user_info[0]=resultSet.getInt("user_IdOrPhone")+"";
+				user_info[0]=resultSet.getInt("user_id")+"";
 				user_info[1]=resultSet.getString("user_name");
 				user_info[2]=MyTools.createANewTokenKey();
 				user_info[3]=MyTools.getCurrentTime()+"";
-				user_info[4]=resultSet.getInt("user_phone")+"";
+				user_info[4]=resultSet.getString("user_phone");
 				String UPDATE_INFO_SQL="update user_info set "+
 										"token_key='"+user_info[2]+"', "+
 										"login_time="+user_info[3]+" "+
-										"where user_IdOrPhone="+user_IdOrPhone+";";
+										"where user_id="+user_IdOrPhone+";";
 				statement.executeUpdate(UPDATE_INFO_SQL);
 				resultSet.close();
 				statement.close();
@@ -89,28 +89,27 @@ class UserInfoSQLite{
 			}
 			resultSet.close();
 			
-			String QUERY_SQL2="select * from user_info where user_phone="+user_IdOrPhone+";";
-			ResultSet resultSet2=statement.executeQuery(QUERY_SQL2);
-			if(resultSet2.next() && resultSet2.getString("password").equals(password)){
-				String[] user_info=new String[5];
-				user_info[0]=resultSet2.getInt("user_IdOrPhone")+"";
-				user_info[1]=resultSet2.getString("user_name");
-				user_info[2]=MyTools.createANewTokenKey();
-				user_info[3]=MyTools.getCurrentTime()+"";
-				user_info[4]=resultSet2.getInt("user_phone")+"";
-				String UPDATE_INFO_SQL="update user_info set "+
-						"token_key='"+user_info[2]+"', "+
-						"login_time="+user_info[3]+" "+
-						"where user_phone="+user_IdOrPhone+";";
-				statement.executeUpdate(UPDATE_INFO_SQL);
-				resultSet2.close();
-				statement.close();
-				connection.close();
-				return user_info;
-			}
-			
-			resultSet.close();
-			resultSet2.close();
+//			String QUERY_SQL2="select * from user_info where user_phone="+user_IdOrPhone+";";
+//			ResultSet resultSet2=statement.executeQuery(QUERY_SQL2);
+//			if(resultSet2.next() && resultSet2.getString("password").equals(password)){
+//				String[] user_info=new String[5];
+//				user_info[0]=resultSet2.getInt("user_id")+"";
+//				user_info[1]=resultSet2.getString("user_name");
+//				user_info[2]=MyTools.createANewTokenKey();
+//				user_info[3]=MyTools.getCurrentTime()+"";
+//				user_info[4]=resultSet2.getInt("user_phone")+"";
+//				String UPDATE_INFO_SQL="update user_info set "+
+//						"token_key='"+user_info[2]+"', "+
+//						"login_time="+user_info[3]+" "+
+//						"where user_phone="+user_IdOrPhone+";";
+//				statement.executeUpdate(UPDATE_INFO_SQL);
+//				resultSet2.close();
+//				statement.close();
+//				connection.close();
+//				return user_info;
+//			}
+
+//			resultSet2.close();
 			statement.close();
 			connection.close();
 			return new String[]{""};
@@ -144,6 +143,8 @@ class UserInfoSQLite{
 			return false;
 		}
 	}
+	
+	//todo check phone usability
 	
 	/**
 	 * Verify User's token_key
@@ -189,7 +190,7 @@ class UserInfoSQLite{
 					"(user_index,user_id,user_phone,user_name,password,login_time,token_key) "+
 					"values (null,"+
 					user_id+"," +
-					user_phone+","+
+					"'"+user_phone+"',"+
 					"'"+user_name+"',"+
 					"'"+password+"',"+
 					MyTools.getCurrentTime()+","+
@@ -226,7 +227,7 @@ class UserInfoSQLite{
 			if(resultSet.next()){
 				userInfo[0]=resultSet.getInt("user_index")+"";
 				userInfo[1]=resultSet.getInt("user_id")+"";
-				userInfo[2]=resultSet.getInt("user_phone")+"";
+				userInfo[2]=resultSet.getString("user_phone");
 				userInfo[3]=resultSet.getString("user_name");
 				userInfo[4]=resultSet.getString("password");
 				userInfo[5]=resultSet.getInt("login_time")+"";
@@ -240,6 +241,31 @@ class UserInfoSQLite{
 			return userInfo;
 		}catch(SQLException|ClassNotFoundException e){
 			return null;
+		}
+	}
+	
+	/**
+	 * Fetch user_id by ta's phone
+	 * @param phone user_phone
+	 * @return user_id
+	 */
+	static String fetchUserID(String phone){
+		try{
+			Connection con=getConnection();
+			Statement sta=con.createStatement();
+			String SQL="select user_id from user_info where user_phone='"+phone+"'";
+			ResultSet res=sta.executeQuery(SQL);
+			String user_id="";
+			if(res.next()){
+				user_id=res.getString("user_id");
+			}
+			res.close();
+			sta.close();
+			con.close();
+			return user_id;
+		}catch(Exception e){
+			//
+			return "";
 		}
 	}
 	
@@ -275,6 +301,11 @@ class UserInfoSQLite{
 		}
 	}
 	
+	/**
+	 * Search (new) contacts
+	 * @param id String
+	 * @return String[][]
+	 */
 	static String[][] searchUsers(String id){
 		try{
 			String[][] userInfo=new String[51][4];
@@ -291,12 +322,12 @@ class UserInfoSQLite{
 					index++;
 					userInfo[index][0]=re.getInt("user_index")+"";
 					userInfo[index][1]=re.getInt("user_id")+"";
-					userInfo[index][2]=re.getInt("user_phone")+"";
+					userInfo[index][2]=re.getString("user_phone");
 					userInfo[index][3]=re.getString("user_name");
 //					userInfo[index][4]=re.getString("password");
 //					userInfo[index][5]=re.getInt("login_time")+"";
 //					userInfo[index][6]=re.getString("token_key");
-				}while(re.next()&&index<50);
+				}while(re.next() && index<50);
 			}
 			re.close();
 			
@@ -308,12 +339,12 @@ class UserInfoSQLite{
 					index++;
 					userInfo[index][0]=re.getInt("user_index")+"";
 					userInfo[index][1]=re.getInt("user_id")+"";
-					userInfo[index][2]=re.getInt("user_phone")+"";
+					userInfo[index][2]=re.getString("user_phone");
 					userInfo[index][3]=re.getString("user_name");
 //					userInfo[index][4]=re.getString("password");
 //					userInfo[index][5]=re.getInt("login_time")+"";
 //					userInfo[index][6]=re.getString("token_key");
-				}while(re.next()&&index<50);
+				}while(re.next() && index<50);
 			}
 			re.close();
 			st.close();

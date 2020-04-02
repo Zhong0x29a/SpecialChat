@@ -227,6 +227,22 @@ public class MainActivity extends AppCompatActivity{
 							unregisterReceiver(receiver);
 							Toast.makeText(MainActivity.this,"Auto refresh stopped.",Toast.LENGTH_LONG).show();
 							break;
+						case R.id.main_menu_logout:
+							Toast.makeText(MainActivity.this,"Chat records will not be cleared.",Toast.LENGTH_SHORT).show();
+							
+							SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
+							SharedPreferences.Editor editor=preferences.edit();
+							
+							editor.putString("user_id",null);
+							editor.putString("user_name",null);
+							editor.putString("user_phone",null);
+							editor.putString("token_key",null);
+							editor.putString("login_time",null);
+							editor.putInt("is_login",0);
+							editor.apply();
+							
+							startActivity(new Intent(MainActivity.this,LoginActivity.class));
+							break;
 						case R.id.main_menu_about:
 							startActivity(new Intent(MainActivity.this,AboutActivity.class));
 							break;
@@ -243,6 +259,7 @@ public class MainActivity extends AppCompatActivity{
 			// bind.
 			findViewById(R.id.main_menu_add_contact).setOnClickListener(top_menu_listener);
 			findViewById(R.id.main_menu_stop_refresh).setOnClickListener(top_menu_listener);
+			findViewById(R.id.main_menu_logout).setOnClickListener(top_menu_listener);
 			findViewById(R.id.main_menu_about).setOnClickListener(top_menu_listener);
 		}
 		
@@ -596,6 +613,13 @@ public class MainActivity extends AppCompatActivity{
 		my_name.setText(user_name);
 		my_id.setText("id:"+user_id);
 		my_phone.setText("phone:"+user_phone);
+		
+		findViewById(R.id.main_edit_my_info).setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v){
+				Toast.makeText(MainActivity.this,"Coming soon!",Toast.LENGTH_SHORT).show();
+			}
+		});
 	}
 	
 	/**

@@ -271,7 +271,7 @@ class ProcessAction{
 				msg.append("'number':'").append(contacts[0][0]).append("'}");
 				return msg.toString();
 			}
-			return "{'status':'false','msg':'Error(PA1010inner)'}";
+			return "{'status':'false','msg':'Warning (PA1010inner)'}";
 		}catch(JSONException e){
 			e.printStackTrace();
 			return "{'status':'false','msg':'Error(PA1010)'}";
@@ -299,6 +299,25 @@ class ProcessAction{
 		}
 	}
 	
+	/**
+	 * Fetch user_id by Phone
+	 * @param JsonData Data
+	 * @return String , Json data
+	 */
+	static String action_0012(JSONObject JsonData){
+		try{
+			String phone=JsonData.getString("user_phone");
+			String user_id;
+			if(phone!=null && JsonData.getString("secret").equals("I love you.") &&
+				!(user_id=UserInfoSQLite.fetchUserID(phone)).equals("")){
+				return "{'status':'true','user_id':'"+user_id+"'}";
+			}
+			return "{'status':'false','msg':'Error!'}";
+		}catch(Exception e){
+			e.printStackTrace();
+			return "{'status':'false','msg':'Error!'}";
+		}
+	}
 }
 
 /*

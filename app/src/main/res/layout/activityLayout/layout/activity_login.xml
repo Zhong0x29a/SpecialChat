@@ -30,7 +30,7 @@
             android:inputType="number"
             android:text=""
             android:textSize="20sp"
-            android:hint="@string/User_ID"
+            android:hint="User ID or phone"
             android:textColor="#222"
             android:background="@drawable/set_button_selector"
             android:paddingHorizontal="18dp"

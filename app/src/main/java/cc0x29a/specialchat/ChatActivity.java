@@ -43,6 +43,12 @@ public class ChatActivity extends AppCompatActivity{
 		
 		init();
 		
+	}
+	
+	@Override
+	protected void onStart(){
+		super.onStart();
+		
 		//  fetch ta user_id & name
 		Bundle bundle = this.getIntent().getExtras();
 		ta_id= (null != bundle) ? bundle.getString("user_id") : null;
@@ -135,12 +141,9 @@ public class ChatActivity extends AppCompatActivity{
 	}
 	
 	@Override
-	protected void onStart(){
-		super.onStart();
-	}
-	
-	@Override
 	protected void onStop(){
+		history_position=0;
+		finish();
 		super.onStop();
 	}
 	

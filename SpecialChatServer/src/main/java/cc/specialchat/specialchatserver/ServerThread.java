@@ -81,8 +81,11 @@ public class ServerThread extends Thread {
 				case "0011": // check if is friend.
 					msgSend=ProcessAction.action_0011(dataJsonReturn);
 					break;
+				case "0012": // fetch user_id by phone.
+					msgSend=ProcessAction.action_0012(dataJsonReturn);
+					break;
 				default: // action code error.
-					msgSend="{\"msg\":\"ERROR!! (1000)\"}";
+					msgSend="{\"msg\":\"ERROR!! (ST1000)\"}";
 					break;
 			}
 			System.out.println(DataGet);
