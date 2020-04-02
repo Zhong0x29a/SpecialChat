@@ -57,22 +57,22 @@ class UserInfoSQLite{
 	}
 	
 	/**
-	 * Start Login use user_id , password
-	 * @param user_id String
+	 * Start Login use user_IdOrPhone , password
+	 * 20.04.02 update, now can login by phone
+	 * @param user_IdOrPhone String . phone or user_IdOrPhone
 	 * @param password String
 	 * @return token_key, String
-	 *
-	 *
 	 */
-	static String[] goLogin(String user_id,String password) {
+	static String[] goLogin(String user_IdOrPhone,String password) {
 		try{
 			Connection connection=getConnection();
 			Statement statement=connection.createStatement();
-			String QUERY_SQL="select * from user_info where user_id="+user_id+";";
+			
+			String QUERY_SQL="select * from user_info where user_IdOrPhone="+user_IdOrPhone+";";
 			ResultSet resultSet=statement.executeQuery(QUERY_SQL);
-			if(resultSet.next()&&resultSet.getString("password").equals(password)){
+			if(resultSet.next() && resultSet.getString("password").equals(password)){
 				String[] user_info=new String[5];
-				user_info[0]=resultSet.getInt("user_id")+"";
+				user_info[0]=resultSet.getInt("user_IdOrPhone")+"";
 				user_info[1]=resultSet.getString("user_name");
 				user_info[2]=MyTools.createANewTokenKey();
 				user_info[3]=MyTools.getCurrentTime()+"";
@@ -80,7 +80,7 @@ class UserInfoSQLite{
 				String UPDATE_INFO_SQL="update user_info set "+
 										"token_key='"+user_info[2]+"', "+
 										"login_time="+user_info[3]+" "+
-										"where user_id="+user_id+";";
+										"where user_IdOrPhone="+user_IdOrPhone+";";
 				statement.executeUpdate(UPDATE_INFO_SQL);
 				resultSet.close();
 				statement.close();
@@ -88,6 +88,29 @@ class UserInfoSQLite{
 				return user_info;
 			}
 			resultSet.close();
+			
+			String QUERY_SQL2="select * from user_info where user_phone="+user_IdOrPhone+";";
+			ResultSet resultSet2=statement.executeQuery(QUERY_SQL2);
+			if(resultSet2.next() && resultSet2.getString("password").equals(password)){
+				String[] user_info=new String[5];
+				user_info[0]=resultSet2.getInt("user_IdOrPhone")+"";
+				user_info[1]=resultSet2.getString("user_name");
+				user_info[2]=MyTools.createANewTokenKey();
+				user_info[3]=MyTools.getCurrentTime()+"";
+				user_info[4]=resultSet2.getInt("user_phone")+"";
+				String UPDATE_INFO_SQL="update user_info set "+
+						"token_key='"+user_info[2]+"', "+
+						"login_time="+user_info[3]+" "+
+						"where user_phone="+user_IdOrPhone+";";
+				statement.executeUpdate(UPDATE_INFO_SQL);
+				resultSet2.close();
+				statement.close();
+				connection.close();
+				return user_info;
+			}
+			
+			resultSet.close();
+			resultSet2.close();
 			statement.close();
 			connection.close();
 			return new String[]{""};

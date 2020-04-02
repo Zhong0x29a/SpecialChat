@@ -298,18 +298,11 @@ class ProcessAction{
 			return "{'status':'false','is_friend':'false','msg':'Exception!"+e.toString()+"'}";
 		}
 	}
+	
 }
 
 /*
 *
-/**
-*
-* @param JsonData data from client
-* @return
-
-static String action_0003(JSONObject JsonData){
-
-}
 
 *
 * */
