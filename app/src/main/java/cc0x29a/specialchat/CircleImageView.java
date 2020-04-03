@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Shader;
@@ -23,7 +24,12 @@ import androidx.annotation.Nullable;
 public class CircleImageView extends ImageView {
 	
 	//圆形图片的半径
-	private int mRadius;
+	private static int mRadius;
+	
+	private static Canvas canvas;
+	
+	public int draw=0;
+//	private int saveDef;
 	
 	public CircleImageView(Context context) {
 		super(context);
@@ -70,6 +76,19 @@ public class CircleImageView extends ImageView {
 			mPaint.setShader(bitmapShader);
 			//画圆形，指定好坐标，半径，画笔
 			canvas.drawCircle(mRadius, mRadius, mRadius,mPaint);
+			
+			CircleImageView.canvas=canvas;
+			
+			if(draw==1){
+				Paint paint=new Paint();
+				paint.setColor(Color.rgb(244,244,244));
+				int pos=2*mRadius-18;
+				
+				paint.setTextSize(23);
+				paint.setUnderlineText(true);
+				canvas.drawText("Edit",pos-32,pos,paint);
+			}
+			
 		} else {
 			super.onDraw(canvas);
 		}

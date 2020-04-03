@@ -27,8 +27,8 @@ import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -631,47 +631,62 @@ public class MainActivity extends AppCompatActivity{
 		final EditText my_name=findViewById(R.id.main_my_name);
 		final TextView my_id=findViewById(R.id.main_my_id);
 		final EditText my_phone=findViewById(R.id.main_my_phone);
-		final ImageView my_profile=findViewById(R.id.main_my_profile);
+		final CircleImageView my_profile=findViewById(R.id.main_my_profile);
+		final Button btn_edit=findViewById(R.id.main_edit_my_info);
 		
 		my_name.setText(user_name);
 		my_id.setText("id:"+user_id);
 		my_phone.setText("phone:"+user_phone);
 //		my_profile.setImageResource(R.mipmap.logo2);
 		
-		findViewById(R.id.main_edit_my_info).setOnClickListener(new View.OnClickListener(){
+		btn_edit.setOnClickListener(new View.OnClickListener(){
+			int btn_status=0;
 			@Override
 			public void onClick(View v){
 //				Toast.makeText(MainActivity.this,"Coming soon!",Toast.LENGTH_SHORT).show();
-				
-				ObjectAnimator valueAnimator = ObjectAnimator.ofFloat(my_profile, "translationX", -200);
-				valueAnimator.setDuration(666);
-				valueAnimator.start();
-				
-				ObjectAnimator valueAnimator2 = ObjectAnimator.ofFloat(my_name, "translationY", -288);
-				valueAnimator2.setDuration(666);
-				valueAnimator2.start();
-				
-				ObjectAnimator valueAnimator3 = ObjectAnimator.ofFloat(my_name, "translationX", 100);
-				valueAnimator3.setDuration(666);
-				valueAnimator3.start();
-				
-				ObjectAnimator valueAnimator4 = ObjectAnimator.ofFloat(my_id, "translationY", -288);
-				valueAnimator4.setDuration(888);
-				valueAnimator4.start();
-				
-				ObjectAnimator valueAnimator5 = ObjectAnimator.ofFloat(my_id, "translationX", 100);
-				valueAnimator5.setDuration(888);
-				valueAnimator5.start();
-				
-				ObjectAnimator valueAnimator6 = ObjectAnimator.ofFloat(my_phone, "translationY", -288);
-				valueAnimator6.setDuration(999);
-				valueAnimator6.start();
-				
-				ObjectAnimator valueAnimator7 = ObjectAnimator.ofFloat(my_phone, "translationX", 100);
-				valueAnimator7.setDuration(999);
-				valueAnimator7.start();
-				//todo complete this
-				
+				if(btn_status==0){
+					
+					{
+						ObjectAnimator valueAnimator=ObjectAnimator.ofFloat(my_profile,"translationX",-200);
+						valueAnimator.setDuration(666);
+						valueAnimator.start();
+						
+						ObjectAnimator valueAnimator2=ObjectAnimator.ofFloat(my_name,"translationY",-288);
+						valueAnimator2.setDuration(666);
+						valueAnimator2.start();
+						
+						ObjectAnimator valueAnimator3=ObjectAnimator.ofFloat(my_name,"translationX",100);
+						valueAnimator3.setDuration(666);
+						valueAnimator3.start();
+						
+						ObjectAnimator valueAnimator4=ObjectAnimator.ofFloat(my_id,"translationY",-233);
+						valueAnimator4.setDuration(888);
+						valueAnimator4.start();
+						
+						ObjectAnimator valueAnimator5=ObjectAnimator.ofFloat(my_id,"translationX",120);
+						valueAnimator5.setDuration(888);
+						valueAnimator5.start();
+						
+						ObjectAnimator valueAnimator6=ObjectAnimator.ofFloat(my_phone,"translationY",-188);
+						valueAnimator6.setDuration(999);
+						valueAnimator6.start();
+						
+						ObjectAnimator valueAnimator7=ObjectAnimator.ofFloat(my_phone,"translationX",120);
+						valueAnimator7.setDuration(999);
+						valueAnimator7.start();
+					}
+					
+					// set a text "Edit" beside Image
+					my_profile.draw=1;
+					// reload ImageView
+					my_profile.setImageResource(R.mipmap.logo2);
+					
+					btn_edit.setText("Save");
+					btn_status=1;
+				}else{
+					btn_edit.setText("Edit");
+					btn_status=0;
+				}
 			}
 		});
 	}
