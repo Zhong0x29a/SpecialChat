@@ -40,7 +40,7 @@
                     android:id="@+id/main_title"
                     android:text="@string/special_chat"
                     android:layout_marginHorizontal="16dp"
-                    android:textSize="21sp"
+                    android:textSize="20sp"
                     android:textColor="#eee"
                     android:textStyle="bold"
                     android:gravity="center"/>
@@ -71,7 +71,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/main_chat_recyclerView"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
 
                 <!-- Contact list page -->
                 <LinearLayout
@@ -113,50 +113,62 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/main_me"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
                     <cc0x29a.specialchat.CircleImageView
                         android:layout_width="122dp"
                         android:layout_height="122dp"
+                        android:id="@+id/main_my_profile"
                         android:src="@mipmap/logo2"
-                        android:layout_marginTop="55dp"/>
+                        android:layout_marginTop="66dp"/>
 
-                    <TextView
+                    <EditText
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/main_my_name"
+                        android:padding="0dp"
                         android:text="@string/user_name"
                         android:textStyle="bold"
-                        android:textSize="32sp"
+                        android:textSize="33sp"
                         android:textColor="#eee"
-                        android:layout_marginTop="16dp"/>
+                        android:enabled="false"
+                        android:layout_marginTop="23dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:padding="2dp"
                         android:id="@+id/main_my_id"
                         android:text="@string/User_ID"
                         android:textSize="18sp"
-                        android:textColor="#eee" />
+                        android:textColor="#eee"/>
 
-                    <TextView
+                    <EditText
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:padding="0dp"
                         android:id="@+id/main_my_phone"
                         android:text="@string/Phone"
                         android:textSize="18sp"
-                        android:textColor="#eee" />
+                        android:enabled="false"
+                        android:textColor="#eee"
+                        android:autofillHints=""
+                        android:inputType="phone"/>
 
-                    <Button
-                        android:layout_margin="123dp"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:id="@+id/main_edit_my_info"
-                        android:textAllCaps="false"
-                        android:text="Edit"/>
-
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center">
+                        <Button
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:id="@+id/main_edit_my_info"
+                            android:textAllCaps="false"
+                            android:text="Edit"/>
+                    </LinearLayout>
                 </LinearLayout>
 
             </LinearLayout>

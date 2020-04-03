@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
     package="cc0x29a.specialchat">
-
     <!-- Internet assess permission -->
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -14,6 +13,7 @@
         android:roundIcon="@mipmap/logo2"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <!-- Services -->
         <service
             android:name=".NetworkService"
@@ -25,7 +25,8 @@
             android:exported="false" />
 
         <!-- Activities -->
-        <activity android:name=".AboutActivity"
+        <activity
+            android:name=".AboutActivity"
             android:label="About"
             android:launchMode="singleTask" />
         <activity

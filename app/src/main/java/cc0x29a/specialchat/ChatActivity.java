@@ -119,9 +119,9 @@ public class ChatActivity extends AppCompatActivity{
 								adapter.addMoreData(newData);
 							}
 						}
-						//						else if (firstVisibleItemPosition == 0) {
-						//							// when scroll to the bottom
-						//						}
+						// else if (firstVisibleItemPosition == 0) {
+						//      // when scroll to the bottom
+						// }
 					}
 				}
 				
@@ -143,6 +143,11 @@ public class ChatActivity extends AppCompatActivity{
 	@Override
 	protected void onStop(){
 		history_position=0;
+		try{
+			unregisterReceiver(receiver);
+		}catch(Exception e){
+			//
+		}
 		finish();
 		super.onStop();
 	}

@@ -10,6 +10,7 @@ package cc0x29a.specialchat;
 * */
 
 
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -20,9 +21,14 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
+import android.view.animation.ScaleAnimation;
 import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -115,9 +121,9 @@ public class MainActivity extends AppCompatActivity{
 		// choose whether to redirect page
 		
 		//todo test
-		redirect();
+//		redirect();
 		
-		normalMode();
+//		normalMode();
 		
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 		user_id=preferences.getString("user_id",null);
@@ -367,15 +373,29 @@ public class MainActivity extends AppCompatActivity{
 			if(MainTitleBar.getVisibility()==View.GONE){
 				return;
 			}
-			Animation animation=AnimationUtils.loadAnimation(this,R.anim.anim_title_bar_hide);
-			MainTitleBar.setAnimation(animation);
+			AnimationSet animationSet=new AnimationSet(true);
+			animationSet.addAnimation(new AlphaAnimation(1,(float)0.5));
+			ScaleAnimation scaleAnimation=new ScaleAnimation(1,(float)0.96,1,0,
+					Animation.RELATIVE_TO_SELF,0.5f,
+					Animation.RELATIVE_TO_SELF,0f);
+			scaleAnimation.setDuration(288);
+			animationSet.addAnimation(scaleAnimation);
+		
+			MainTitleBar.setAnimation(animationSet);
 			MainTitleBar.setVisibility(View.GONE);
 		}else{
 			if(MainTitleBar.getVisibility()==View.VISIBLE){
 				return;
 			}
-			Animation animation=AnimationUtils.loadAnimation(this,R.anim.anim_title_bar_show);
-			MainTitleBar.setAnimation(animation);
+			AnimationSet animationSet=new AnimationSet(true);
+			animationSet.addAnimation(new AlphaAnimation(1,(float)0.5));
+			ScaleAnimation scaleAnimation=new ScaleAnimation(1,1,0,1,
+					Animation.RELATIVE_TO_SELF,0.5f,
+					Animation.RELATIVE_TO_SELF,0f);
+			scaleAnimation.setDuration(166);
+			animationSet.addAnimation(scaleAnimation);
+			
+			MainTitleBar.setAnimation(animationSet);
 			MainTitleBar.setVisibility(View.VISIBLE);
 		}
 	}
@@ -606,18 +626,52 @@ public class MainActivity extends AppCompatActivity{
 	
 	@SuppressLint("SetTextI18n")
 	void loadMePage(){
-		TextView my_name=findViewById(R.id.main_my_name);
-		TextView my_id=findViewById(R.id.main_my_id);
-		TextView my_phone=findViewById(R.id.main_my_phone);
+//		final LinearLayout main_me=findViewById(R.id.main_me);
+		
+		final EditText my_name=findViewById(R.id.main_my_name);
+		final TextView my_id=findViewById(R.id.main_my_id);
+		final EditText my_phone=findViewById(R.id.main_my_phone);
+		final ImageView my_profile=findViewById(R.id.main_my_profile);
 		
 		my_name.setText(user_name);
 		my_id.setText("id:"+user_id);
 		my_phone.setText("phone:"+user_phone);
+//		my_profile.setImageResource(R.mipmap.logo2);
 		
 		findViewById(R.id.main_edit_my_info).setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View v){
-				Toast.makeText(MainActivity.this,"Coming soon!",Toast.LENGTH_SHORT).show();
+//				Toast.makeText(MainActivity.this,"Coming soon!",Toast.LENGTH_SHORT).show();
+				
+				ObjectAnimator valueAnimator = ObjectAnimator.ofFloat(my_profile, "translationX", -200);
+				valueAnimator.setDuration(666);
+				valueAnimator.start();
+				
+				ObjectAnimator valueAnimator2 = ObjectAnimator.ofFloat(my_name, "translationY", -288);
+				valueAnimator2.setDuration(666);
+				valueAnimator2.start();
+				
+				ObjectAnimator valueAnimator3 = ObjectAnimator.ofFloat(my_name, "translationX", 100);
+				valueAnimator3.setDuration(666);
+				valueAnimator3.start();
+				
+				ObjectAnimator valueAnimator4 = ObjectAnimator.ofFloat(my_id, "translationY", -288);
+				valueAnimator4.setDuration(888);
+				valueAnimator4.start();
+				
+				ObjectAnimator valueAnimator5 = ObjectAnimator.ofFloat(my_id, "translationX", 100);
+				valueAnimator5.setDuration(888);
+				valueAnimator5.start();
+				
+				ObjectAnimator valueAnimator6 = ObjectAnimator.ofFloat(my_phone, "translationY", -288);
+				valueAnimator6.setDuration(999);
+				valueAnimator6.start();
+				
+				ObjectAnimator valueAnimator7 = ObjectAnimator.ofFloat(my_phone, "translationX", 100);
+				valueAnimator7.setDuration(999);
+				valueAnimator7.start();
+				//todo complete this
+				
 			}
 		});
 	}
