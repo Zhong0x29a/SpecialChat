@@ -1,14 +1,5 @@
-# SpecialChat
-Including server and android client
----- 20.03.08 ----
-Sorry~
-Still nothing yet..
+<b>Special Chat</b>
 
-I will try hard to complete this project!
+Including Android Client & Java Server
 
----- 20.03.09 ----
-To hard... :(
-
-But I still trying to!!
-
-------------------
+Android Client v1.0.0 first released on 20.03.30. 
