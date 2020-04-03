@@ -48,6 +48,9 @@ public class ServerThread extends Thread {
 			
 			String msgSend;
 			switch(dataJsonReturn.getString("action")){
+				case "CheckUpdate": // check update
+					msgSend=ProcessAction.action_checkUpdate(dataJsonReturn);
+					break;
 				case "0001": // check login status.
 					msgSend=ProcessAction.action_0001(dataJsonReturn);
 					break;
@@ -83,6 +86,9 @@ public class ServerThread extends Thread {
 					break;
 				case "0012": // fetch user_id by phone.
 					msgSend=ProcessAction.action_0012(dataJsonReturn);
+					break;
+				case "0013": // edit user profile.
+					msgSend=ProcessAction.action_0013(dataJsonReturn);
 					break;
 				default: // action code error.
 					msgSend="{\"msg\":\"ERROR!! (ST1000)\"}";

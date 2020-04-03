@@ -19,6 +19,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -45,8 +46,12 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity{
+	
+	static int version_number=20040301;
 	
 	static String user_id;
 	static String token_key;
@@ -121,14 +126,14 @@ public class MainActivity extends AppCompatActivity{
 		// choose whether to redirect page
 		
 		//todo test
-//		redirect();
+		redirect();
 		
-//		normalMode();
+		normalMode();
 		
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 		user_id=preferences.getString("user_id",null);
 		token_key=preferences.getString("token_key",null);
-		user_name=preferences.getString("user_name",null);
+		user_name=MyTools.resolveSpecialChar(preferences.getString("user_name",null));
 		user_phone=preferences.getString("user_phone",null);
 		 
 		// listen to messages from background task service
@@ -137,12 +142,19 @@ public class MainActivity extends AppCompatActivity{
 		filter.addAction("backgroundTask.action");
 		registerReceiver(receiver, filter);
 		
+		
 	}
 	
 	// stop background tasks service
 	@Override
 	protected void onStop(){
 		super.onStop();
+		cancelRefreshTimers();
+		try{
+			unregisterReceiver(receiver);
+		}catch(Exception e){
+			//
+		}
 	}
 	
 	// clear timers & stop background tasks service
@@ -191,6 +203,24 @@ public class MainActivity extends AppCompatActivity{
 	 */
 	private void checkAppUpgrade(){
 		//todo check app upgrade.
+		new Thread(){
+			@Override
+			public void run(){
+				try{
+					SocketWithServer socket=new SocketWithServer();
+					socket.DataSend="{'action':'CheckUpdate','version_number':'"+version_number+"'}";
+					JSONObject data=socket.startSocket();
+					if(data!=null && data.getString("status").equals("true")
+							&& data.getString("is_update").equals("true")){
+						Uri uri = Uri.parse("https://www.baidu.com");
+						Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+						startActivity(intent);
+					}
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		}.start();
 	}
 	
 	/**
@@ -626,18 +656,22 @@ public class MainActivity extends AppCompatActivity{
 	
 	@SuppressLint("SetTextI18n")
 	void loadMePage(){
-//		final LinearLayout main_me=findViewById(R.id.main_me);
+		final LinearLayout main_me=findViewById(R.id.main_me);
 		
 		final EditText my_name=findViewById(R.id.main_my_name);
 		final TextView my_id=findViewById(R.id.main_my_id);
+		final LinearLayout my_phone_container=findViewById(R.id.main_my_phone_container);
 		final EditText my_phone=findViewById(R.id.main_my_phone);
 		final CircleImageView my_profile=findViewById(R.id.main_my_profile);
 		final Button btn_edit=findViewById(R.id.main_edit_my_info);
 		
+		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
+		user_name=preferences.getString("user_name","null??");
+		user_phone=preferences.getString("user_phone","null??");
+		
 		my_name.setText(user_name);
 		my_id.setText("id:"+user_id);
-		my_phone.setText("phone:"+user_phone);
-//		my_profile.setImageResource(R.mipmap.logo2);
+		my_phone.setText(user_phone);
 		
 		btn_edit.setOnClickListener(new View.OnClickListener(){
 			int btn_status=0;
@@ -646,6 +680,7 @@ public class MainActivity extends AppCompatActivity{
 //				Toast.makeText(MainActivity.this,"Coming soon!",Toast.LENGTH_SHORT).show();
 				if(btn_status==0){
 					
+					// move the views
 					{
 						ObjectAnimator valueAnimator=ObjectAnimator.ofFloat(my_profile,"translationX",-200);
 						valueAnimator.setDuration(666);
@@ -667,14 +702,17 @@ public class MainActivity extends AppCompatActivity{
 						valueAnimator5.setDuration(888);
 						valueAnimator5.start();
 						
-						ObjectAnimator valueAnimator6=ObjectAnimator.ofFloat(my_phone,"translationY",-188);
+						ObjectAnimator valueAnimator6=ObjectAnimator.ofFloat(my_phone_container,"translationY",-188);
 						valueAnimator6.setDuration(999);
 						valueAnimator6.start();
 						
-						ObjectAnimator valueAnimator7=ObjectAnimator.ofFloat(my_phone,"translationX",120);
+						ObjectAnimator valueAnimator7=ObjectAnimator.ofFloat(my_phone_container,"translationX",120);
 						valueAnimator7.setDuration(999);
 						valueAnimator7.start();
 					}
+					
+					my_name.setEnabled(true);
+//					my_phone.setEnabled(true);
 					
 					// set a text "Edit" beside Image
 					my_profile.draw=1;
@@ -684,9 +722,108 @@ public class MainActivity extends AppCompatActivity{
 					btn_edit.setText("Save");
 					btn_status=1;
 				}else{
-					btn_edit.setText("Edit");
-					btn_status=0;
+					if(user_name.equals(my_name.getText().toString()) && user_phone.equals(my_phone.getText().toString())){
+						resumeViews();
+						return;
+					}
+					
+					try{
+						
+						Pattern pattern_user_name=Pattern.compile("^[a-zA-Z0-9\\u4e00-\\u9fa5_\\-.。?？!！() ]{2,10}$");
+						Matcher m_um=pattern_user_name.matcher(my_name.getText().toString());
+						
+						Pattern pattern_user_phone=Pattern.compile("^[1]([3-9])[0-9]{9}$");
+						Matcher m_ph=pattern_user_phone.matcher(my_phone.getText().toString());
+						
+						if(!m_um.matches()){
+							Toast.makeText(MainActivity.this,"Illegal user name! ",Toast.LENGTH_SHORT).show();
+							return;
+						}else if(!m_ph.matches()){
+							Toast.makeText(MainActivity.this,"Illegal phone number! ",Toast.LENGTH_SHORT).show();
+							return;
+						}
+						
+						String new_user_name=MyTools.filterSpecialChar(my_name.getText().toString());
+						String new_user_phone=my_phone.getText().toString();
+						
+						SocketWithServer socket=new SocketWithServer();
+						socket.DataSend="{"+
+								"'client':'SCC-1.0',"+
+								"'action':'0013',"+
+								"'secret':'I love you.',"+
+								"'user_id':'"+user_id+"',"+
+								"'token_key':'"+token_key+"',"+
+								"'new_user_name':'"+new_user_name+"'," +
+								"'new_user_phone':'"+new_user_phone+"'"+
+								"}";
+						
+						JSONObject data=socket.startSocket();
+						
+						if(null==data){
+							Toast.makeText(MainActivity.this,"Seemed network error! ",Toast.LENGTH_SHORT).show();
+						}else if(data.getString("status").equals("true")&&data.getString("is_updated").equals("true")){
+							SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
+							SharedPreferences.Editor editor=preferences.edit();
+							
+							editor.putString("user_name",new_user_name);
+							editor.putString("user_phone",new_user_phone);
+							
+							editor.apply();
+							
+							resumeViews();
+						}else{
+							Toast.makeText(MainActivity.this,"Error! ",Toast.LENGTH_SHORT).show();
+						}
+					}catch(Exception e){
+						Toast.makeText(MainActivity.this,"Something Error! ",Toast.LENGTH_SHORT).show();
+						e.printStackTrace();
+					}
 				}
+			}
+			
+			// resume the views.
+			private void resumeViews(){
+				// move back the Views
+				{
+					ObjectAnimator valueAnimator=ObjectAnimator.ofFloat(my_profile,"translationX",0);
+					valueAnimator.setDuration(666);
+					valueAnimator.start();
+					
+					ObjectAnimator valueAnimator2=ObjectAnimator.ofFloat(my_name,"translationY",0);
+					valueAnimator2.setDuration(666);
+					valueAnimator2.start();
+					
+					ObjectAnimator valueAnimator3=ObjectAnimator.ofFloat(my_name,"translationX",0);
+					valueAnimator3.setDuration(666);
+					valueAnimator3.start();
+					
+					ObjectAnimator valueAnimator4=ObjectAnimator.ofFloat(my_id,"translationY",0);
+					valueAnimator4.setDuration(888);
+					valueAnimator4.start();
+					
+					ObjectAnimator valueAnimator5=ObjectAnimator.ofFloat(my_id,"translationX",0);
+					valueAnimator5.setDuration(888);
+					valueAnimator5.start();
+					
+					ObjectAnimator valueAnimator6=ObjectAnimator.ofFloat(my_phone_container,"translationY",0);
+					valueAnimator6.setDuration(999);
+					valueAnimator6.start();
+					
+					ObjectAnimator valueAnimator7=ObjectAnimator.ofFloat(my_phone_container,"translationX",0);
+					valueAnimator7.setDuration(999);
+					valueAnimator7.start();
+				}
+				
+				my_name.setEnabled(false);
+				//my_phone.setEnabled(false);
+				
+				// set a text "Edit" beside Image
+				my_profile.draw=0;
+				// reload ImageView
+				my_profile.setImageResource(R.mipmap.logo2);
+				
+				btn_edit.setText("Edit");
+				btn_status=0;
 			}
 		});
 	}

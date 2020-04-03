@@ -14,7 +14,7 @@ import java.sql.Statement;
  * columns:
  *      user_index      INTEGER,primary key,autoincrement   //index
  *      user_id         INTEGER,NOT NULL,UNIQUE
- *      user_phone          TEXT,NOT NULL    //todo change to string!!
+ *      user_phone          TEXT,NOT NULL    // changed to string!!
  *      user_name       TEXT,NOT NULL   // string filtered by MyTools.filterSpecialChar()
  *      password        TEXT,NOT NULL
  *      login_time      INTEGER
@@ -144,7 +144,7 @@ class UserInfoSQLite{
 		}
 	}
 	
-	//todo check phone usability
+	//todo: check phone usability
 	
 	/**
 	 * Verify User's token_key
@@ -207,6 +207,27 @@ class UserInfoSQLite{
 			
 			return true;
 		}catch(SQLException|ClassNotFoundException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	/**
+	 * Update user info (When edit user profile)
+	 * @param user_id uid
+	 * @param new_user_name new user name
+	 * @param new_user_phone new user phone
+	 * @return boolean
+	 */
+	static boolean updateUserInfo(String user_id,String new_user_name,String new_user_phone){
+		try{
+			Connection con=getConnection();
+			Statement sta=con.createStatement();
+			String SQL="update user_info set user_name='"+new_user_name+"', user_phone='"+new_user_phone+"' " +
+					"where user_id="+user_id;
+			sta.executeUpdate(SQL);
+			return true;
+		}catch(Exception e){
 			e.printStackTrace();
 			return false;
 		}

@@ -128,7 +128,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/main_my_name"
-                        android:padding="0dp"
+                        android:paddingBottom="4dp"
                         android:text="@string/user_name"
                         android:textStyle="bold"
                         android:textSize="33sp"
@@ -139,23 +139,36 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="2dp"
+                        android:padding="3dp"
                         android:id="@+id/main_my_id"
                         android:text="@string/User_ID"
                         android:textSize="18sp"
                         android:textColor="#eee"/>
 
-                    <EditText
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="0dp"
-                        android:id="@+id/main_my_phone"
-                        android:text="@string/Phone"
-                        android:textSize="18sp"
-                        android:enabled="false"
-                        android:textColor="#eee"
-                        android:autofillHints=""
-                        android:inputType="phone"/>
+                        android:id="@+id/main_my_phone_container"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#eee"
+                            android:textSize="18sp"
+                            android:text="Phone:"/>
+                        <EditText
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="5dp"
+                            android:id="@+id/main_my_phone"
+                            android:text="@string/Phone"
+                            android:textSize="18sp"
+                            android:enabled="false"
+                            android:textColor="#eee"
+                            android:autofillHints=""
+                            android:inputType="phone"/>
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"

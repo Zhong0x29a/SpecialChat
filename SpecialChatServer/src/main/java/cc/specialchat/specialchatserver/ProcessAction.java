@@ -3,7 +3,21 @@ package cc.specialchat.specialchatserver;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+
 class ProcessAction{
+	
+	static String action_checkUpdate(JSONObject JsonData) throws Exception{
+		int client_version_number=Integer.parseInt(JsonData.getString("version_number"));
+		
+		Class.forName("org.sqlite.JDBC");
+		Connection con=DriverManager.getConnection("jdbc:sqlite:update_info.db");
+		Statement sta=con.createStatement();
+		String SQL="select latest_ver_num from update_info order by latest_ver_num;";
+	}
+	
 	
 	/**
 	 * Check login status by user_id and token_key
@@ -318,6 +332,32 @@ class ProcessAction{
 			return "{'status':'false','msg':'Error!'}";
 		}
 	}
+	
+	/**
+	 * Edit user's profile
+	 * @param JsonData data from client
+	 * @return message
+	 */
+	static String action_0013(JSONObject JsonData){
+		try{
+			String user_id=JsonData.getString("user_id");
+			String token_key=JsonData.getString("token_key");
+			String new_user_name=JsonData.getString("new_user_name");
+			String new_user_phone=JsonData.getString("new_user_phone");
+			if( JsonData.getString("secret").equals("I love you.") &&
+					new_user_name!=null && new_user_phone!=null &&
+					UserInfoSQLite.verifyUserTokenKey(user_id,token_key) &&
+					UserInfoSQLite.updateUserInfo(user_id,new_user_name,new_user_phone)){
+				return "{'status':'true','is_updated':'true'}";
+			}else{
+				return "{'status':'false','msg':'Error!!'}";
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return "{'status':'false','msg':'Error!'}";
+		}
+	}
+	
 }
 
 /*
