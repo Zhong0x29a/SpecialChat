@@ -21,6 +21,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -202,7 +203,7 @@ public class MainActivity extends AppCompatActivity{
 	 * Check Application upgrade
 	 */
 	private void checkAppUpgrade(){
-		//todo check app upgrade.
+		// check app upgrade.
 		new Thread(){
 			@Override
 			public void run(){
@@ -212,9 +213,12 @@ public class MainActivity extends AppCompatActivity{
 					JSONObject data=socket.startSocket();
 					if(data!=null && data.getString("status").equals("true")
 							&& data.getString("is_update").equals("true")){
-						Uri uri = Uri.parse("https://www.baidu.com");
+						Uri uri = Uri.parse("https://github.com/Galaxy-cube/SpecialChat/releases");
 						Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 						startActivity(intent);
+						Looper.prepare();
+						Toast.makeText(MainActivity.this,"New upgrade available! ",Toast.LENGTH_LONG).show();
+						Looper.loop();
 					}
 				}catch(Exception e){
 					e.printStackTrace();
@@ -655,6 +659,9 @@ public class MainActivity extends AppCompatActivity{
 	}
 	
 	@SuppressLint("SetTextI18n")
+	/*
+	 * Load me page
+	 */
 	void loadMePage(){
 		final LinearLayout main_me=findViewById(R.id.main_me);
 		
@@ -748,13 +755,13 @@ public class MainActivity extends AppCompatActivity{
 						
 						SocketWithServer socket=new SocketWithServer();
 						socket.DataSend="{"+
-								"'client':'SCC-1.0',"+
-								"'action':'0013',"+
-								"'secret':'I love you.',"+
-								"'user_id':'"+user_id+"',"+
-								"'token_key':'"+token_key+"',"+
-								"'new_user_name':'"+new_user_name+"'," +
-								"'new_user_phone':'"+new_user_phone+"'"+
+								"\"client\":\"SCC-1.0\","+
+								"\"action\":\"0013\","+
+								"\"secret\":\"I love you.\","+
+								"\"user_id\":\""+user_id+"\","+
+								"\"token_key\":\""+token_key+"\","+
+								"\"new_user_name\":\""+new_user_name+"\"," +
+								"\"new_user_phone\":\""+new_user_phone+"\""+
 								"}";
 						
 						JSONObject data=socket.startSocket();

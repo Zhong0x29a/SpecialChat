@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.Statement;
 
 class ProcessAction{
@@ -15,7 +16,13 @@ class ProcessAction{
 		Class.forName("org.sqlite.JDBC");
 		Connection con=DriverManager.getConnection("jdbc:sqlite:update_info.db");
 		Statement sta=con.createStatement();
-		String SQL="select latest_ver_num from update_info order by latest_ver_num;";
+		String SQL="select latest_ver_num from update_info order by latest_ver_num DESC;";
+		ResultSet res=sta.executeQuery(SQL);
+		if(res.getInt("latest_ver_num")>client_version_number){
+			return "{'status':'true','is_update':'true'}";
+		}else{
+			return "{'status':'true','is_update':'false'}";
+		}
 	}
 	
 	
