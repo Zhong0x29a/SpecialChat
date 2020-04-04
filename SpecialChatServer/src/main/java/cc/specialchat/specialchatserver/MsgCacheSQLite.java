@@ -115,7 +115,7 @@ class MsgCacheSQLite{
 				msg[index][3]=resultSet.getInt("send_time")+"";
 			}
 			resultSet.close();
-			DELETE_SQL="delete from msg_cache where msg_index="+msg[index][0];
+			DELETE_SQL="delete from msg_cache where to_id="+user_id;
 			statement.executeUpdate(DELETE_SQL);
 			statement.close();
 			connection.close();

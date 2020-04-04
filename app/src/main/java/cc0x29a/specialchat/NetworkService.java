@@ -127,7 +127,7 @@ public class NetworkService extends Service{
 		}else if(data.getString("is_new_msg").equals("true")){
 			int new_msg_num=Integer.parseInt(data.getString("new_msg_num"));
 			ChatListSQLiteHelper clh=new ChatListSQLiteHelper(NetworkService.this,"chat_list.db",1);
-			for(int i=1;i<=new_msg_num;i++){
+			for(int i=1;i<=new_msg_num;i++){ //todo may bug here
 				JSONObject jsonTemp=new JSONObject(data.getString("index_"+i));
 				String friend_id=jsonTemp.getString("user_id");
 				String send_time=jsonTemp.getString("send_time");
@@ -136,6 +136,7 @@ public class NetworkService extends Service{
 				// insert data to database
 				MsgSQLiteHelper mh=new MsgSQLiteHelper(NetworkService.this,"msg_"+friend_id+".db",1);
 				mh.insertNewMsg(mh.getReadableDatabase(),friend_id,send_time,msg_content);
+				
 				mh.close();
 				
 				SQLiteDatabase chat_list_db=clh.getReadableDatabase();
@@ -156,7 +157,9 @@ public class NetworkService extends Service{
 				sendBroadcast(intent2);
 				
 				showNewMsgNotification(friend_id,ta_nickname,MyTools.resolveSpecialChar(msg_content),MyTools.formatTime(send_time));
+				
 			}
+			
 			clh.close();
 			
 			// Send broadcast to MainActivity

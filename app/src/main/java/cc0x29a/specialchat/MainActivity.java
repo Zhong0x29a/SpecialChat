@@ -52,7 +52,7 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity{
 	
-	static int version_number=20040301;
+	static int version_number=20040401;
 	
 	static String user_id;
 	static String token_key;
@@ -114,7 +114,6 @@ public class MainActivity extends AppCompatActivity{
 		
 		
 	}
-	
 	
 	@Override
 	protected void onRestart(){
@@ -213,7 +212,7 @@ public class MainActivity extends AppCompatActivity{
 					JSONObject data=socket.startSocket();
 					if(data!=null && data.getString("status").equals("true")
 							&& data.getString("is_update").equals("true")){
-						Uri uri = Uri.parse("https://github.com/Galaxy-cube/SpecialChat/releases");
+						Uri uri = Uri.parse("https://github.com/Galaxy-cube/SpecialChat/releases"); //todo
 						Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 						startActivity(intent);
 						Looper.prepare();
