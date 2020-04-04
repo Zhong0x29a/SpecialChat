@@ -60,7 +60,7 @@ public class NetworkService extends Service{
 	
 	@Override
 	public IBinder onBind(Intent intent){
-		// TODO: Return the communication channel to the service.
+		// TO DO: Return the communication channel to the service.
 		throw new UnsupportedOperationException("Not yet implemented");
 	}
 	

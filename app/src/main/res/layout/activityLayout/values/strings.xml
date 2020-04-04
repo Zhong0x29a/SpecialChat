@@ -9,4 +9,12 @@
     <string name="menu">Menu</string>
     <string name="special_chat">Special Chat</string>
     <string name="about_info">Special Chat - 1.0.0 Beta\n Developed by Zhong Wenliang. \nEmail: CuberWenliang@0x29a.cc</string>
+    <string name="nbsp">" "</string>
+    <string name="label_phone">Phone:</string>
+    <string name="edit">Edit</string>
+    <string name="an_icon">an icon</string>
+    <string name="add_contacts">Add Contacts</string>
+    <string name="stop_auto_refresh">Stop auto refresh</string>
+    <string name="logout">Logout</string>
+    <string name="about">About</string>
 </resources>

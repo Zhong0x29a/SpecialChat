@@ -9,6 +9,59 @@
     android:background="#333"
     android:gravity="bottom">
 
+    <!-- Customize Title bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:orientation="horizontal"
+        android:background="@color/colorPrimary"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="43dp"
+            android:layout_height="56dp"
+            android:gravity="center"
+            android:id="@+id/chat_btn_return">
+            <ImageView
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:src="@mipmap/icon_return"
+                android:contentDescription="@string/an_icon" />
+        </LinearLayout>
+
+        <!-- Title -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/chat_title"
+                android:text="@string/chats"
+                android:layout_marginHorizontal="5dp"
+                android:textSize="20sp"
+                android:textColor="#eee"
+                android:textStyle="bold"
+                android:gravity="center"/>
+        </LinearLayout>
+
+        <!-- Menu button -->
+        <LinearLayout
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:id="@+id/chat_menu_btn"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@mipmap/ic_menu"
+                android:layout_margin="17dp"
+                android:contentDescription="@string/menu" />
+        </LinearLayout>
+
+    </LinearLayout>
+
     <!-- Show chat history -->
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"

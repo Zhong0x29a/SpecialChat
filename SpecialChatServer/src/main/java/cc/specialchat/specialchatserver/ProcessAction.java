@@ -10,6 +10,12 @@ import java.sql.Statement;
 
 class ProcessAction{
 	
+	/**
+	 * To check client's update
+	 * @param JsonData data from client
+	 * @return msg to client
+	 * @throws Exception all Exceptions
+	 */
 	static String action_checkUpdate(JSONObject JsonData) throws Exception{
 		int client_version_number=Integer.parseInt(JsonData.getString("version_number"));
 		
@@ -24,7 +30,6 @@ class ProcessAction{
 			return "{'status':'true','is_update':'false'}";
 		}
 	}
-	
 	
 	/**
 	 * Check login status by user_id and token_key
@@ -97,7 +102,7 @@ class ProcessAction{
 									"'msg_content':'").append(msg_temp[i+1][2]).append("'" +
 									"}\",");
 						}
-						p.append("\"is_new_msg\":\"true\"}"); //todo bug: only one msg would be fetched each time?
+						p.append("\"is_new_msg\":\"true\"}");
 						return p.toString();
 					}else{
 						return "{\"is_new_msg\":\"false\"}";

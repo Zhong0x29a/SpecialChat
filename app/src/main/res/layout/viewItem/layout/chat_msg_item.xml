@@ -10,8 +10,13 @@
         android:background="@drawable/ta_msg_style"
         android:id="@+id/chat_msg_content"
         android:textSize="20sp"
+        android:lineSpacingMultiplier="1.05"
+        android:lineSpacingExtra="0.5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="I love you. "
-        android:padding="6dp"/>
+        android:enabled="true"
+        android:textIsSelectable="true"
+        android:text="I love you.\nfdfasdfa "
+        android:paddingVertical="8dp"
+        android:paddingHorizontal="14dp"/>
 </LinearLayout>

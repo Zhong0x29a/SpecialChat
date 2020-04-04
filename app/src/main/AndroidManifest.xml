@@ -49,7 +49,8 @@
             android:theme="@style/generalNoTitle" />
         <activity
             android:name=".ChatActivity"
-            android:label="Chat" />
+            android:label="Chat"
+            android:theme="@style/generalNoTitle"/>
         <activity
             android:name=".LoginActivity"
             android:label="Login in"

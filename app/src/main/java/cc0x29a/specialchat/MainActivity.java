@@ -142,7 +142,6 @@ public class MainActivity extends AppCompatActivity{
 		filter.addAction("backgroundTask.action");
 		registerReceiver(receiver, filter);
 		
-		
 	}
 	
 	// stop background tasks service
@@ -508,67 +507,6 @@ public class MainActivity extends AppCompatActivity{
 					chatList_recycleView.setAdapter(adapterChatList);
 					chatList_recycleView.setItemAnimator(new DefaultItemAnimator());
 					
-					// Fetch last one message.
-//					String[] lastMsg=new String[51];
-//					for(int i=1;i<= (Integer.parseInt(chatList[0][0])) && i<=50;i++){
-//						MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(MainActivity.this,
-//								"msg_"+chatList[i][1]+".db",1);
-//						lastMsg[i]=msgSQLiteHelper.getLatestMsg(msgSQLiteHelper.getReadableDatabase());
-//					}
-					
-					/*
-					ChatListItemAdapter cli_adapter=new ChatListItemAdapter(MainActivity.this);
-					cli_adapter.chatListInfo=chatList;
-					cli_adapter.count=Integer.parseInt(chatList[0][0]); // item number
-					
-					final ListView ml_view=findViewById(R.id.main_chat_recyclerView);
-					ml_view.setAdapter(cli_adapter);
-					
-					ml_view.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-						@Override
-						public void onItemClick(AdapterView<?> parent,View view,int position,long id){
-							position++;
-							Intent intent=new Intent(MainActivity.this,ChatActivity.class);
-							Bundle bundle=new Bundle();
-							bundle.putString("user_id", chatList[position][1]);
-							bundle.putString("nickname",chatList[position][2]);
-							intent.putExtras(bundle);
-							startActivity(intent);
-							cancelRefreshTimers();
-						}
-					});
-					
-					ml_view.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
-						@Override
-						public boolean onItemLongClick(AdapterView<?> parent,View view,int position,long id){
-							position++;
-							final int finalPosition=position;
-							AlertDialog alertDialog2 = new AlertDialog.Builder(MainActivity.this)
-									.setTitle("Notices")
-									.setMessage("Sure to delete this chat? \n'"+chatList[position][1]+"'")
-									.setPositiveButton("Yeah", new DialogInterface.OnClickListener() {
-										@Override
-										public void onClick(DialogInterface dialogInterface, int i) {
-											//to do delete the chat item! by position
-											ChatListSQLiteHelper chatListSQLiteHelper=
-													new ChatListSQLiteHelper(MainActivity.this,"chat_list.db",1);
-											chatListSQLiteHelper.deleteChatListItem(chatListSQLiteHelper.getReadableDatabase(),chatList[finalPosition][1]);
-											loadChatList();
-											ml_view.scrollTo(0,finalPosition*80); // bugs
-											Toast.makeText(MainActivity.this, "Deleted. "+finalPosition, Toast.LENGTH_SHORT).show();
-										}
-									})
-									.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-										@Override
-										public void onClick(DialogInterface dialogInterface, int i){}
-									})
-									.create();
-							alertDialog2.show();
-							return true;
-						}
-					});*/
-					
-					
 				}
 			}
 		);
@@ -662,7 +600,7 @@ public class MainActivity extends AppCompatActivity{
 	 * Load me page
 	 */
 	void loadMePage(){
-		final LinearLayout main_me=findViewById(R.id.main_me);
+//		final LinearLayout main_me=findViewById(R.id.main_me);
 		
 		final EditText my_name=findViewById(R.id.main_my_name);
 		final TextView my_id=findViewById(R.id.main_my_id);
@@ -672,8 +610,8 @@ public class MainActivity extends AppCompatActivity{
 		final Button btn_edit=findViewById(R.id.main_edit_my_info);
 		
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
-		user_name=preferences.getString("user_name","null??");
-		user_phone=preferences.getString("user_phone","null??");
+		user_name=MyTools.resolveSpecialChar(preferences.getString("user_name","null"));
+		user_phone=preferences.getString("user_phone","null");
 		
 		my_name.setText(user_name);
 		my_id.setText("id:"+user_id);
@@ -832,6 +770,14 @@ public class MainActivity extends AppCompatActivity{
 				btn_status=0;
 			}
 		});
+		
+		my_profile.setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v){
+				Toast.makeText(MainActivity.this,"Coming soon!",Toast.LENGTH_SHORT).show();
+			}
+		});
+		
 	}
 	
 	/**

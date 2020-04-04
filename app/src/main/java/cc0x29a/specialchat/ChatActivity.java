@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -59,7 +60,10 @@ public class ChatActivity extends AppCompatActivity{
 		my_id=preferences.getString("user_id",null);
 		
 		// set title text
-		if(null!=nickname){ this.setTitle(nickname); }
+		if(null!=nickname){
+			TextView title=findViewById(R.id.chat_title);
+			title.setText(nickname);
+		}
 		
 		// init & load chat history
 		if(ta_id!= null && !ta_id.equals("")){
@@ -178,6 +182,26 @@ public class ChatActivity extends AppCompatActivity{
 	}
 	
 	private void init(){
+		
+		findViewById(R.id.chat_menu_btn).setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v){
+				Intent intent=new Intent(ChatActivity.this,ContactDetailActivity.class);
+				Bundle bundle=new Bundle();
+				bundle.putString("user_id",ta_id);
+				intent.putExtras(bundle);
+				startActivity(intent);
+			}
+		});
+		
+		// Return button
+		findViewById(R.id.chat_btn_return).setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v){
+				finish();
+			}
+		});
+		
 		// Send message in editText
 		findViewById(R.id.chat_btn_send).setOnClickListener(new View.OnClickListener(){
 			@Override

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -48,14 +49,18 @@
                 </LinearLayout>
 
                 <!-- Menu button -->
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                <LinearLayout
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
                     android:id="@+id/main_menu_btn"
-                    android:background="@mipmap/ic_menu"
-                    android:layout_gravity="center"
-                    android:layout_margin="17dp"
-                    android:contentDescription="@string/menu" />
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@mipmap/ic_menu"
+                        android:layout_margin="17dp"
+                        android:contentDescription="@string/menu" />
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -134,7 +139,10 @@
                         android:textSize="33sp"
                         android:textColor="#eee"
                         android:enabled="false"
-                        android:layout_marginTop="23dp"/>
+                        android:layout_marginTop="23dp"
+                        android:hint="@string/nbsp"
+                        android:autofillHints="user_name"
+                        android:inputType="text" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -156,7 +164,7 @@
                             android:layout_height="wrap_content"
                             android:textColor="#eee"
                             android:textSize="18sp"
-                            android:text="Phone:"/>
+                            android:text="@string/label_phone"/>
                         <EditText
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -166,6 +174,7 @@
                             android:textSize="18sp"
                             android:enabled="false"
                             android:textColor="#eee"
+                            android:hint="@string/Phone"
                             android:autofillHints=""
                             android:inputType="phone"/>
                     </LinearLayout>
@@ -180,7 +189,7 @@
                             android:layout_height="56dp"
                             android:id="@+id/main_edit_my_info"
                             android:textAllCaps="false"
-                            android:text="Edit"/>
+                            android:text="@string/edit"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -192,7 +201,8 @@
                 android:layout_height="56dp"
                 android:orientation="horizontal"
                 android:layout_gravity="bottom"
-                android:background="#222222">
+                android:background="#222222"
+                android:baselineAligned="false">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -201,11 +211,13 @@
                     android:id="@+id/menu_btn_chats"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    tools:ignore="UseCompoundDrawables">
                     <ImageView
                         android:src="@mipmap/chats"
                         android:layout_height="36dp"
-                        android:layout_width="36dp"/>
+                        android:layout_width="36dp"
+                        android:contentDescription="@string/an_icon" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -220,11 +232,13 @@
                     android:id="@+id/menu_btn_contacts"
                     android:layout_weight="1"
                     android:orientation="vertical"
-                    android:gravity="center">
+                    android:gravity="center"
+                    tools:ignore="UseCompoundDrawables">
                     <ImageView
                         android:src="@mipmap/contacts"
                         android:layout_height="36dp"
-                        android:layout_width="36dp"/>
+                        android:layout_width="36dp"
+                        android:contentDescription="@string/an_icon" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -232,6 +246,7 @@
                         android:textColor="#eee"/>
                 </LinearLayout>
 
+                <!-- todo : some ver enable this! -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -239,11 +254,14 @@
                     android:paddingTop="3dp"
                     android:layout_weight="1"
                     android:orientation="vertical"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:visibility="gone"
+                    tools:ignore="UseCompoundDrawables">
                     <ImageView
                         android:src="@mipmap/moments"
                         android:layout_height="36dp"
-                        android:layout_width="36dp"/>
+                        android:layout_width="36dp"
+                        android:contentDescription="@string/an_icon" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -258,11 +276,13 @@
                     android:id="@+id/menu_btn_me"
                     android:layout_weight="1"
                     android:orientation="vertical"
-                    android:gravity="center">
+                    android:gravity="center"
+                    tools:ignore="UseCompoundDrawables">
                     <ImageView
                         android:src="@mipmap/me"
                         android:layout_height="36dp"
-                        android:layout_width="36dp"/>
+                        android:layout_width="36dp"
+                        android:contentDescription="@string/an_icon" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -296,7 +316,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:id="@+id/main_menu_add_contact"
-                    android:text="Add Contacts"
+                    android:text="@string/add_contacts"
                     android:textSize="16sp"
                     android:textAllCaps="false"
                     android:gravity="center_vertical"
@@ -305,7 +325,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:id="@+id/main_menu_stop_refresh"
-                    android:text="Stop auto refresh"
+                    android:text="@string/stop_auto_refresh"
                     android:textSize="16sp"
                     android:textAllCaps="false"
                     android:gravity="center_vertical"
@@ -314,7 +334,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:id="@+id/main_menu_logout"
-                    android:text="Logout"
+                    android:text="@string/logout"
                     android:textSize="16sp"
                     android:textAllCaps="false"
                     android:gravity="center_vertical"
@@ -323,7 +343,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:id="@+id/main_menu_about"
-                    android:text="About"
+                    android:text="@string/about"
                     android:textSize="16sp"
                     android:textAllCaps="false"
                     android:gravity="center_vertical"

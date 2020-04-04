@@ -14,7 +14,8 @@
         android:layout_height="match_parent"
         android:background="@drawable/set_button_selector"
         android:gravity="center">
-        <ImageView
+
+        <cc0x29a.specialchat.ChatListImageView
             android:id="@+id/chatListItem_profile_pic"
             android:background="#333"
             android:src="@mipmap/logo"
@@ -23,6 +24,17 @@
             android:layout_marginVertical="5dp"
             android:layout_marginStart="13dp"
             android:layout_marginEnd="2dp" />
+
+<!--        <ImageView-->
+<!--            android:id="@+id/chatListItem_profile_pic"-->
+<!--            android:background="#333"-->
+<!--            android:src="@mipmap/logo"-->
+<!--            android:layout_width="63dp"-->
+<!--            android:layout_height="63dp"-->
+<!--            android:layout_marginVertical="5dp"-->
+<!--            android:layout_marginStart="13dp"-->
+<!--            android:layout_marginEnd="2dp" />-->
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
