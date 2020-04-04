@@ -77,7 +77,7 @@ public class CircleImageView extends ImageView {
 			//画圆形，指定好坐标，半径，画笔
 			canvas.drawCircle(mRadius, mRadius, mRadius,mPaint);
 			
-			CircleImageView.canvas=canvas;
+//			CircleImageView.canvas=canvas;
 			
 			if(draw==1){
 				Paint paint=new Paint();
