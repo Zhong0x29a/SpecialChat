@@ -41,14 +41,14 @@ public class ChatListNewMsgIconImageView extends ImageView{
 	@Override
 	protected void onDraw(Canvas canvas) {
 		
-		if(new_msg_num==0){
+//		if(new_msg_num==0){
 			Paint paint=new Paint();
 			paint.setColor(Color.rgb(244,88,88));
 			
 //			paint.setTextSize(23);
 //			paint.setUnderlineText(true);
 			canvas.drawCircle(mRadius,mRadius,mRadius,paint);
-		}
+//		}
 		
 		
 		//画笔
