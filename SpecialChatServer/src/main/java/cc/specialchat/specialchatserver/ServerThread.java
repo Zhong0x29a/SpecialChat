@@ -101,7 +101,6 @@ public class ServerThread extends Thread {
 //			msgSend="{\"status\":\"true\"}";
 			
 			// send data to client
-//			if(msgSend!=null && !msgSend.equals("")){
 			if( !msgSend.equals("") ){
 				outputStream=socket.getOutputStream();
 				//assert msgSend!=null;
