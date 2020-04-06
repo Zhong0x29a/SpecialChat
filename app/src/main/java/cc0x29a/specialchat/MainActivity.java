@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity{
 			@Override
 			public void run(){
 				try{
-					SocketWithServer socket=new SocketWithServer();
+					SocketWithServer_backup socket=new SocketWithServer_backup();
 					socket.DataSend="{'action':'CheckUpdate','version_number':'"+version_number+"'}";
 					JSONObject data=socket.startSocket();
 					if(data!=null && data.getString("status").equals("true")
@@ -261,7 +261,7 @@ public class MainActivity extends AppCompatActivity{
 						case R.id.main_menu_stop_refresh:
 							cancelRefreshTimers();
 							stopService(new Intent(MainActivity.this,BackgroundTaskService.class));
-							stopService(new Intent(MainActivity.this,NetworkService.class));
+							stopService(new Intent(MainActivity.this,NetworkService_backup.class));
 							unregisterReceiver(receiver);
 							Toast.makeText(MainActivity.this,"Auto refresh stopped.",Toast.LENGTH_LONG).show();
 							break;
@@ -449,7 +449,7 @@ public class MainActivity extends AppCompatActivity{
 	 */
 	private void normalMode(){
 		startService(new Intent(this,BackgroundTaskService.class));
-		startService(new Intent(this,NetworkService.class));
+		startService(new Intent(this,NetworkService_backup.class));
 		
 		// to clear timers in front
 		cancelRefreshTimers();
@@ -690,7 +690,7 @@ public class MainActivity extends AppCompatActivity{
 						String new_user_name=MyTools.filterSpecialChar(my_name.getText().toString());
 						String new_user_phone=my_phone.getText().toString();
 						
-						SocketWithServer socket=new SocketWithServer();
+						SocketWithServer_backup socket=new SocketWithServer_backup();
 						socket.DataSend="{"+
 								"\"client\":\"SCC-1.0\","+
 								"\"action\":\"0013\","+
@@ -800,7 +800,7 @@ public class MainActivity extends AppCompatActivity{
 				"\"token_key\":\""+token_key+"\"," +
 				"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
 				"}";
-		SocketWithServer SWS=new SocketWithServer();
+		SocketWithServer_backup SWS=new SocketWithServer_backup();
 		SWS.delay=6;
 		SWS.DataSend=jsonMsg;
 		JSONObject data=SWS.startSocket();

@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
     package="cc0x29a.specialchat">
+
     <!-- Internet assess permission -->
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -17,6 +18,10 @@
         <!-- Services -->
         <service
             android:name=".NetworkService"
+            android:enabled="true"
+            android:exported="false"/>
+        <service
+            android:name=".NetworkService_backup"
             android:enabled="true"
             android:exported="false" />
         <service
@@ -50,7 +55,7 @@
         <activity
             android:name=".ChatActivity"
             android:label="Chat"
-            android:theme="@style/generalNoTitle"/>
+            android:theme="@style/generalNoTitle" />
         <activity
             android:name=".LoginActivity"
             android:label="Login in"

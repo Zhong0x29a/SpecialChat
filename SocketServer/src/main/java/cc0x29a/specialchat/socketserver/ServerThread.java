@@ -49,13 +49,14 @@ public class ServerThread extends Thread {
 		@Override
 		public void run(){
 			while(!socket.isClosed()){
-				int startTime=MyTools.getCurrentTime();
 				StringBuilder DataGet=new StringBuilder();
 				
 				InputStream inputStream=null;
 				InputStreamReader inputStreamReader=null;
 				BufferedReader bufferedReader=null;
+				
 				try{
+					socket.setSoTimeout(16000);
 					
 					inputStream=socket.getInputStream();
 					inputStreamReader=new InputStreamReader(inputStream);
@@ -66,17 +67,8 @@ public class ServerThread extends Thread {
 						DataGet.append("\n").append(temp);
 					}
 					
-					// wait for 16 seconds, close socket if no data.
-					while(MyTools.getCurrentTime()<=startTime+16){
-						if(DataGet.length()>0){
-							// process data
-						}else{
-							try{
-								socket.close();
-							}catch(IOException e){
-								e.printStackTrace();
-							}
-						}
+					if(DataGet.length()>0){
+//						ProcessData(DataGet.toString());
 					}
 					
 				}catch(IOException e){

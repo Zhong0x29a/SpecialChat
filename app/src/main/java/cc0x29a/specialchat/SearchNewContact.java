@@ -49,7 +49,7 @@ public class SearchNewContact extends AppCompatActivity{
 				}
 				
 				if(null!=user_id && null!=token_key){
-					SocketWithServer socket=new SocketWithServer();
+					SocketWithServer_backup socket=new SocketWithServer_backup();
 					socket.DataSend="{" +
 							"'client':'SCC-1.0'," +
 							"'action':'0009'," +

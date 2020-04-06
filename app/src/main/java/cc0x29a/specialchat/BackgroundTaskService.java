@@ -99,7 +99,7 @@ public class BackgroundTaskService extends Service{
 	 * Fetch contacts list (sync from server)
 	 */
 	private void syncContactsList() throws Exception{
-		SocketWithServer socket=new SocketWithServer();
+		SocketWithServer_backup socket=new SocketWithServer_backup();
 		if(user_id==null || token_key==null){
 			return;
 		}

@@ -231,7 +231,7 @@ public class ChatActivity extends AppCompatActivity{
 								"'timestamp':'"+MyTools.getCurrentTime()+"'" +
 								"}";
 						
-						SocketWithServer socket=new SocketWithServer();
+						SocketWithServer_backup socket=new SocketWithServer_backup();
 						socket.DataSend=dataToSend;
 						JSONObject data=socket.startSocket();
 						if( data==null ){
