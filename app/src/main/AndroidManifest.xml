@@ -17,11 +17,11 @@
 
         <!-- Services -->
         <service
-            android:name=".NetworkService"
+            android:name=".new__NetworkService"
             android:enabled="true"
             android:exported="false"/>
         <service
-            android:name=".NetworkService_backup"
+            android:name=".NetworkService"
             android:enabled="true"
             android:exported="false" />
         <service

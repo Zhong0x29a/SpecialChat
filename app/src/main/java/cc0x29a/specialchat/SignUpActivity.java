@@ -58,7 +58,7 @@ public class SignUpActivity extends AppCompatActivity{
 					String password=MyTools.md5(et_password.getText().toString()+user_id);
 					String invite_code=et_invite_code.getText().toString();
 					
-					SocketWithServer_backup socket=new SocketWithServer_backup();
+					SocketWithServer socket=new SocketWithServer();
 					socket.DataSend="{" +
 							"\"client\":\"SCC-1.0\"," +
 							"\"action\":\"0006\"," +
@@ -194,7 +194,7 @@ public class SignUpActivity extends AppCompatActivity{
 				}
 				String user_id=sb.toString();
 				
-				SocketWithServer_backup socket=new SocketWithServer_backup();
+				SocketWithServer socket=new SocketWithServer();
 				socket.DataSend="{'action':'0005','user_id':'"+user_id+"'}";
 				JSONObject data=socket.startSocket();
 				

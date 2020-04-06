@@ -60,7 +60,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 						Toast.makeText(ContactDetailActivity.this,"Login info error!",Toast.LENGTH_LONG).show();
 						return;
 					}
-					SocketWithServer_backup socket=new SocketWithServer_backup();
+					SocketWithServer socket=new SocketWithServer();
 					socket.DataSend="{" +
 							"'client':'SCC-1.0'," +
 							"'action':'0007'," +
@@ -99,7 +99,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 //			@Override
 //			public void run(){
 				try{
-					SocketWithServer_backup socket=new SocketWithServer_backup();
+					SocketWithServer socket=new SocketWithServer();
 					socket.DataSend="{" +
 							"'client':'SCC-1.0'," +
 							"'action':'0008'," +
@@ -136,7 +136,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 			public void run(){
 				try{
 					sleep(500);
-					SocketWithServer_backup socket=new SocketWithServer_backup();
+					SocketWithServer socket=new SocketWithServer();
 					socket.DataSend="{" +
 							"'client':'SCC-1.0'," +
 							"'action':'0011'," +

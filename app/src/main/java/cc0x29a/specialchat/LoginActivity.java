@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity{
 							"'secret':'I love you.'," +
 							"'user_phone':'"+IdOrPhone+"'" +
 							"}";
-					SocketWithServer_backup socket=new SocketWithServer_backup();
+					SocketWithServer socket=new SocketWithServer();
 					socket.DataSend=data_send;
 					JSONObject data=socket.startSocket();
 					try{
@@ -91,7 +91,7 @@ public class LoginActivity extends AppCompatActivity{
 						"\"password\":\""+password+"\"" +
 						"}";
 				
-				SocketWithServer_backup SWS=new SocketWithServer_backup();
+				SocketWithServer SWS=new SocketWithServer();
 				SWS.DataSend=dataToSend;
 				JSONObject data=SWS.startSocket();
 				

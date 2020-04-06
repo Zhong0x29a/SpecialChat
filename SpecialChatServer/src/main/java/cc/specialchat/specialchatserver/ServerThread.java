@@ -35,7 +35,6 @@ public class ServerThread extends Thread {
 				BufferedReader bufferedReader=null;
 				
 				try{
-					
 					inputStream=socket.getInputStream();
 					inputStreamReader=new InputStreamReader(inputStream);
 					bufferedReader=new BufferedReader(inputStreamReader);
@@ -47,16 +46,14 @@ public class ServerThread extends Thread {
 					
 					if(DataGet.length()>0){
 						JSONObject jsonData=JSONObject.parseObject(DataGet.toString());
-						
 						// Output, send data to client.
 						OutputStream outputStream = socket.getOutputStream();
 						outputStream.write(ProcessData(jsonData).getBytes(StandardCharsets.UTF_8));
 						outputStream.flush();
-						
-					}else{
-						socket.close();
 					}
-					
+//					else{
+//						socket.close();
+//					}
 				}catch(Exception e){
 					e.printStackTrace();
 				}finally{
@@ -80,10 +77,7 @@ public class ServerThread extends Thread {
 						e.printStackTrace();
 					}
 				}
-				
 			}
-			
-		
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
