@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 /**
  * server:          scs.0x29a.cc:21027
  *
@@ -59,9 +61,11 @@ public class LoginActivity extends AppCompatActivity{
 							"'user_phone':'"+IdOrPhone+"'" +
 							"}";
 					SocketWithServer socket=new SocketWithServer();
-					socket.DataSend=data_send;
-					JSONObject data=socket.startSocket();
+					
+//					socket.DataSend=data_send;
+					
 					try{
+						JSONObject data=socket.startSocket(data_send);
 						if(data.getString("status").equals("true") && !(user_id=data.getString("user_id")).equals("")){
 							Toast.makeText(LoginActivity.this,"Using mobile phone to login.",Toast.LENGTH_SHORT).show();
 						}
@@ -92,8 +96,15 @@ public class LoginActivity extends AppCompatActivity{
 						"}";
 				
 				SocketWithServer SWS=new SocketWithServer();
-				SWS.DataSend=dataToSend;
-				JSONObject data=SWS.startSocket();
+				
+//				SWS.DataSend=dataToSend;
+				
+				JSONObject data=null;
+				try{
+					data=SWS.startSocket(dataToSend);
+				}catch(InterruptedException|IOException e){
+					e.printStackTrace();
+				}
 				
 				/* wait 888ms */
 				try{

@@ -19,6 +19,7 @@ import androidx.core.app.NotificationCompat;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -198,7 +199,7 @@ public class NetworkService extends Service{
 	 *      4->Unknown Error..
 	 *
 	 */
-	private int refreshNewMsg() throws JSONException{
+	private int refreshNewMsg() throws JSONException, InterruptedException, IOException{
 		String jsonMsg;
 		JSONObject data;
 		SocketWithServer SWS=new SocketWithServer();
@@ -211,8 +212,10 @@ public class NetworkService extends Service{
 					"\"token_key\":\""+token_key+"\"," +
 					"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
 					"}";
-			SWS.DataSend=jsonMsg;
-			data=SWS.startSocket();
+			
+//			SWS.DataSend=jsonMsg;
+			
+			data=SWS.startSocket(jsonMsg);
 			
 		}else{
 			return 3;

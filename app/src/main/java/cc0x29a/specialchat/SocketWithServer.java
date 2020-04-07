@@ -1,5 +1,11 @@
 package cc0x29a.specialchat;
 
+import android.os.Handler;
+import android.os.Message;
+
+import androidx.annotation.NonNull;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -13,15 +19,32 @@ import org.json.JSONObject;
  * To do: encrypt all data!!
  * **/
 class SocketWithServer{
-	String DataSend=null;
-	private StringBuffer DataReturn=new StringBuffer();
-	private JSONObject DataJsonReturn=null;
-	int delay=5;
+//	String DataSend=null;
+//	private StringBuffer DataReturn=new StringBuffer();
+//	private JSONObject DataJsonReturn=null;
+//	int delay=5;
+//	Handler handler;
 	
-	JSONObject startSocket(){
+	public android.os.Handler.Callback sendMsgHandler;
+	
+	
+	JSONObject startSocket(String DataSend) throws JSONException{
+		final String[] temp=new String[1];
 		
-		new__NetworkService.startSocket();
+		android.os.Handler.Callback revMsgHandler=new Handler.Callback(){
+			@Override
+			public boolean handleMessage(@NonNull Message msg){
+				temp[0]=msg.obj.toString();
+				return false;
+			}
+		};
 		
+		
+		
+		
+		return new JSONObject(temp[0]);
+		
+//		return new__NetworkService.sendData(DataSend);
 //		new Thread(){
 //			@Override
 //			public void run() {

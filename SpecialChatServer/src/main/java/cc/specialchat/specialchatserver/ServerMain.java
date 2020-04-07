@@ -51,7 +51,7 @@ public class ServerMain{
 		}catch(Exception e){
 			System.out.println("--- Just occurred a ERROR... ---\n---- Special Chat Server restarted ----\n");
 			e.printStackTrace();
-			Thread.sleep(1888);
+			Thread.sleep(2888);
 			main(new String[]{"e"});
 		}
 		

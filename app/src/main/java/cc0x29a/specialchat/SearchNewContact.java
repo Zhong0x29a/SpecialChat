@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,16 +51,18 @@ public class SearchNewContact extends AppCompatActivity{
 				
 				if(null!=user_id && null!=token_key){
 					SocketWithServer socket=new SocketWithServer();
-					socket.DataSend="{" +
+					
+					String DataSend="{" +
 							"'client':'SCC-1.0'," +
 							"'action':'0009'," +
 							"'token_key':'"+token_key+"'," +
 							"'user_id':'"+user_id+"'," +
 							"'search_id':'"+uid+"'" +
 							"}";
-					JSONObject data_temp=socket.startSocket();
+					
 					
 					try{
+						JSONObject data_temp=socket.startSocket(DataSend);
 						if(data_temp!=null && data_temp.getString("status").equals("true")){
 							int number=Integer.parseInt(data_temp.getString("number"));
 							String[][] data=new String[number][2];
@@ -83,7 +86,7 @@ public class SearchNewContact extends AppCompatActivity{
 						}else{
 							Toast.makeText(SearchNewContact.this,"Perhaps Network made a mistake? ",Toast.LENGTH_SHORT).show();
 						}
-					}catch(JSONException e){
+					}catch(JSONException|InterruptedException|IOException e){
 						e.printStackTrace();
 					}
 					

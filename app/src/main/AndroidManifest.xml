@@ -6,6 +6,9 @@
     <!-- Internet assess permission -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- 20.04.07 added for OkSocket -->
+<!--    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>-->
+
     <dist:module dist:instant="true" />
 
     <application

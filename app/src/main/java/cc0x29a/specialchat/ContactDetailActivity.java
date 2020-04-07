@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -61,15 +60,26 @@ public class ContactDetailActivity extends AppCompatActivity{
 						return;
 					}
 					SocketWithServer socket=new SocketWithServer();
-					socket.DataSend="{" +
+					
+//					socket.DataSend="{" +
+//							"'client':'SCC-1.0'," +
+//							"'action':'0007'," +
+//							"'ta_id':'"+ta_id+"'," +
+//							"'user_id':'"+user_id+"'," +
+//							"'token_key':'"+token_key+"'" +
+//							"}";
+					
+					String DataSend="{" +
 							"'client':'SCC-1.0'," +
 							"'action':'0007'," +
 							"'ta_id':'"+ta_id+"'," +
 							"'user_id':'"+user_id+"'," +
 							"'token_key':'"+token_key+"'" +
 							"}";
-					JSONObject data=socket.startSocket();
+					
+					
 					try{
+						JSONObject data=socket.startSocket(DataSend);
 						if(data==null){
 							Toast.makeText(ContactDetailActivity.this,"Network error.",Toast.LENGTH_SHORT).show();
 						}else if( data.getString("status").equals("true")){
@@ -86,7 +96,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 						}else{
 							Toast.makeText(ContactDetailActivity.this,"Something wrong.",Toast.LENGTH_SHORT).show();
 						}
-					}catch(JSONException e){
+					}catch(Exception e){
 						e.printStackTrace();
 					}
 				}
@@ -100,13 +110,22 @@ public class ContactDetailActivity extends AppCompatActivity{
 //			public void run(){
 				try{
 					SocketWithServer socket=new SocketWithServer();
-					socket.DataSend="{" +
+					
+//					socket.DataSend="{" +
+//							"'client':'SCC-1.0'," +
+//							"'action':'0008'," +
+//							"'ta_id':'"+ta_id+"'," +
+//							"'secret':'I love you.'" +
+//							"}";
+					
+					String DataSend="{" +
 							"'client':'SCC-1.0'," +
 							"'action':'0008'," +
 							"'ta_id':'"+ta_id+"'," +
 							"'secret':'I love you.'" +
 							"}";
-					JSONObject data=socket.startSocket();
+					
+					JSONObject data=socket.startSocket(DataSend);
 					if(data!=null && data.getString("status").equals("true")){
 						TextView tv_user_name=findViewById(R.id.detail_userName);
 						TextView tv_user_phone=findViewById(R.id.detail_userPhone);
@@ -121,7 +140,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 						Toast.makeText(getApplicationContext(),"Error!\nData Null!",Toast.LENGTH_LONG).show();
 //						Looper.loop();
 					}
-				}catch(JSONException|NullPointerException e){
+				}catch(Exception e){
 					e.printStackTrace();
 //					Looper.prepare();
 					Toast.makeText(getApplicationContext(),"Error!\nData Null! (Exception)",Toast.LENGTH_LONG).show();
@@ -137,14 +156,24 @@ public class ContactDetailActivity extends AppCompatActivity{
 				try{
 					sleep(500);
 					SocketWithServer socket=new SocketWithServer();
-					socket.DataSend="{" +
+					
+//					socket.DataSend="{" +
+//							"'client':'SCC-1.0'," +
+//							"'action':'0011'," +
+//							"'my_id':'"+user_id+"'," +
+//							"'ta_id':'"+ta_id+"'," +
+//							"'secret':'I love you.'" +
+//							"}";
+					
+					String DataSend="{" +
 							"'client':'SCC-1.0'," +
 							"'action':'0011'," +
 							"'my_id':'"+user_id+"'," +
 							"'ta_id':'"+ta_id+"'," +
 							"'secret':'I love you.'" +
 							"}";
-					JSONObject data=socket.startSocket();
+					
+					JSONObject data=socket.startSocket(DataSend);
 					if(data==null){
 						btn_mode=0;
 						Toast.makeText(ContactDetailActivity.this,"Network error.",Toast.LENGTH_SHORT).show();

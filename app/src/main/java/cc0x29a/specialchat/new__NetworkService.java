@@ -2,20 +2,22 @@ package cc0x29a.specialchat;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import androidx.annotation.NonNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 public class new__NetworkService extends Service{
-	public new__NetworkService(){
+	public new__NetworkService() throws IOException{
 	}
 	
 	@Override
@@ -24,76 +26,58 @@ public class new__NetworkService extends Service{
 		throw new UnsupportedOperationException("Not yet implemented");
 	}
 	
-	static Socket socket;
-	String DataSend=null;
-	private StringBuffer DataReturn=new StringBuffer();
-	private JSONObject DataJsonReturn=null;
-	int delay=5;
-	
 	@Override
 	public void onCreate(){
-		try{
-			socket=new Socket("specialchat.0x29a.cc", 21027);
-			//	Socket socket = new Socket("192.168.1.18", 21027);
-			socket.setSoTimeout(5000);
-		}catch(IOException e){
-			e.printStackTrace();
-		}
+	
 	}
 	
 	public void onDestroy(){
-		try{
-			socket.close();
-		}catch(IOException e){
-			e.printStackTrace();
-		}
+	
 	}
 	
-	public JSONObject startSocket(){
-		new Thread(){
-			@Override
-			public void run() {
-				try {
-					
-					// Output, send data to server.
-					OutputStream os = socket.getOutputStream();
-					os.write(DataSend.getBytes(StandardCharsets.UTF_8));
-					os.flush();
-					os.close();
-					socket.shutdownOutput();
-					
-					
-					// Input, receive data from server.
-					BufferedReader br=new BufferedReader(new InputStreamReader(socket.getInputStream()));
-					DataReturn.append(br.readLine());
-					String temp;
-					while((temp=br.readLine())!=null){
-						DataReturn.append("\n").append(temp);
+	private Socket socket;
+	
+	private BufferedReader br;
+	private OutputStream os;
+	
+	private class startConnect extends Thread{
+		@Override
+		public void run(){
+			while(true){
+				if(socket==null || !socket.isConnected() || socket.isClosed() ){
+					try{
+						socket=new Socket();
+						socket.connect(new InetSocketAddress("192.168.1.18",21027),1111);
+						br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
+						os=socket.getOutputStream();
+					}catch(IOException e){
+						e.printStackTrace();
 					}
-					br.close();
-					
-					System.out.println(DataReturn.toString());
-					
-					if(DataReturn!=null){
-						DataJsonReturn=new JSONObject(DataReturn.toString());
-					}
-				}catch(IOException|JSONException|NullPointerException e){
-					DataReturn=null;
+				}
+				try{
+					sleep(6000);
+				}catch(InterruptedException e){
 					e.printStackTrace();
 				}
 			}
-		}.start();
-		
-		int startTime=MyTools.getCurrentTime();
-		while(MyTools.getCurrentTime()<startTime+delay){
-			if(DataJsonReturn!=null){
-				return DataJsonReturn;
-			}
 		}
+	};
+	
+	public Handler.Callback sendMsgHandler;
+	public Handler.Callback revMsgHandler=new Handler.Callback(){
+		@Override
+		public boolean handleMessage(@NonNull Message msg){
+			return false;
+		}
+	};
+	
+	public String sendData(final String DataSend) throws Exception{
 		
-		return DataJsonReturn;
+		//todo
 		
+		return "";
 	}
+	
 	
 }
 /*

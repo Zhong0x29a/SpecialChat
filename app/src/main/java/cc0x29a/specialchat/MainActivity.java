@@ -44,6 +44,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity{
 		// UI views init
 		init();
 		
+		startService(new Intent(MainActivity.this,new__NetworkService.class) );
 		
 		//test codes
 		
@@ -111,6 +113,7 @@ public class MainActivity extends AppCompatActivity{
 //		System.out.println(a.length);
 //		finish();
 		//test codes end
+		
 		
 		
 	}
@@ -207,8 +210,12 @@ public class MainActivity extends AppCompatActivity{
 			public void run(){
 				try{
 					SocketWithServer socket=new SocketWithServer();
-					socket.DataSend="{'action':'CheckUpdate','version_number':'"+version_number+"'}";
-					JSONObject data=socket.startSocket();
+					
+//					socket.DataSend="{'action':'CheckUpdate','version_number':'"+version_number+"'}";
+					
+					String DataSend="{'action':'CheckUpdate','version_number':'"+version_number+"'}";
+					
+					JSONObject data=socket.startSocket(DataSend);
 					if(data!=null && data.getString("status").equals("true")
 							&& data.getString("is_update").equals("true")){
 						Uri uri = Uri.parse("https://github.com/Galaxy-cube/SpecialChat/releases"); //todo
@@ -691,7 +698,18 @@ public class MainActivity extends AppCompatActivity{
 						String new_user_phone=my_phone.getText().toString();
 						
 						SocketWithServer socket=new SocketWithServer();
-						socket.DataSend="{"+
+						
+//						socket.DataSend="{"+
+//								"\"client\":\"SCC-1.0\","+
+//								"\"action\":\"0013\","+
+//								"\"secret\":\"I love you.\","+
+//								"\"user_id\":\""+user_id+"\","+
+//								"\"token_key\":\""+token_key+"\","+
+//								"\"new_user_name\":\""+new_user_name+"\"," +
+//								"\"new_user_phone\":\""+new_user_phone+"\""+
+//								"}";
+						
+						String DataSend="{"+
 								"\"client\":\"SCC-1.0\","+
 								"\"action\":\"0013\","+
 								"\"secret\":\"I love you.\","+
@@ -701,7 +719,7 @@ public class MainActivity extends AppCompatActivity{
 								"\"new_user_phone\":\""+new_user_phone+"\""+
 								"}";
 						
-						JSONObject data=socket.startSocket();
+						JSONObject data=socket.startSocket(DataSend);
 						
 						if(null==data){
 							Toast.makeText(MainActivity.this,"Seemed network error! ",Toast.LENGTH_SHORT).show();
@@ -787,7 +805,7 @@ public class MainActivity extends AppCompatActivity{
 	 * Server return:
 	 *      {"status":"true"|"false"}
 	 * **/
-	private int checkLogin() throws JSONException{
+	private int checkLogin() throws JSONException, InterruptedException, IOException{
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 
 		if(token_key==null || user_id==null){
@@ -801,9 +819,12 @@ public class MainActivity extends AppCompatActivity{
 				"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
 				"}";
 		SocketWithServer SWS=new SocketWithServer();
-		SWS.delay=6;
-		SWS.DataSend=jsonMsg;
-		JSONObject data=SWS.startSocket();
+		
+//		SWS.delay=6;
+
+//		SWS.DataSend=jsonMsg;
+		
+		JSONObject data=SWS.startSocket(jsonMsg);
 		
 		if(data==null){
 			return 1;

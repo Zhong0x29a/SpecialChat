@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -232,8 +231,10 @@ public class ChatActivity extends AppCompatActivity{
 								"}";
 						
 						SocketWithServer socket=new SocketWithServer();
-						socket.DataSend=dataToSend;
-						JSONObject data=socket.startSocket();
+						
+//						socket.DataSend=dataToSend;
+						
+						JSONObject data=socket.startSocket(dataToSend);
 						if( data==null ){
 							Toast.makeText(ChatActivity.this,"Perhaps Network is lazy? ",Toast.LENGTH_SHORT).show();
 						}else if( data.getString("status").equals("true") ){
@@ -255,7 +256,7 @@ public class ChatActivity extends AppCompatActivity{
 					}else{
 						Toast.makeText(ChatActivity.this,"Bad login info! ",Toast.LENGTH_SHORT).show();
 					}
-				}catch(JSONException|NullPointerException e){
+				}catch(Exception e){
 					e.printStackTrace();
 					Toast.makeText(ChatActivity.this,"Unknown error! (CA1004)",Toast.LENGTH_SHORT).show();
 				}

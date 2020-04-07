@@ -103,7 +103,16 @@ public class BackgroundTaskService extends Service{
 		if(user_id==null || token_key==null){
 			return;
 		}
-		socket.DataSend="{" +
+		
+//		socket.DataSend="{" +
+//				"'client':'SCC-1.0'," +
+//				"'action':'0010'," +
+//				"'user_id':'"+user_id+"'," +
+//				"'token_key':'"+token_key+"'," +
+//				"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
+//				"}";
+		
+		String DataSend="{" +
 				"'client':'SCC-1.0'," +
 				"'action':'0010'," +
 				"'user_id':'"+user_id+"'," +
@@ -112,7 +121,7 @@ public class BackgroundTaskService extends Service{
 				"}";
 		
 		// Start socket.
-		JSONObject data=socket.startSocket();
+		JSONObject data=socket.startSocket(DataSend);
 		
 		ContactListSQLiteHelper helper=new ContactListSQLiteHelper(this,"contact_list.db",1);
 		ChatListSQLiteHelper helper2=new ChatListSQLiteHelper(this,"chat_list.db",1);

@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,7 +60,19 @@ public class SignUpActivity extends AppCompatActivity{
 					String invite_code=et_invite_code.getText().toString();
 					
 					SocketWithServer socket=new SocketWithServer();
-					socket.DataSend="{" +
+					
+//					socket.DataSend="{" +
+//							"\"client\":\"SCC-1.0\"," +
+//							"\"action\":\"0006\"," +
+//							"\"user_name\":\""+user_name+"\"," +
+//							"\"user_id\":\""+user_id+"\"," +
+//							"\"password\":\""+password+"\"," +
+//							"\"user_phone\":\""+user_phone+"\"," +
+//							"\"invite_code\":\""+invite_code+"\"," +
+//							"\"secret\":\"I love you.\"" +
+//							"}";
+					
+					String DataSend="{" +
 							"\"client\":\"SCC-1.0\"," +
 							"\"action\":\"0006\"," +
 							"\"user_name\":\""+user_name+"\"," +
@@ -70,9 +83,9 @@ public class SignUpActivity extends AppCompatActivity{
 							"\"secret\":\"I love you.\"" +
 							"}";
 					
-					JSONObject data=socket.startSocket();
-					
 					try{
+						JSONObject data=socket.startSocket(DataSend);
+						
 						if(data==null){
 							Toast.makeText(SignUpActivity.this,"Perhaps Network lost...",Toast.LENGTH_SHORT).show();
 						}else if(data.getString("status").equals("true")){
@@ -93,7 +106,7 @@ public class SignUpActivity extends AppCompatActivity{
 						}else{
 							Toast.makeText(SignUpActivity.this,"Unknown error(1006+85)",Toast.LENGTH_SHORT).show();
 						}
-					}catch(JSONException e){
+					}catch(JSONException|InterruptedException|IOException e){
 						e.printStackTrace();
 						Toast.makeText(SignUpActivity.this,"Ohhhh, bad luck! Here comes a bug...",Toast.LENGTH_SHORT).show();
 					}
@@ -195,8 +208,12 @@ public class SignUpActivity extends AppCompatActivity{
 				String user_id=sb.toString();
 				
 				SocketWithServer socket=new SocketWithServer();
-				socket.DataSend="{'action':'0005','user_id':'"+user_id+"'}";
-				JSONObject data=socket.startSocket();
+				
+//				socket.DataSend="{'action':'0005','user_id':'"+user_id+"'}";
+				
+				String DataSend="{'action':'0005','user_id':'"+user_id+"'}";
+				
+				JSONObject data=socket.startSocket(DataSend);
 				
 				if(data==null){
 					Toast.makeText(SignUpActivity.this,"Perhaps the server is lazy..\nRetry will start soon. ",Toast.LENGTH_LONG).show();
@@ -205,7 +222,7 @@ public class SignUpActivity extends AppCompatActivity{
 				}
 				Thread.sleep(8888);
 				return createNewId(t);
-			}catch(InterruptedException|JSONException e){
+			}catch(InterruptedException|JSONException|IOException e){
 				e.printStackTrace();
 				return null;
 			}
