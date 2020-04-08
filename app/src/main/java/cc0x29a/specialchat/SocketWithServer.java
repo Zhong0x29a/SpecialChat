@@ -5,7 +5,6 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -23,27 +22,36 @@ class SocketWithServer{
 //	private StringBuffer DataReturn=new StringBuffer();
 //	private JSONObject DataJsonReturn=null;
 //	int delay=5;
-//	Handler handler;
-	
-	public android.os.Handler.Callback sendMsgHandler;
 	
 	
-	JSONObject startSocket(String DataSend) throws JSONException{
+	JSONObject startSocket(String DataSend) throws Exception{
 		final String[] temp=new String[1];
 		
-		android.os.Handler.Callback revMsgHandler=new Handler.Callback(){
+		Handler.Callback revMsgHandler=new Handler.Callback(){
 			@Override
 			public boolean handleMessage(@NonNull Message msg){
-				temp[0]=msg.obj.toString();
+				if(msg.what==0x29a0){
+					temp[0]=msg.obj.toString();
+				}
 				return false;
 			}
 		};
 		
+//		new__NetworkService.sendData(DataSend,revMsgHandler);
 		
+		Message msg=new Message();
+		msg.what=0x29a1;
+		msg.obj=DataSend;
 		
+		new__NetworkService.swapData service=new new__NetworkService.swapData(revMsgHandler);
+		service.sendMsgHandler.handleMessage(msg);
 		
 		return new JSONObject(temp[0]);
-		
+
+	}
+}
+
+
 //		return new__NetworkService.sendData(DataSend);
 //		new Thread(){
 //			@Override
@@ -91,10 +99,5 @@ class SocketWithServer{
 //		}
 //
 //		return DataJsonReturn;
-
-	}
-}
-
-
 
 /* ------ Code End Here ------ */

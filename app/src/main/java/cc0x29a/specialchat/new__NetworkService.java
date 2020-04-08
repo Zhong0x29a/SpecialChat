@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 
 import androidx.annotation.NonNull;
@@ -37,8 +38,8 @@ public class new__NetworkService extends Service{
 	
 	private Socket socket;
 	
-	private BufferedReader br;
-	private OutputStream os;
+	public static BufferedReader br;
+	public static OutputStream os;
 	
 	private class startConnect extends Thread{
 		@Override
@@ -63,19 +64,96 @@ public class new__NetworkService extends Service{
 		}
 	};
 	
-	public Handler.Callback sendMsgHandler;
-	public Handler.Callback revMsgHandler=new Handler.Callback(){
-		@Override
-		public boolean handleMessage(@NonNull Message msg){
-			return false;
-		}
-	};
+//	public Handler.Callback sendMsgHandler=new Handler.Callback(){
+//		@Override
+//		public boolean handleMessage(@NonNull Message msg){
+//			if(msg.what == 0x123){
+//				System.out.println("asd");
+//			}
+//			return false;
+//		}
+//	};
+
+//	=new Handler.Callback(){
+//		@Override
+//		public boolean handleMessage(@NonNull Message msg){
+//			return false;
+//		}
+//	};
 	
-	public String sendData(final String DataSend) throws Exception{
+	
+	
+	public static class swapData extends Thread{
+		Handler.Callback revMsgHandler;
+		Handler.Callback sendMsgHandler;
 		
-		//todo
+		swapData(Handler.Callback revMsgHandler){
+			this.revMsgHandler=revMsgHandler;
+		}
 		
-		return "";
+		@Override
+		public void run(){
+			try{
+				new Thread(){
+					@Override
+					public void run(){
+						String str;
+						try{
+							while((str=br.readLine())!=null){
+								Message msg=new Message();
+								msg.what=0x29a0;
+								msg.obj=str;
+								revMsgHandler.handleMessage(msg);
+							}
+						}catch(Exception e){
+							e.printStackTrace();
+						}
+					}
+				}.start();
+				
+				Looper.prepare();
+				sendMsgHandler=new Handler.Callback(){
+					@Override
+					public boolean handleMessage(@NonNull Message msg){
+						if(msg.what==0x29a1){
+							try{
+								os.write((msg.obj.toString()+"\n").getBytes(StandardCharsets.UTF_8));
+							}catch(Exception e){
+								e.printStackTrace();
+							}
+						}
+						return false;
+					}
+				};
+				Looper.loop();
+				
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public static void sendData(final String DataSend,final Handler.Callback handler) throws Exception{
+		
+		os.write(DataSend.getBytes(StandardCharsets.UTF_8));
+		
+		new Thread(){
+			@Override
+			public void run(){
+				String str="";
+				try{
+					while((str=br.readLine())!=null){
+						Message msg=new Message();
+						msg.what=0x234;
+						msg.obj=str;
+						handler.handleMessage(msg);
+					}
+				}catch(IOException e){
+					e.printStackTrace();
+				}
+			}
+		}.start();
+		
 	}
 	
 	
