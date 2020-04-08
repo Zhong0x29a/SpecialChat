@@ -11,10 +11,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -86,11 +84,9 @@ public class SearchNewContact extends AppCompatActivity{
 						}else{
 							Toast.makeText(SearchNewContact.this,"Perhaps Network made a mistake? ",Toast.LENGTH_SHORT).show();
 						}
-					}catch(JSONException|InterruptedException|IOException e){
+					}catch(Exception e){
 						e.printStackTrace();
 					}
-					
-					
 					
 				}else{
 					Toast.makeText(SearchNewContact.this,"login info error!",Toast.LENGTH_LONG).show();

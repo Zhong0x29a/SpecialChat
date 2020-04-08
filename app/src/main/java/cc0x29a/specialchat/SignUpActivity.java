@@ -109,6 +109,8 @@ public class SignUpActivity extends AppCompatActivity{
 					}catch(JSONException|InterruptedException|IOException e){
 						e.printStackTrace();
 						Toast.makeText(SignUpActivity.this,"Ohhhh, bad luck! Here comes a bug...",Toast.LENGTH_SHORT).show();
+					}catch(Exception e){
+						e.printStackTrace();
 					}
 				}
 				
@@ -222,7 +224,7 @@ public class SignUpActivity extends AppCompatActivity{
 				}
 				Thread.sleep(8888);
 				return createNewId(t);
-			}catch(InterruptedException|JSONException|IOException e){
+			}catch(Exception e){
 				e.printStackTrace();
 				return null;
 			}

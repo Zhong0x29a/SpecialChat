@@ -21,13 +21,13 @@ class SocketWithServer{
 //	String DataSend=null;
 //	private StringBuffer DataReturn=new StringBuffer();
 //	private JSONObject DataJsonReturn=null;
-//	int delay=5;
+	int delay=5;
 	
 	
-	JSONObject startSocket(String DataSend) throws Exception{
-		final String[] temp=new String[1];
+	JSONObject startSocket(final String DataSend) throws Exception{
+		final String[] temp=new String[]{""};
 		
-		Handler.Callback revMsgHandler=new Handler.Callback(){
+		final Handler.Callback revMsgHandler=new Handler.Callback(){
 			@Override
 			public boolean handleMessage(@NonNull Message msg){
 				if(msg.what==0x29a0){
@@ -37,17 +37,31 @@ class SocketWithServer{
 			}
 		};
 		
+		// todo: bug is on client, try set a token to each "query"
+		
 //		new__NetworkService.sendData(DataSend,revMsgHandler);
+		new Thread(){
+			@Override
+			public void run(){
+				Message msg=new Message();
+				msg.what=0x29a1;
+				msg.obj=DataSend.replaceAll("\n","<br>");
+				
+				new__NetworkService.swapData swapData=new new__NetworkService.swapData(revMsgHandler);
+				
+				swapData.start();
+				
+				swapData.sendMsgHandler.handleMessage(msg);
+			}
+		}.start();
 		
-		Message msg=new Message();
-		msg.what=0x29a1;
-		msg.obj=DataSend;
-		
-		new__NetworkService.swapData service=new new__NetworkService.swapData(revMsgHandler);
-		service.sendMsgHandler.handleMessage(msg);
-		
-		return new JSONObject(temp[0]);
-
+		int startTime=MyTools.getCurrentTime();
+		while(MyTools.getCurrentTime()<startTime+delay){
+			if(temp[0]!=null && temp[0].length()>0){
+				return new JSONObject(temp[0]);
+			}
+		}
+		return new JSONObject("{'msg':'error'}");
 	}
 }
 

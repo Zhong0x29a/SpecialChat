@@ -41,10 +41,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -805,7 +803,7 @@ public class MainActivity extends AppCompatActivity{
 	 * Server return:
 	 *      {"status":"true"|"false"}
 	 * **/
-	private int checkLogin() throws JSONException, InterruptedException, IOException{
+	private int checkLogin() throws Exception{
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 
 		if(token_key==null || user_id==null){

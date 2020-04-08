@@ -12,8 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-
 /**
  * server:          scs.0x29a.cc:21027
  *
@@ -102,7 +100,7 @@ public class LoginActivity extends AppCompatActivity{
 				JSONObject data=null;
 				try{
 					data=SWS.startSocket(dataToSend);
-				}catch(InterruptedException|IOException e){
+				}catch(Exception e){
 					e.printStackTrace();
 				}
 				

@@ -4,7 +4,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.Message;
 
 import androidx.annotation.NonNull;
@@ -29,37 +28,42 @@ public class new__NetworkService extends Service{
 	
 	@Override
 	public void onCreate(){
-	
+		new startConnect().start();
 	}
 	
 	public void onDestroy(){
 	
 	}
 	
-	private Socket socket;
+	private static Socket socket;
 	
 	public static BufferedReader br;
 	public static OutputStream os;
 	
-	private class startConnect extends Thread{
+	private static class startConnect extends Thread{
 		@Override
 		public void run(){
-			while(true){
-				if(socket==null || !socket.isConnected() || socket.isClosed() ){
+			try{
+				while(true){
+					if(socket==null||!socket.isConnected()||socket.isClosed()){
+						try{
+							socket=new Socket();
+							socket.connect(new InetSocketAddress("192.168.1.18",21027),1111);
+							br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
+							os=socket.getOutputStream();
+						}catch(IOException e){
+							e.printStackTrace();
+						}
+					}
 					try{
-						socket=new Socket();
-						socket.connect(new InetSocketAddress("192.168.1.18",21027),1111);
-						br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
-						os=socket.getOutputStream();
-					}catch(IOException e){
+						sleep(6000);
+					}catch(InterruptedException e){
 						e.printStackTrace();
 					}
 				}
-				try{
-					sleep(6000);
-				}catch(InterruptedException e){
-					e.printStackTrace();
-				}
+			}catch(Exception e){
+				e.printStackTrace();
+				new startConnect().start();
 			}
 		}
 	};
@@ -85,7 +89,29 @@ public class new__NetworkService extends Service{
 	
 	public static class swapData extends Thread{
 		Handler.Callback revMsgHandler;
-		Handler.Callback sendMsgHandler;
+		Handler.Callback sendMsgHandler=new Handler.Callback(){
+			@Override
+			public boolean handleMessage(@NonNull Message msg){
+				if(msg.what==0x29a1){
+					try{
+						int sTime=MyTools.getCurrentTime();
+						while(socket==null || socket.isClosed() || !socket.isConnected()){
+							if(MyTools.getCurrentTime() < (sTime+3) ){
+								sleep(500);
+							}else{
+								return false;
+							}
+						}
+						
+						os.write((msg.obj.toString()+"\n").getBytes(StandardCharsets.UTF_8));
+						
+					}catch(Exception e){
+						e.printStackTrace();
+					}
+				}
+				return false;
+			}
+		};
 		
 		swapData(Handler.Callback revMsgHandler){
 			this.revMsgHandler=revMsgHandler;
@@ -97,9 +123,10 @@ public class new__NetworkService extends Service{
 				new Thread(){
 					@Override
 					public void run(){
-						String str;
+						String str="";
 						try{
-							while((str=br.readLine())!=null){
+							while((str)!=null){
+								str=br.readLine();
 								Message msg=new Message();
 								msg.what=0x29a0;
 								msg.obj=str;
@@ -111,21 +138,27 @@ public class new__NetworkService extends Service{
 					}
 				}.start();
 				
-				Looper.prepare();
-				sendMsgHandler=new Handler.Callback(){
-					@Override
-					public boolean handleMessage(@NonNull Message msg){
-						if(msg.what==0x29a1){
-							try{
-								os.write((msg.obj.toString()+"\n").getBytes(StandardCharsets.UTF_8));
-							}catch(Exception e){
-								e.printStackTrace();
-							}
-						}
-						return false;
-					}
-				};
-				Looper.loop();
+//				Looper.prepare();
+//				sendMsgHandler=new Handler.Callback(){
+//					@Override
+//					public boolean handleMessage(@NonNull Message msg){
+//						if(msg.what==0x29a1){
+//							try{
+//								int sTime=MyTools.getCurrentTime();
+//								while(socket==null || socket.isClosed() || !socket.isConnected()){
+//									sleep(500);
+//								}
+//								if(MyTools.getCurrentTime() < (sTime+3) ){
+//									os.write((msg.obj.toString()+"\n").getBytes(StandardCharsets.UTF_8));
+//								}
+//							}catch(Exception e){
+//								e.printStackTrace();
+//							}
+//						}
+//						return false;
+//					}
+//				};
+//				Looper.loop();
 				
 			}catch(Exception e){
 				e.printStackTrace();
