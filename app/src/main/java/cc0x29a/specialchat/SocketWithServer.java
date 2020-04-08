@@ -1,9 +1,8 @@
 package cc0x29a.specialchat;
 
+import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.os.Message;
-
-import androidx.annotation.NonNull;
 
 import org.json.JSONObject;
 
@@ -23,23 +22,29 @@ class SocketWithServer{
 //	private JSONObject DataJsonReturn=null;
 	int delay=5;
 	
+	private String local_temp;
+	
+	Handler revMsgHandler;
+	
+	@SuppressLint("HandlerLeak")
+	public void onCreate(){
+//		revMsgHandler=new Handler(){
+//			@Override
+//			public void handleMessage(@NonNull Message msg){
+//				if(msg.what==0x29a0){
+//					temp=msg.obj.toString();
+//					System.out.println("SWS 34:\ntemp[0]"+temp+"\nmsg.obj"+msg.obj);
+//				}else{
+//					System.out.println("What???");
+//				}
+//			}
+//		};
+	}
+	
+	new__NetworkService.swapData swapData;
 	
 	JSONObject startSocket(final String DataSend) throws Exception{
-		final String[] temp=new String[]{""};
 		
-		final Handler.Callback revMsgHandler=new Handler.Callback(){
-			@Override
-			public boolean handleMessage(@NonNull Message msg){
-				if(msg.what==0x29a0){
-					temp[0]=msg.obj.toString();
-				}
-				return false;
-			}
-		};
-		
-		// todo: bug is on client, try set a token to each "query"
-		
-//		new__NetworkService.sendData(DataSend,revMsgHandler);
 		new Thread(){
 			@Override
 			public void run(){
@@ -47,20 +52,33 @@ class SocketWithServer{
 				msg.what=0x29a1;
 				msg.obj=DataSend.replaceAll("\n","<br>");
 				
-				new__NetworkService.swapData swapData=new new__NetworkService.swapData(revMsgHandler);
+				swapData=new new__NetworkService.swapData(revMsgHandler);
 				
 				swapData.start();
 				
-				swapData.sendMsgHandler.handleMessage(msg);
+				int startTime=MyTools.getCurrentTime();
+				while(MyTools.getCurrentTime()<startTime+1){
+				
+				}
+				
+				swapData.sendMsgHandler.sendMessage(msg);
+				
+				System.out.println("SWS57, new thread started\n"+msg.obj);
 			}
 		}.start();
 		
 		int startTime=MyTools.getCurrentTime();
-		while(MyTools.getCurrentTime()<startTime+delay){
-			if(temp[0]!=null && temp[0].length()>0){
-				return new JSONObject(temp[0]);
+		while(MyTools.getCurrentTime()<startTime+10){
+//			if(temp!=null && temp.length()>0){
+//				System.out.println("SWS 65\n"+temp);
+//				return new JSONObject(temp);
+//			}
+			if((local_temp=swapData.temp).length()>0){
+				return new JSONObject(local_temp);
 			}
 		}
+		
+		System.out.println("SWS69, error!!!!!!!!!");
 		return new JSONObject("{'msg':'error'}");
 	}
 }

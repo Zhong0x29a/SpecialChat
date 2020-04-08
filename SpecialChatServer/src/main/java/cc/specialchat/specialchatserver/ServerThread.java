@@ -21,6 +21,7 @@ public class ServerThread extends Thread {
 	
 	ServerThread(Socket socket) throws IOException{
 		this.socket = socket;
+		socket.setSoTimeout(30000);
 		br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
 		os=socket.getOutputStream();
 	}
@@ -33,16 +34,23 @@ public class ServerThread extends Thread {
 			while(socket!=null && !socket.isClosed() && socket.isConnected()){
 				String temp="";
 				while((temp=br.readLine())!=null){
-					os.write(ProcessData(temp).getBytes(StandardCharsets.UTF_8));
-//					os.write("{'d':'a'}".getBytes(StandardCharsets.UTF_8));
+					os.write((ProcessData(temp)+"\n").getBytes(StandardCharsets.UTF_8));
 				}
 			}
 		}catch(Exception e){
+			try{
+				socket.close();
+				System.out.println("Connection closed. ");
+			}catch(IOException ex){
+				ex.printStackTrace();
+			}
 			e.printStackTrace();
 		}
 	}
 	
 	private String ProcessData(String dataString) throws Exception{
+		System.out.println(dataString);
+		
 		JSONObject dataJsonReturn=JSONObject.parseObject(dataString);
 		String msgSend="";
 		
