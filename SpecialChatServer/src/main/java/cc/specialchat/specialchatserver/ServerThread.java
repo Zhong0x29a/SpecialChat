@@ -26,13 +26,11 @@ public class ServerThread extends Thread {
 		os=socket.getOutputStream();
 	}
 	
-	
-	
 	@Override
 	public void run() {
 		try{
 			while(socket!=null && !socket.isClosed() && socket.isConnected()){
-				String temp="";
+				String temp;
 				while((temp=br.readLine())!=null){
 					os.write((ProcessData(temp)+"\n").getBytes(StandardCharsets.UTF_8));
 				}

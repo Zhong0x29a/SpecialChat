@@ -1,11 +1,14 @@
 package cc0x29a.specialchat;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -17,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -207,11 +211,11 @@ public class ChatActivity extends AppCompatActivity{
 			public void onClick(View v){
 				try{
 					SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
-					String my_id=preferences.getString("user_id",null);
+					final String my_id=preferences.getString("user_id",null);
 					String token_key=preferences.getString("token_key",null);
 					
-					EditText editText=findViewById(R.id.chat_EditText);
-					String msg_content=MyTools.filterSpecialChar(editText.getText().toString());
+					final EditText editText=findViewById(R.id.chat_EditText);
+					final String msg_content=MyTools.filterSpecialChar(editText.getText().toString());
 					
 					// if content is empty
 					if(msg_content.equals("") || msg_content.equals("&#32;")){
@@ -220,7 +224,7 @@ public class ChatActivity extends AppCompatActivity{
 					}
 					
 					if(my_id!=null && token_key!=null){
-						String dataToSend="{" +
+						final String dataToSend="{" +
 								"'client':'SCC-1.0'," +
 								"'action':'0004'," +
 								"'user_id':'"+my_id+"'," +
@@ -230,29 +234,39 @@ public class ChatActivity extends AppCompatActivity{
 								"'timestamp':'"+MyTools.getCurrentTime()+"'" +
 								"}";
 						
-						SocketWithServer socket=new SocketWithServer();
+						final SocketWithServer socket=new SocketWithServer();
 						
-//						socket.DataSend=dataToSend;
 						
-						JSONObject data=socket.startSocket(dataToSend);
-						if( data==null ){
-							Toast.makeText(ChatActivity.this,"Perhaps Network is lazy? ",Toast.LENGTH_SHORT).show();
-						}else if( data.getString("status").equals("true") ){
-							// store into msg SQLite
-							MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,"msg_"+ta_id+".db",1);
-							msgSQLiteHelper.insertNewMsg(msgSQLiteHelper.getReadableDatabase(),my_id,data.getString("send_time"),msg_content);
-							// update recycler view
-							adapter.addNewData(new String[]{"",my_id,"","",MyTools.resolveSpecialChar(msg_content)});
-							// update chat list , last msg & last chat time
-							ChatListSQLiteHelper chatListHelper=new ChatListSQLiteHelper(ChatActivity.this,"chat_list.db",1);
-							chatListHelper.updateChatList(chatListHelper.getReadableDatabase(),ta_id,MyTools.getCurrentTime()+"",msg_content);
-							// clear EditText
-							editText.getText().clear();
-						}else if( data.getString("status").equals("false") ){
-							Toast.makeText(ChatActivity.this,"Something wrong!",Toast.LENGTH_SHORT).show();
-						}else{
-							Toast.makeText(ChatActivity.this,"Unknown error! (CA111)",Toast.LENGTH_SHORT).show();
-						}
+						
+						@SuppressLint("HandlerLeak") final Handler handler=new Handler(){
+							@Override
+							public void handleMessage(Message msg){
+								try{
+									JSONObject data=new JSONObject(msg.obj.toString());
+									if(data.getString("status").equals("true")){
+										// store into msg SQLite
+										MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,"msg_"+ta_id+".db",1);
+										msgSQLiteHelper.insertNewMsg(msgSQLiteHelper.getReadableDatabase(),my_id,data.getString("send_time"),msg_content);
+										// update recycler view
+										adapter.addNewData(new String[]{"",my_id,"","",MyTools.resolveSpecialChar(msg_content)});
+										// update chat list , last msg & last chat time
+										ChatListSQLiteHelper chatListHelper=new ChatListSQLiteHelper(ChatActivity.this,"chat_list.db",1);
+										chatListHelper.updateChatList(chatListHelper.getReadableDatabase(),ta_id,MyTools.getCurrentTime()+"",msg_content);
+										// clear EditText
+										editText.getText().clear();
+									}else if(data.getString("status").equals("false")){
+										Toast.makeText(ChatActivity.this,"Something wrong!",Toast.LENGTH_SHORT).show();
+									}else{
+										Toast.makeText(ChatActivity.this,"Unknown error! (CA111)",Toast.LENGTH_SHORT).show();
+									}
+								}catch(JSONException e){
+								
+								}
+							}
+						};
+						
+						socket.startSocket(dataToSend,handler);
+						
 					}else{
 						Toast.makeText(ChatActivity.this,"Bad login info! ",Toast.LENGTH_SHORT).show();
 					}

@@ -1,8 +1,11 @@
 package cc0x29a.specialchat;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -10,6 +13,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -61,14 +66,6 @@ public class ContactDetailActivity extends AppCompatActivity{
 					}
 					SocketWithServer socket=new SocketWithServer();
 					
-//					socket.DataSend="{" +
-//							"'client':'SCC-1.0'," +
-//							"'action':'0007'," +
-//							"'ta_id':'"+ta_id+"'," +
-//							"'user_id':'"+user_id+"'," +
-//							"'token_key':'"+token_key+"'" +
-//							"}";
-					
 					String DataSend="{" +
 							"'client':'SCC-1.0'," +
 							"'action':'0007'," +
@@ -77,28 +74,39 @@ public class ContactDetailActivity extends AppCompatActivity{
 							"'token_key':'"+token_key+"'" +
 							"}";
 					
+					@SuppressLint("HandlerLeak")
+					Handler handler=new Handler(){
+						@Override
+						public void handleMessage(Message msg){
+							try{
+								JSONObject data=new JSONObject(msg.obj.toString());
+								if( data.getString("status").equals("true")){
+									// insert data into contact list.
+									ContactListSQLiteHelper helper=new ContactListSQLiteHelper(ContactDetailActivity.this,"contact_list.db",1);
+									helper.insertNewContact(helper.getReadableDatabase(),ta_id,ta_name,ta_name,ta_phone);
+									
+									// insert data into chat list.
+									ChatListSQLiteHelper helper2=new ChatListSQLiteHelper(ContactDetailActivity.this,"chat_list.db",1);
+									helper2.insertNewChatListItem(helper2.getReadableDatabase(),ta_id,ta_name,MyTools.getCurrentTime()+"");
+									
+									Toast.makeText(ContactDetailActivity.this,"Succeed!\n"+ta_name+"\n"+ta_phone,Toast.LENGTH_SHORT).show();
+									finish();
+								}else{
+									Toast.makeText(ContactDetailActivity.this,"Something wrong.",Toast.LENGTH_SHORT).show();
+								}
+							}catch(Exception e){
+								e.printStackTrace();
+							}
+						}
+					};
 					
 					try{
-						JSONObject data=socket.startSocket(DataSend);
-						if(data==null){
-							Toast.makeText(ContactDetailActivity.this,"Network error.",Toast.LENGTH_SHORT).show();
-						}else if( data.getString("status").equals("true")){
-							// insert data into contact list.
-							ContactListSQLiteHelper helper=new ContactListSQLiteHelper(ContactDetailActivity.this,"contact_list.db",1);
-							helper.insertNewContact(helper.getReadableDatabase(),ta_id,ta_name,ta_name,ta_phone);
-							
-							// insert data into chat list.
-							ChatListSQLiteHelper helper2=new ChatListSQLiteHelper(ContactDetailActivity.this,"chat_list.db",1);
-							helper2.insertNewChatListItem(helper2.getReadableDatabase(),ta_id,ta_name,MyTools.getCurrentTime()+"");
-							
-							Toast.makeText(ContactDetailActivity.this,"Succeed!\n"+ta_name+"\n"+ta_phone,Toast.LENGTH_SHORT).show();
-							finish();
-						}else{
-							Toast.makeText(ContactDetailActivity.this,"Something wrong.",Toast.LENGTH_SHORT).show();
-						}
+						socket.startSocket(DataSend,handler);
 					}catch(Exception e){
 						e.printStackTrace();
 					}
+					
+					
 				}
 			}
 		});
@@ -111,13 +119,6 @@ public class ContactDetailActivity extends AppCompatActivity{
 				try{
 					SocketWithServer socket=new SocketWithServer();
 					
-//					socket.DataSend="{" +
-//							"'client':'SCC-1.0'," +
-//							"'action':'0008'," +
-//							"'ta_id':'"+ta_id+"'," +
-//							"'secret':'I love you.'" +
-//							"}";
-					
 					String DataSend="{" +
 							"'client':'SCC-1.0'," +
 							"'action':'0008'," +
@@ -125,26 +126,35 @@ public class ContactDetailActivity extends AppCompatActivity{
 							"'secret':'I love you.'" +
 							"}";
 					
-					JSONObject data=socket.startSocket(DataSend);
-					if(data!=null && data.getString("status").equals("true")){
-						TextView tv_user_name=findViewById(R.id.detail_userName);
-						TextView tv_user_phone=findViewById(R.id.detail_userPhone);
-						
-						ta_name=MyTools.resolveSpecialChar(data.getString("user_name"));
-						ta_phone=data.getString("user_phone");
-						
-						tv_user_name.setText(ta_name);
-						tv_user_phone.setText(ta_phone);
-					}else{
-//						Looper.prepare();
-						Toast.makeText(getApplicationContext(),"Error!\nData Null!",Toast.LENGTH_LONG).show();
-//						Looper.loop();
-					}
+					@SuppressLint("HandlerLeak")
+					Handler handler=new Handler(){
+						@Override
+						public void handleMessage(Message msg){
+							try{
+								JSONObject data=new JSONObject(msg.obj.toString());
+								if(data.getString("status").equals("true")){
+									TextView tv_user_name=findViewById(R.id.detail_userName);
+									TextView tv_user_phone=findViewById(R.id.detail_userPhone);
+									
+									ta_name=MyTools.resolveSpecialChar(data.getString("user_name"));
+									ta_phone=data.getString("user_phone");
+									
+									tv_user_name.setText(ta_name);
+									tv_user_phone.setText(ta_phone);
+								}else{
+									Toast.makeText(getApplicationContext(),"Error!",Toast.LENGTH_LONG).show();
+								}
+							}catch(JSONException e){
+								e.printStackTrace();
+							}
+						}
+					};
+					
+					socket.startSocket(DataSend,handler);
+					
 				}catch(Exception e){
 					e.printStackTrace();
-//					Looper.prepare();
 					Toast.makeText(getApplicationContext(),"Error!\nData Null! (Exception)",Toast.LENGTH_LONG).show();
-//					Looper.loop();
 				}
 //			}
 //		}.start();
@@ -157,14 +167,6 @@ public class ContactDetailActivity extends AppCompatActivity{
 					sleep(500);
 					SocketWithServer socket=new SocketWithServer();
 					
-//					socket.DataSend="{" +
-//							"'client':'SCC-1.0'," +
-//							"'action':'0011'," +
-//							"'my_id':'"+user_id+"'," +
-//							"'ta_id':'"+ta_id+"'," +
-//							"'secret':'I love you.'" +
-//							"}";
-					
 					String DataSend="{" +
 							"'client':'SCC-1.0'," +
 							"'action':'0011'," +
@@ -173,24 +175,34 @@ public class ContactDetailActivity extends AppCompatActivity{
 							"'secret':'I love you.'" +
 							"}";
 					
-					JSONObject data=socket.startSocket(DataSend);
-					if(data==null){
-						btn_mode=0;
-						Toast.makeText(ContactDetailActivity.this,"Network error.",Toast.LENGTH_SHORT).show();
-					}else if( data.getString("status").equals("true") &&
-							data.getString("is_friend").equals("true")){
-						
-						ContactDetailActivity.this.runOnUiThread(new Runnable() {
-							public void run() {
-								Button btn=findViewById(R.id.btn_add_or_chat);
-								btn.setText("Chat");
+					@SuppressLint("HandlerLeak")
+					Handler handler=new Handler(){
+						@Override
+						public void handleMessage(@NotNull Message msg){
+							try{
+								JSONObject data=new JSONObject(msg.obj.toString());
+								if(data.getString("status").equals("true")&&data.getString("is_friend").equals("true")){
+									
+									ContactDetailActivity.this.runOnUiThread(new Runnable(){
+										public void run(){
+											Button btn=findViewById(R.id.btn_add_or_chat);
+											btn.setText("Chat");
+										}
+									});
+									
+									btn_mode=1;
+								}else{
+									btn_mode=2;
+								}
+							}catch(JSONException e){
+								e.printStackTrace();
 							}
-						});
-						
-						btn_mode=1;
-					}else{
-						btn_mode=2;
-					}
+						}
+					};
+					
+					socket.startSocket(DataSend,handler);
+					
+					
 				}catch(Exception e){
 					e.printStackTrace();
 				}

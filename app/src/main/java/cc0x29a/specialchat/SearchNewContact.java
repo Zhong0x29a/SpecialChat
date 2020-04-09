@@ -1,7 +1,10 @@
 package cc0x29a.specialchat;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -11,6 +14,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.regex.Matcher;
@@ -58,32 +62,44 @@ public class SearchNewContact extends AppCompatActivity{
 							"'search_id':'"+uid+"'" +
 							"}";
 					
+					@SuppressLint("HandlerLeak")
+					Handler handler=new Handler(){
+						@Override
+						public void handleMessage(Message msg){
+							try{
+								JSONObject data_temp=new JSONObject(msg.obj.toString());
+								if(data_temp.getString("status").equals("true")){
+									int number=Integer.parseInt(data_temp.getString("number"));
+									String[][] data=new String[number][2];
+									//to do: debug
+									JSONObject temp;
+									for(int i=0;i<number;i++){
+										temp=new JSONObject(data_temp.getString("index_"+(i+1)));
+										data[i][0]=temp.getString("user_id");
+										data[i][1]=MyTools.resolveSpecialChar(temp.getString("user_name"));
+									}
+									
+									RecyclerView recyclerView=findViewById(R.id.search_recyclerView);
+									LinearLayoutManager layoutManager=new LinearLayoutManager(SearchNewContact.this);
+									recyclerView.setLayoutManager(layoutManager);
+									
+									SearchContactAdapter adapter=new SearchContactAdapter(data);
+									adapter.count=number;
+									
+									recyclerView.setAdapter(adapter);
+									recyclerView.setItemAnimator(new DefaultItemAnimator());
+								}else{
+									Toast.makeText(SearchNewContact.this,"Perhaps Network made a mistake? ",Toast.LENGTH_SHORT).show();
+								}
+							}catch(JSONException e){
+								e.printStackTrace();
+							}
+						}
+					};
 					
 					try{
-						JSONObject data_temp=socket.startSocket(DataSend);
-						if(data_temp!=null && data_temp.getString("status").equals("true")){
-							int number=Integer.parseInt(data_temp.getString("number"));
-							String[][] data=new String[number][2];
-							//to do: debug
-							 JSONObject temp;
-							for(int i=0;i<number;i++){
-								temp=new JSONObject(data_temp.getString("index_"+(i+1)));
-								data[i][0]=temp.getString("user_id");
-								data[i][1]=MyTools.resolveSpecialChar(temp.getString("user_name"));
-							}
-							
-							RecyclerView recyclerView=findViewById(R.id.search_recyclerView);
-							LinearLayoutManager layoutManager=new LinearLayoutManager(SearchNewContact.this);
-							recyclerView.setLayoutManager(layoutManager);
-							
-							SearchContactAdapter adapter=new SearchContactAdapter(data);
-							adapter.count=number;
-							
-							recyclerView.setAdapter(adapter);
-							recyclerView.setItemAnimator(new DefaultItemAnimator());
-						}else{
-							Toast.makeText(SearchNewContact.this,"Perhaps Network made a mistake? ",Toast.LENGTH_SHORT).show();
-						}
+						socket.startSocket(DataSend,handler);
+						
 					}catch(Exception e){
 						e.printStackTrace();
 					}

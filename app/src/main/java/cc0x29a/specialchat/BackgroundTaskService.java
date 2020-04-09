@@ -1,10 +1,14 @@
 package cc0x29a.specialchat;
 
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -104,14 +108,6 @@ public class BackgroundTaskService extends Service{
 			return;
 		}
 		
-//		socket.DataSend="{" +
-//				"'client':'SCC-1.0'," +
-//				"'action':'0010'," +
-//				"'user_id':'"+user_id+"'," +
-//				"'token_key':'"+token_key+"'," +
-//				"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
-//				"}";
-		
 		String DataSend="{" +
 				"'client':'SCC-1.0'," +
 				"'action':'0010'," +
@@ -120,33 +116,72 @@ public class BackgroundTaskService extends Service{
 				"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
 				"}";
 		
-		// Start socket.
-		JSONObject data=socket.startSocket(DataSend);
-		
-		ContactListSQLiteHelper helper=new ContactListSQLiteHelper(this,"contact_list.db",1);
-		ChatListSQLiteHelper helper2=new ChatListSQLiteHelper(this,"chat_list.db",1);
-		
-		// parse data;
-		if(data!=null && data.getString("status").equals("true")){
-			for(int i=1;i<=Integer.parseInt(data.getString("number"));i++){
-				// Save/update SQLite data
-				JSONObject temp=new JSONObject(data.getString("index_"+i));
-				helper.updateContactList(helper.getReadableDatabase(),temp.getString("user_id"),temp.getString("nickname"));
-				helper2.fixNickname(helper2.getReadableDatabase(),temp.getString("user_id"),temp.getString("nickname"));
+		@SuppressLint("HandlerLeak")
+		Handler handler=new Handler(){
+			@Override
+			public void handleMessage(Message msg){
+				try{
+					JSONObject data=new JSONObject(msg.obj.toString());
+					
+					ContactListSQLiteHelper helper=new ContactListSQLiteHelper(BackgroundTaskService.this,"contact_list.db",1);
+					ChatListSQLiteHelper helper2=new ChatListSQLiteHelper(BackgroundTaskService.this,"chat_list.db",1);
+					
+					// parse data;
+					if(data.getString("status").equals("true")){
+						for(int i=1;i<=Integer.parseInt(data.getString("number"));i++){
+							// Save/update SQLite data
+							JSONObject temp=new JSONObject(data.getString("index_"+i));
+							helper.updateContactList(helper.getReadableDatabase(),temp.getString("user_id"),temp.getString("nickname"));
+							helper2.fixNickname(helper2.getReadableDatabase(),temp.getString("user_id"),temp.getString("nickname"));
+						}
+						
+						// Send broadcast to MainActivity.
+						Intent intent = new Intent();
+						intent.putExtra("todo_action", "reLoadContactList");
+						intent.setAction("backgroundTask.action");
+						sendBroadcast(intent);
+						
+						Intent intent2 = new Intent();
+						intent2.putExtra("todo_action", "reLoadChatList");
+						intent2.setAction("backgroundTask.action");
+						sendBroadcast(intent2);
+					}
+					
+				}catch(JSONException e){
+					e.printStackTrace();
+				}
+				
 			}
-			
-			// Send broadcast to MainActivity.
-			Intent intent = new Intent();
-			intent.putExtra("todo_action", "reLoadContactList");
-			intent.setAction("backgroundTask.action");
-			sendBroadcast(intent);
-			
-			Intent intent2 = new Intent();
-			intent2.putExtra("todo_action", "reLoadChatList");
-			intent2.setAction("backgroundTask.action");
-			sendBroadcast(intent2);
-			
-		}
+		};
+		
+		// Start socket.
+//		JSONObject data=socket.startSocket(DataSend);
+		socket.startSocket(DataSend,handler);
+		
+//		ContactListSQLiteHelper helper=new ContactListSQLiteHelper(this,"contact_list.db",1);
+//		ChatListSQLiteHelper helper2=new ChatListSQLiteHelper(this,"chat_list.db",1);
+//
+//		// parse data;
+//		if(data!=null && data.getString("status").equals("true")){
+//			for(int i=1;i<=Integer.parseInt(data.getString("number"));i++){
+//				// Save/update SQLite data
+//				JSONObject temp=new JSONObject(data.getString("index_"+i));
+//				helper.updateContactList(helper.getReadableDatabase(),temp.getString("user_id"),temp.getString("nickname"));
+//				helper2.fixNickname(helper2.getReadableDatabase(),temp.getString("user_id"),temp.getString("nickname"));
+//			}
+//
+//			// Send broadcast to MainActivity.
+//			Intent intent = new Intent();
+//			intent.putExtra("todo_action", "reLoadContactList");
+//			intent.setAction("backgroundTask.action");
+//			sendBroadcast(intent);
+//
+//			Intent intent2 = new Intent();
+//			intent2.putExtra("todo_action", "reLoadChatList");
+//			intent2.setAction("backgroundTask.action");
+//			sendBroadcast(intent2);
+//
+//		}
 		
 	}
 	

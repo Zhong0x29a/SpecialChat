@@ -48,7 +48,7 @@ public class new__NetworkService extends Service{
 		public void run(){
 			try{
 				while(true){
-					if(socket==null||!socket.isConnected()||socket.isClosed()){
+					if(socket==null || !socket.isConnected() || socket.isClosed() || socket.isInputShutdown()){
 						try{
 							System.out.println("Retry for new connection.");
 							socket=new Socket();
@@ -58,19 +58,26 @@ public class new__NetworkService extends Service{
 							br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
 							
 							os=socket.getOutputStream();
+							
+							new swapData(null).start();
 						}catch(IOException e){
-//							e.printStackTrace();
+							e.printStackTrace();
 						}
 					}
 					System.out.println("Connection status:\nisClosed:"+socket.isClosed()+"\nisConnected:"+socket.isConnected());
 					try{
 						sleep(6000);
 					}catch(InterruptedException e){
-//						e.printStackTrace();
+						e.printStackTrace();
 					}
 				}
 			}catch(Exception e){
-//				e.printStackTrace();
+				e.printStackTrace();
+				try{
+					socket.close();
+				}catch(IOException ex){
+					ex.printStackTrace();
+				}
 				new startConnect().start();
 			}
 		}
@@ -81,11 +88,41 @@ public class new__NetworkService extends Service{
 		Handler revMsgHandler;
 		Handler sendMsgHandler;
 		
-		String temp="{\"A\":'A'}";
-		
 		swapData(Handler revMsgHandler){
-			System.out.println("NN 121");
 			this.revMsgHandler=revMsgHandler;
+		}
+		
+		@SuppressLint("HandlerLeak")
+		protected void onCreate(){
+//			Looper.prepare();
+//			sendMsgHandler=new Handler(){
+//				@Override
+//				public void handleMessage(@NonNull Message msg){
+//					if(msg.what==0x29a1){
+//						try{
+//							int sTime=MyTools.getCurrentTime();
+//							while(socket==null || socket.isClosed() || !socket.isConnected() ){
+//								if(MyTools.getCurrentTime() < (sTime+3) ){
+//									sleep(500);
+//								}else{
+//									return;
+//								}
+//							}
+//							os.write((msg.obj.toString()+"\n").getBytes(StandardCharsets.UTF_8));
+//						}catch(Exception e){
+//							try{
+//								socket.close();
+//								System.out.println(socket.isOutputShutdown());
+//							}catch(IOException ex){
+//								ex.printStackTrace();
+//							}
+//
+//							e.printStackTrace();
+//						}
+//					}
+//				}
+//			};
+//			Looper.loop();
 		}
 		
 		@SuppressLint("HandlerLeak")
@@ -102,17 +139,18 @@ public class new__NetworkService extends Service{
 								System.out.println("NN 136 , reading data\n");
 								System.out.println(str);
 								
-								temp=str;
 								Message msg=Message.obtain();
 								msg.what=0x29a0;
 								msg.obj=str;
 
 								revMsgHandler.sendMessage(msg);
+//								socket.sendUrgentData(0xFF);
+								// todo check connection, if 30s read nothing , close the socket.
 							}
 						}catch(SocketTimeoutException e){
 							e.printStackTrace();
 							try{
-								socket.close();
+								socket.close();socket=null;
 							}catch(Exception ex){
 								ex.printStackTrace();
 							}
@@ -137,19 +175,13 @@ public class new__NetworkService extends Service{
 										return;
 									}
 								}
-								
-								System.out.println("sending new data\n"+msg.obj);
-								
 								os.write((msg.obj.toString()+"\n").getBytes(StandardCharsets.UTF_8));
-								
 							}catch(Exception e){
 								try{
 									socket.close();
-									System.out.println(socket.isOutputShutdown());
 								}catch(IOException ex){
 									ex.printStackTrace();
 								}
-								
 								e.printStackTrace();
 							}
 						}

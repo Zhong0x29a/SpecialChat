@@ -7,8 +7,6 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
-import org.json.JSONObject;
-
 /**
  * Start a Socket With Server
  * Data in DataSend should be filter special chars to avoid problems !!
@@ -25,7 +23,7 @@ class SocketWithServer{
 //	private JSONObject DataJsonReturn=null;
 	int delay=5;
 	
-	private String local_temp;
+//	private String local_temp;
 	
 	Handler revMsgHandler;
 	
@@ -36,61 +34,58 @@ class SocketWithServer{
 	
 	new__NetworkService.swapData swapData;
 	
-	JSONObject startSocket(final String DataSend) throws Exception{
+//	JSONObject startSocket(final String DataSend,Handler recallHandler) throws Exception{
+	
+	void startSocket(final String DataSend,final Handler recallHandler) throws Exception{
 		
 		new Thread(){
 			@SuppressLint("HandlerLeak")
 			@Override
 			public void run(){
-				Message msg=new Message();
-				msg.what=0x29a1;
-				msg.obj=DataSend.replaceAll("\n","<br>");
 				
-				swapData=new new__NetworkService.swapData(revMsgHandler); //todo bug here
-				
-				swapData.start();
-				
-				int startTime=MyTools.getCurrentTime();
-				while(MyTools.getCurrentTime()<startTime+1){
-				
-				}
-				
-				swapData.sendMsgHandler.sendMessage(msg);
-				
-				System.out.println("SWS57, new thread started\n"+msg.obj);
-				
-				Looper.prepare();
 				revMsgHandler=new Handler(){
 					@Override
 					public void handleMessage(@NonNull Message msg){
 						if(msg.what==0x29a0){
-							local_temp=msg.obj.toString();
-							System.out.println("SWS 34:\ntemp[0]"+local_temp+"\nmsg.obj"+msg.obj);
+							recallHandler.sendMessage(msg);
 						}else{
 							System.out.println("What???");
 						}
 					}
 				};
+				
+				swapData=new new__NetworkService.swapData(revMsgHandler);
+				
+				swapData.start();
+				
+//				int startTime=MyTools.getCurrentTime();
+//				while(MyTools.getCurrentTime()<startTime+1){
+//
+//				}
+				
+				Message msg=new Message();
+				msg.what=0x29a1;
+				msg.obj=DataSend.replaceAll("\n","<br>");
+				
+				while(swapData.sendMsgHandler==null){
+					try{
+						Thread.sleep(5);
+					}catch(InterruptedException e){
+						e.printStackTrace();
+					}
+				}
+				
+				swapData.sendMsgHandler.sendMessage(msg);
+				
 				Looper.loop();
-				
-				
 				
 			}
 		}.start();
 		
-		int startTime=MyTools.getCurrentTime();
-		while(MyTools.getCurrentTime()<startTime+10){
-//			if(temp!=null && temp.length()>0){
-//				System.out.println("SWS 65\n"+temp);
-//				return new JSONObject(temp);
-//			}
-			if((local_temp=swapData.temp).length()>0){
-				return new JSONObject(local_temp);
-			}
-		}
 		
 		System.out.println("SWS69, error!!!!!!!!!");
-		return new JSONObject("{'msg':'error'}");
+		
+//		return new JSONObject("{'msg':'error'}");
 	}
 }
 

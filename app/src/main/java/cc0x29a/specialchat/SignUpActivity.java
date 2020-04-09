@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -53,24 +54,13 @@ public class SignUpActivity extends AppCompatActivity{
 					TextView et_user_id=findViewById(R.id.sign_user_id);
 					EditText et_invite_code=findViewById(R.id.sign_invite_code);
 
-					String user_id=et_user_id.getText().toString();
+					final String user_id=et_user_id.getText().toString();
 					String user_phone=et_user_phone.getText().toString();
 					String user_name=MyTools.filterSpecialChar(et_user_name.getText().toString());
 					String password=MyTools.md5(et_password.getText().toString()+user_id);
 					String invite_code=et_invite_code.getText().toString();
 					
 					SocketWithServer socket=new SocketWithServer();
-					
-//					socket.DataSend="{" +
-//							"\"client\":\"SCC-1.0\"," +
-//							"\"action\":\"0006\"," +
-//							"\"user_name\":\""+user_name+"\"," +
-//							"\"user_id\":\""+user_id+"\"," +
-//							"\"password\":\""+password+"\"," +
-//							"\"user_phone\":\""+user_phone+"\"," +
-//							"\"invite_code\":\""+invite_code+"\"," +
-//							"\"secret\":\"I love you.\"" +
-//							"}";
 					
 					String DataSend="{" +
 							"\"client\":\"SCC-1.0\"," +
@@ -83,29 +73,42 @@ public class SignUpActivity extends AppCompatActivity{
 							"\"secret\":\"I love you.\"" +
 							"}";
 					
-					try{
-						JSONObject data=socket.startSocket(DataSend);
-						
-						if(data==null){
-							Toast.makeText(SignUpActivity.this,"Perhaps Network lost...",Toast.LENGTH_SHORT).show();
-						}else if(data.getString("status").equals("true")){
-							Toast.makeText(SignUpActivity.this,
-									"Congratulations!!! \n" +
-									"You are now one of Special Chat's VIPs!! ",Toast.LENGTH_LONG).show();
-							
-							SharedPreferences preferences=getSharedPreferences("sign_up_info",MODE_PRIVATE);
-							SharedPreferences.Editor editor=preferences.edit();
-							
-							editor.putString("user_id",user_id);
-							editor.apply();
-							
-							startActivity(new Intent(SignUpActivity.this,LoginActivity.class));
-							finish();
-						}else if(data.getString("status").equals("false")){
-							Toast.makeText(SignUpActivity.this,"Perhaps server made a mistake...",Toast.LENGTH_SHORT).show();
-						}else{
-							Toast.makeText(SignUpActivity.this,"Unknown error(1006+85)",Toast.LENGTH_SHORT).show();
+					@SuppressLint("HandlerLeak")
+					Handler handler=new Handler(){
+						@Override
+						public void handleMessage(Message msg){
+							try{
+								JSONObject data=new JSONObject(msg.obj.toString());
+								if(data==null){
+									Toast.makeText(SignUpActivity.this,"Perhaps Network lost...",Toast.LENGTH_SHORT).show();
+								}else if(data.getString("status").equals("true")){
+									Toast.makeText(SignUpActivity.this,
+											"Congratulations!!! \n" +
+													"You are now one of Special Chat's VIPs!! ",Toast.LENGTH_LONG).show();
+									
+									SharedPreferences preferences=getSharedPreferences("sign_up_info",MODE_PRIVATE);
+									SharedPreferences.Editor editor=preferences.edit();
+									
+									editor.putString("user_id",user_id);
+									editor.apply();
+									
+									startActivity(new Intent(SignUpActivity.this,LoginActivity.class));
+									finish();
+								}else if(data.getString("status").equals("false")){
+									Toast.makeText(SignUpActivity.this,"Perhaps server made a mistake...",Toast.LENGTH_SHORT).show();
+								}else{
+									Toast.makeText(SignUpActivity.this,"Unknown error(1006+85)",Toast.LENGTH_SHORT).show();
+								}
+							}catch(JSONException e){
+								e.printStackTrace();
+							}
 						}
+					};
+					
+					try{
+						socket.startSocket(DataSend,handler);
+						
+						
 					}catch(JSONException|InterruptedException|IOException e){
 						e.printStackTrace();
 						Toast.makeText(SignUpActivity.this,"Ohhhh, bad luck! Here comes a bug...",Toast.LENGTH_SHORT).show();
@@ -211,18 +214,26 @@ public class SignUpActivity extends AppCompatActivity{
 				
 				SocketWithServer socket=new SocketWithServer();
 				
-//				socket.DataSend="{'action':'0005','user_id':'"+user_id+"'}";
-				
 				String DataSend="{'action':'0005','user_id':'"+user_id+"'}";
 				
-				JSONObject data=socket.startSocket(DataSend);
+				@SuppressLint("HandlerLeak")
+				Handler handler=new Handler(){
+					@Override
+					public void handleMessage(Message msg){
+						try{
+							JSONObject data=new JSONObject(msg.obj.toString());
+							if(data.getString("status").equals("true")){
+								return user_id;
+								//todo what to do with this ?????
+							}
+						}catch(JSONException e){
+							e.printStackTrace();
+						}
+					}
+				};
 				
-				if(data==null){
-					Toast.makeText(SignUpActivity.this,"Perhaps the server is lazy..\nRetry will start soon. ",Toast.LENGTH_LONG).show();
-				}else if(data.getString("status").equals("true")){
-					return user_id;
-				}
-				Thread.sleep(8888);
+				socket.startSocket(DataSend,handler);
+				
 				return createNewId(t);
 			}catch(Exception e){
 				e.printStackTrace();
