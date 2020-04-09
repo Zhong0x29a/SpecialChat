@@ -2,7 +2,10 @@ package cc0x29a.specialchat;
 
 import android.annotation.SuppressLint;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
+
+import androidx.annotation.NonNull;
 
 import org.json.JSONObject;
 
@@ -28,17 +31,7 @@ class SocketWithServer{
 	
 	@SuppressLint("HandlerLeak")
 	public void onCreate(){
-//		revMsgHandler=new Handler(){
-//			@Override
-//			public void handleMessage(@NonNull Message msg){
-//				if(msg.what==0x29a0){
-//					temp=msg.obj.toString();
-//					System.out.println("SWS 34:\ntemp[0]"+temp+"\nmsg.obj"+msg.obj);
-//				}else{
-//					System.out.println("What???");
-//				}
-//			}
-//		};
+	
 	}
 	
 	new__NetworkService.swapData swapData;
@@ -46,13 +39,14 @@ class SocketWithServer{
 	JSONObject startSocket(final String DataSend) throws Exception{
 		
 		new Thread(){
+			@SuppressLint("HandlerLeak")
 			@Override
 			public void run(){
 				Message msg=new Message();
 				msg.what=0x29a1;
 				msg.obj=DataSend.replaceAll("\n","<br>");
 				
-				swapData=new new__NetworkService.swapData(revMsgHandler);
+				swapData=new new__NetworkService.swapData(revMsgHandler); //todo bug here
 				
 				swapData.start();
 				
@@ -64,6 +58,23 @@ class SocketWithServer{
 				swapData.sendMsgHandler.sendMessage(msg);
 				
 				System.out.println("SWS57, new thread started\n"+msg.obj);
+				
+				Looper.prepare();
+				revMsgHandler=new Handler(){
+					@Override
+					public void handleMessage(@NonNull Message msg){
+						if(msg.what==0x29a0){
+							local_temp=msg.obj.toString();
+							System.out.println("SWS 34:\ntemp[0]"+local_temp+"\nmsg.obj"+msg.obj);
+						}else{
+							System.out.println("What???");
+						}
+					}
+				};
+				Looper.loop();
+				
+				
+				
 			}
 		}.start();
 		

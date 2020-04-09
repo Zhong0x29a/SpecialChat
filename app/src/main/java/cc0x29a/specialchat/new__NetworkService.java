@@ -81,7 +81,7 @@ public class new__NetworkService extends Service{
 		Handler revMsgHandler;
 		Handler sendMsgHandler;
 		
-		String temp="";
+		String temp="{\"A\":'A'}";
 		
 		swapData(Handler revMsgHandler){
 			System.out.println("NN 121");
@@ -103,11 +103,11 @@ public class new__NetworkService extends Service{
 								System.out.println(str);
 								
 								temp=str;
-//								Message msg=new Message();
-//								msg.what=0x29a0;
-//								msg.obj=str;
-//
-//								revMsgHandler.sendMessage(msg);
+								Message msg=Message.obtain();
+								msg.what=0x29a0;
+								msg.obj=str;
+
+								revMsgHandler.sendMessage(msg);
 							}
 						}catch(SocketTimeoutException e){
 							e.printStackTrace();
