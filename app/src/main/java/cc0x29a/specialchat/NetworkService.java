@@ -15,7 +15,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
@@ -48,10 +47,7 @@ public class NetworkService extends Service{
 			@Override
 			public void run(){
 				try{
-					if(refreshNewMsg()==1){
-						// if network is not so fine...
-						MyTools.showToast(NetworkService.this,"!Poor Network... :(",Toast.LENGTH_SHORT);
-					}
+					refreshNewMsg();
 				}catch(Exception e){
 					e.printStackTrace();
 				}
@@ -201,9 +197,8 @@ public class NetworkService extends Service{
 	 *      4->Unknown Error..
 	 *
 	 */
-	private int refreshNewMsg() throws Exception{
+	private void refreshNewMsg() throws Exception{
 		String jsonMsg;
-		JSONObject data;
 		SocketWithServer SWS=new SocketWithServer();
 		
 		if(user_id != null && token_key != null){
@@ -264,13 +259,6 @@ public class NetworkService extends Service{
 							intent.putExtra("todo_action", "reLoadChatList");
 							intent.setAction("backgroundTask.action");
 							sendBroadcast(intent);
-							
-							return 0;
-							//todo here
-						}else if(data.getString("is_new_msg").equals("false")){
-							return 2;
-						}else{
-							return 3;
 						}
 					}catch(JSONException e){
 						e.printStackTrace();
@@ -280,11 +268,7 @@ public class NetworkService extends Service{
 			
 			SWS.startSocket(jsonMsg,handler);
 			
-		}else{
-			return 3;
 		}
-		
-		
 	}
 	
 	// Notification info

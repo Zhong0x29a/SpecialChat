@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,12 +26,7 @@ public class SignUpActivity extends AppCompatActivity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sign_up);
 		
-		new Handler().postDelayed(new Runnable() {
-			@Override
-			public void run(){
-				refreshNewID();
-			}
-		}, 23);
+		refreshNewID();
 		
 		findViewById(R.id.signUp_btn_new_user_id).setOnClickListener(new View.OnClickListener(){
 			@Override
@@ -79,9 +73,7 @@ public class SignUpActivity extends AppCompatActivity{
 						public void handleMessage(Message msg){
 							try{
 								JSONObject data=new JSONObject(msg.obj.toString());
-								if(data==null){
-									Toast.makeText(SignUpActivity.this,"Perhaps Network lost...",Toast.LENGTH_SHORT).show();
-								}else if(data.getString("status").equals("true")){
+								if(data.getString("status").equals("true")){
 									Toast.makeText(SignUpActivity.this,
 											"Congratulations!!! \n" +
 													"You are now one of Special Chat's VIPs!! ",Toast.LENGTH_LONG).show();
@@ -107,16 +99,10 @@ public class SignUpActivity extends AppCompatActivity{
 					
 					try{
 						socket.startSocket(DataSend,handler);
-						
-						
-					}catch(JSONException|InterruptedException|IOException e){
-						e.printStackTrace();
-						Toast.makeText(SignUpActivity.this,"Ohhhh, bad luck! Here comes a bug...",Toast.LENGTH_SHORT).show();
 					}catch(Exception e){
 						e.printStackTrace();
 					}
 				}
-				
 			}
 		});
 	}
@@ -184,64 +170,46 @@ public class SignUpActivity extends AppCompatActivity{
 	}
 	
 	/**
-	 * Refresh a new user id
-	 */
-	private void refreshNewID(){
-		String new_user_id;
-		TextView textView=findViewById(R.id.sign_user_id);
-		if((new_user_id=createNewId(0))!=null){
-			textView.setText(new_user_id);
-		}
-	}
-	
-	/**
 	 * Create a new ID , 8 bits
-	 * @param t execute times (promise not up to 5)
 	 * @return String , new ID
 	 */
-	private String createNewId(int t) {
-		t++;
-		if(t<4){
-			try{
-				StringBuilder sb=new StringBuilder();
-				int[] pool=new int[]{0,1,2,3,4,5,6,7,8,9};
-				sb.append(1);
-				for(int i=1;i<=7;i++){
-					Thread.sleep(128);
-					sb.append(pool[MyTools.getRandomNum(10,1)-1]);
-				}
-				String user_id=sb.toString();
-				
-				SocketWithServer socket=new SocketWithServer();
-				
-				String DataSend="{'action':'0005','user_id':'"+user_id+"'}";
-				
-				@SuppressLint("HandlerLeak")
-				Handler handler=new Handler(){
-					@Override
-					public void handleMessage(Message msg){
-						try{
-							JSONObject data=new JSONObject(msg.obj.toString());
-							if(data.getString("status").equals("true")){
-								return user_id;
-								//todo what to do with this ?????
-							}
-						}catch(JSONException e){
-							e.printStackTrace();
-						}
-					}
-				};
-				
-				socket.startSocket(DataSend,handler);
-				
-				return createNewId(t);
-			}catch(Exception e){
-				e.printStackTrace();
-				return null;
+	private void refreshNewID() {
+		try{
+			StringBuilder sb=new StringBuilder();
+			int[] pool=new int[]{0,1,2,3,4,5,6,7,8,9};
+			sb.append(1);
+			for(int i=1;i<=7;i++){
+				Thread.sleep(128);
+				sb.append(pool[MyTools.getRandomNum(10,1)-1]);
 			}
-		}else{
-			Toast.makeText(SignUpActivity.this,"Perhaps the server is to lazy...\nRetry for new id! ",Toast.LENGTH_LONG).show();
-			return null;
+			String user_id=sb.toString();
+			
+			SocketWithServer socket=new SocketWithServer();
+			
+			String DataSend="{'action':'0005','user_id':'"+user_id+"'}";
+			
+			@SuppressLint("HandlerLeak")
+			Handler handler=new Handler(){
+				@Override
+				public void handleMessage(Message msg){
+					try{
+						JSONObject data=new JSONObject(msg.obj.toString());
+						if(data.getString("status").equals("true")){
+							TextView textView=findViewById(R.id.sign_user_id);
+							textView.setText(data.getString("new_id"));
+						}else{
+							refreshNewID();
+						}
+					}catch(JSONException e){
+						e.printStackTrace();
+					}
+				}
+			};
+			
+			socket.startSocket(DataSend,handler);
+			
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 	}
 	

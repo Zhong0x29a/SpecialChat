@@ -150,7 +150,7 @@ class ProcessAction{
 		try{
 			String user_id=JsonData.getString("user_id");
 			if(UserInfoSQLite.checkIDUsability(user_id)){
-				return "{'status':'true'}";
+				return "{'status':'true','new_id':'"+user_id+"'}";
 			}else{
 				return "{'status':'false'}";
 			}

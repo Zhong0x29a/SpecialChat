@@ -33,6 +33,7 @@ public class ServerThread extends Thread {
 				String temp;
 				while((temp=br.readLine())!=null){
 					os.write((ProcessData(temp)+"\n").getBytes(StandardCharsets.UTF_8));
+					sleep(888);
 				}
 			}
 		}catch(Exception e){
@@ -46,11 +47,10 @@ public class ServerThread extends Thread {
 		}
 	}
 	
-	private String ProcessData(String dataString) throws Exception{
+	private String ProcessData(String dataString){
 		System.out.println(dataString);
-		
 		JSONObject dataJsonReturn=JSONObject.parseObject(dataString);
-		String msgSend="";
+		String msgSend;
 		
 		try{
 			switch(dataJsonReturn.getString("action")){
@@ -106,7 +106,7 @@ public class ServerThread extends Thread {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-			msgSend="{}";
+			msgSend="{'exception':'!'}";
 		}
 		
 		System.out.println(msgSend);

@@ -48,9 +48,10 @@ public class new__NetworkService extends Service{
 		public void run(){
 			try{
 				while(true){
-					if(socket==null || !socket.isConnected() || socket.isClosed() || socket.isInputShutdown()){
+					if(socket==null || socket.isClosed() || !socket.isConnected() || socket.isInputShutdown()){
 						try{
 							System.out.println("Retry for new connection.");
+							
 							socket=new Socket();
 							socket.connect(new InetSocketAddress("192.168.1.18",21027),1111);
 							socket.setSoTimeout(30000);
@@ -59,7 +60,7 @@ public class new__NetworkService extends Service{
 							
 							os=socket.getOutputStream();
 							
-							new swapData(null).start();
+//							new swapData(null).start();
 						}catch(IOException e){
 							e.printStackTrace();
 						}
@@ -93,39 +94,6 @@ public class new__NetworkService extends Service{
 		}
 		
 		@SuppressLint("HandlerLeak")
-		protected void onCreate(){
-//			Looper.prepare();
-//			sendMsgHandler=new Handler(){
-//				@Override
-//				public void handleMessage(@NonNull Message msg){
-//					if(msg.what==0x29a1){
-//						try{
-//							int sTime=MyTools.getCurrentTime();
-//							while(socket==null || socket.isClosed() || !socket.isConnected() ){
-//								if(MyTools.getCurrentTime() < (sTime+3) ){
-//									sleep(500);
-//								}else{
-//									return;
-//								}
-//							}
-//							os.write((msg.obj.toString()+"\n").getBytes(StandardCharsets.UTF_8));
-//						}catch(Exception e){
-//							try{
-//								socket.close();
-//								System.out.println(socket.isOutputShutdown());
-//							}catch(IOException ex){
-//								ex.printStackTrace();
-//							}
-//
-//							e.printStackTrace();
-//						}
-//					}
-//				}
-//			};
-//			Looper.loop();
-		}
-		
-		@SuppressLint("HandlerLeak")
 		@Override
 		public void run(){
 			try{
@@ -136,16 +104,17 @@ public class new__NetworkService extends Service{
 						try{
 							while((str=br.readLine())!=null){
 								
-								System.out.println("NN 136 , reading data\n");
+								System.out.println("got data:\n");
 								System.out.println(str);
 								
 								Message msg=Message.obtain();
 								msg.what=0x29a0;
 								msg.obj=str;
 
+								while(revMsgHandler==null){
+									sleep(5);
+								}
 								revMsgHandler.sendMessage(msg);
-//								socket.sendUrgentData(0xFF);
-								// todo check connection, if 30s read nothing , close the socket.
 							}
 						}catch(SocketTimeoutException e){
 							e.printStackTrace();
@@ -167,16 +136,18 @@ public class new__NetworkService extends Service{
 					public void handleMessage(@NonNull Message msg){
 						if(msg.what==0x29a1){
 							try{
-								int sTime=MyTools.getCurrentTime();
-								while(socket==null || socket.isClosed() || !socket.isConnected()){
-									if(MyTools.getCurrentTime() < (sTime+3) ){
-										sleep(500);
-									}else{
-										return;
-									}
+								if(socket==null || socket.isClosed() || !socket.isConnected()){
+									// recall a empty message
+									Message emptyMsg=new Message();
+									emptyMsg.what=0x29a;
+									emptyMsg.obj="{}";
+									revMsgHandler.sendMessage(emptyMsg);
+									return;
 								}
+								sleep(233); //todo bug here
 								os.write((msg.obj.toString()+"\n").getBytes(StandardCharsets.UTF_8));
 							}catch(Exception e){
+								revMsgHandler.sendEmptyMessage(0x29a);
 								try{
 									socket.close();
 								}catch(IOException ex){
@@ -194,31 +165,8 @@ public class new__NetworkService extends Service{
 		}
 	}
 	
-//	public static void sendData(final String DataSend,final Handler.Callback handler) throws Exception{
-//
-//		os.write(DataSend.getBytes(StandardCharsets.UTF_8));
-//
-//		new Thread(){
-//			@Override
-//			public void run(){
-//				String str="";
-//				try{
-//					while((str=br.readLine())!=null){
-//						Message msg=new Message();
-//						msg.what=0x234;
-//						msg.obj=str;
-//						handler.handleMessage(msg);
-//					}
-//				}catch(IOException e){
-//					e.printStackTrace();
-//				}
-//			}
-//		}.start();
-//
-//	}
-	
-	
 }
+
 /*
 public class SocketThread extends Thread{
 		

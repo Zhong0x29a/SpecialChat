@@ -481,13 +481,7 @@ public class MainActivity extends AppCompatActivity{
 		checkLoginTimer.schedule(new TimerTask(){
 			@Override public void run(){
 				try{
-					int status=checkLogin();
-					if(status==2){
-						changeViewToFontLogin();
-					}
-//					else if(status==1){
-//						//MyTools.showToast(MainActivity.this,"Ohh! Poor Network... :(",Toast.LENGTH_LONG);
-//					}
+					checkLogin();
 				}catch(Exception e){
 					e.printStackTrace();
 				}
@@ -615,7 +609,6 @@ public class MainActivity extends AppCompatActivity{
 		);
 	}
 	
-	@SuppressLint("SetTextI18n")
 	/*
 	 * Load me page
 	 */
@@ -814,16 +807,16 @@ public class MainActivity extends AppCompatActivity{
 	
 	/**
 	 * Check login status.
-	 * @return int 0->good;1->network;2->bad.
 	 *
 	 * Server return:
 	 *      {"status":"true"|"false"}
 	 * **/
-	private int checkLogin() throws Exception{
+	private void checkLogin() throws Exception{
 		final SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 
 		if(token_key==null || user_id==null){
-			return 2;
+			changeViewToFontLogin();
+			return;
 		}
 		String jsonMsg="{" +
 				"\"client\":\"SCC-1.0\"," +
@@ -846,13 +839,12 @@ public class MainActivity extends AppCompatActivity{
 							editor.putInt("is_login",1);
 							editor.apply();
 						}
-						return 0;
-						//todo here
 					}else{
 						SharedPreferences.Editor editor=preferences.edit();
 						editor.putInt("is_login",0);
 						editor.apply();
-						return 2;
+						
+						changeViewToFontLogin();
 					}
 				}catch(JSONException e){
 					e.printStackTrace();
@@ -861,6 +853,7 @@ public class MainActivity extends AppCompatActivity{
 		};
 		
 		SWS.startSocket(jsonMsg,handler);
+		
 		
 	}
 	
@@ -889,8 +882,7 @@ public class MainActivity extends AppCompatActivity{
 				});
 				cancelRefreshTimers();
 				stopService(new Intent(MainActivity.this,BackgroundTaskService.class));
-				Toast.makeText(MainActivity.this,"Maybe you haven't login yet? ",
-				Toast.LENGTH_LONG).show();
+				Toast.makeText(MainActivity.this,"Maybe you haven't login yet? ",Toast.LENGTH_SHORT).show();
 			}
 		});
 	}
@@ -902,7 +894,7 @@ public class MainActivity extends AppCompatActivity{
 		cancelRefreshTimers();
 		stopService(new Intent(MainActivity.this,BackgroundTaskService.class));
 		startActivity(new Intent(MainActivity.this,LoginActivity.class));
-		finish();
+//		finish();
 	}
 	
 	

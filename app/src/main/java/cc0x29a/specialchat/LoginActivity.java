@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -55,7 +56,7 @@ public class LoginActivity extends AppCompatActivity{
 				String user_id="";
 				
 				if(IdOrPhone.length()>8){
-					String data_send="{" +
+					final String data_send="{" +
 							"'client':'SCC-1.0'," +
 							"'action':'0012'," +
 							"'secret':'I love you.'," +
@@ -63,19 +64,22 @@ public class LoginActivity extends AppCompatActivity{
 							"}";
 					SocketWithServer socket=new SocketWithServer();
 					
-					
 					@SuppressLint("HandlerLeak") Handler handler=new Handler(){
 						@Override
-						public void handleMessage(Message msg){
+						public void handleMessage(@NotNull Message msg){
 							try{
 								JSONObject data=new JSONObject(msg.obj.toString());
+								String user_id;
 								if(data.getString("status").equals("true") && !(user_id=data.getString("user_id")).equals("")){
 									Toast.makeText(LoginActivity.this,"Using mobile phone to login.",Toast.LENGTH_SHORT).show();
+									String password=MyTools.md5(ET_password.getText().toString()+user_id);
+									startLogin(user_id,password);
+								}else{
+									Toast.makeText(LoginActivity.this,"No this account!",Toast.LENGTH_SHORT).show();
 								}
 							}catch(Exception e){
 								e.printStackTrace();
 								Toast.makeText(LoginActivity.this,"Something Error.",Toast.LENGTH_LONG).show();
-								return;
 							}
 						}
 					};
@@ -93,70 +97,12 @@ public class LoginActivity extends AppCompatActivity{
 				
 				final String password=MyTools.md5(ET_password.getText().toString()+user_id);
 				
-				if(user_id.equals("") || password==null
-						|| ET_password.getText().toString().equals("")){
+				if(user_id.equals("") || password==null || ET_password.getText().toString().equals("")){
 					Toast.makeText(LoginActivity.this,
 							"Please input your ID and password!",Toast.LENGTH_SHORT).show();
-					return;
 				}
 				
-				// start login
-				final String dataToSend="{" +
-						"\"client\":\"SCC-1.0\"," +
-						"\"action\":\"0002\"," +
-						"\"user_id\":\""+user_id+"\"," +
-						"\"password\":\""+password+"\"" +
-						"}";
-				
-				SocketWithServer SWS=new SocketWithServer();
-				
-				@SuppressLint("HandlerLeak")
-				Handler handler=new Handler(){
-					@Override
-					public void handleMessage(Message msg){
-						try{
-							JSONObject data=new JSONObject(msg.obj.toString());
-							if(data.getString("status").equals("true")){
-								SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
-								SharedPreferences.Editor editor=preferences.edit();
-								
-								editor.putString("user_id",data.getString("user_id")+"");
-								editor.putString("user_name",data.getString("user_name")+"");
-								editor.putString("user_phone",data.getString("user_phone")+"");
-								editor.putString("token_key",data.getString("token_key")+"");
-								editor.putString("login_time",data.getString("login_time")+"");
-								editor.putInt("is_login",1);
-								editor.apply();
-								
-								Toast.makeText(LoginActivity.this,"Login succeed! \n" +
-										"Enjoy your time~",Toast.LENGTH_LONG).show();
-								
-								startActivity(new Intent(LoginActivity.this, MainActivity.class));
-								finish();
-							}else if(data.getString("status").equals("false")){
-								ET_password.getText().clear();
-								Toast.makeText(LoginActivity.this,
-										"Login failed! \n" +
-												"Please check your ID number and password.",Toast.LENGTH_LONG).show();
-							}else{
-								Toast.makeText(LoginActivity.this,
-										"Unknown ERROR! (LA0002)",
-										Toast.LENGTH_LONG).show();
-							}
-						}catch(JSONException e){
-							e.printStackTrace();
-							Toast.makeText(LoginActivity.this,
-									"Unknown ERROR! (LA0002+)",
-									Toast.LENGTH_LONG).show();
-						}
-					}
-				};
-				
-				try{
-					SWS.startSocket(dataToSend,handler);
-				}catch(Exception e){
-					e.printStackTrace();
-				}
+				startLogin(user_id,password);
 				
 			}
 		});
@@ -193,6 +139,67 @@ public class LoginActivity extends AppCompatActivity{
 		String uid=preferences.getString("user_id",null);
 		
 		et_user_id.setText(uid);
+	}
+	
+	
+	public void startLogin(String user_id,String password){
+		// start login
+		final String dataToSend="{" +
+				"\"client\":\"SCC-1.0\"," +
+				"\"action\":\"0002\"," +
+				"\"user_id\":\""+user_id+"\"," +
+				"\"password\":\""+password+"\"" +
+				"}";
 		
+		SocketWithServer SWS=new SocketWithServer();
+		
+		@SuppressLint("HandlerLeak")
+		Handler handler=new Handler(){
+			@Override
+			public void handleMessage(Message msg){
+				try{
+					JSONObject data=new JSONObject(msg.obj.toString());
+					if(data.getString("status").equals("true")){
+						SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
+						SharedPreferences.Editor editor=preferences.edit();
+						
+						editor.putString("user_id",data.getString("user_id")+"");
+						editor.putString("user_name",data.getString("user_name")+"");
+						editor.putString("user_phone",data.getString("user_phone")+"");
+						editor.putString("token_key",data.getString("token_key")+"");
+						editor.putString("login_time",data.getString("login_time")+"");
+						editor.putInt("is_login",1);
+						editor.apply();
+						
+						Toast.makeText(LoginActivity.this,"Login succeed! \n" +
+								"Enjoy your time~",Toast.LENGTH_LONG).show();
+						
+						startActivity(new Intent(LoginActivity.this, MainActivity.class));
+						finish();
+					}else if(data.getString("status").equals("false")){
+						EditText ET_password=findViewById(R.id.text_password);
+						ET_password.getText().clear();
+						Toast.makeText(LoginActivity.this,
+								"Login failed! \n" +
+										"Please check your ID number and password.",Toast.LENGTH_LONG).show();
+					}else{
+						Toast.makeText(LoginActivity.this,
+								"Unknown ERROR! (LA0002)",
+								Toast.LENGTH_LONG).show();
+					}
+				}catch(JSONException e){
+					e.printStackTrace();
+					Toast.makeText(LoginActivity.this,
+							"Unknown ERROR! (LA0002+)",
+							Toast.LENGTH_LONG).show();
+				}
+			}
+		};
+		
+		try{
+			SWS.startSocket(dataToSend,handler);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 }
