@@ -210,63 +210,67 @@ public class NetworkService extends Service{
 					"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
 					"}";
 			
+			final int msgWhat=MyTools.getRandomNum(100000,10);
+			
 			@SuppressLint("HandlerLeak")
 			Handler handler=new Handler(){
 				@Override
 				public void handleMessage(Message msg){
-					try{
-						JSONObject data=new JSONObject(msg.obj.toString());
-						if(data.getString("is_new_msg").equals("true")){
-							int new_msg_num=Integer.parseInt(data.getString("new_msg_num"));
-							ChatListSQLiteHelper clh=new ChatListSQLiteHelper(NetworkService.this,"chat_list.db",1);
-							for(int i=1;i<=new_msg_num;i++){
-								JSONObject jsonTemp=new JSONObject(data.getString("index_"+i));
-								String friend_id=jsonTemp.getString("user_id");
-								String send_time=jsonTemp.getString("send_time");
-								String msg_content=jsonTemp.getString("msg_content");
+					if(msg.what==msgWhat){
+						try{
+							JSONObject data=new JSONObject(msg.obj.toString());
+							if(data.getString("is_new_msg").equals("true")){
+								int new_msg_num=Integer.parseInt(data.getString("new_msg_num"));
+								ChatListSQLiteHelper clh=new ChatListSQLiteHelper(NetworkService.this,"chat_list.db",1);
+								for(int i=1;i<=new_msg_num;i++){
+									JSONObject jsonTemp=new JSONObject(data.getString("index_"+i));
+									String friend_id=jsonTemp.getString("user_id");
+									String send_time=jsonTemp.getString("send_time");
+									String msg_content=jsonTemp.getString("msg_content");
+									
+									// insert data to database
+									MsgSQLiteHelper mh=new MsgSQLiteHelper(NetworkService.this,"msg_"+friend_id+".db",1);
+									mh.insertNewMsg(mh.getReadableDatabase(),friend_id,send_time,msg_content);
+									
+									mh.close();
+									
+									SQLiteDatabase chat_list_db=clh.getReadableDatabase();
+									// update info.
+									clh.updateChatList(chat_list_db,friend_id,send_time,msg_content);
+									// fetch nickname.
+									String ta_nickname=clh.fetchNickname(chat_list_db,friend_id);
+									// release resource
+									chat_list_db.close();
+									
+									String[] new_data=new String[]{"",friend_id,"",send_time,MyTools.resolveSpecialChar(msg_content)};
+									
+									// Send broadcast to ChatActivity
+									Intent intent2=new Intent();
+									intent2.putExtra("todo_action","updateChatRecord"); // ChatActivity
+									intent2.putExtra("new_record",new_data);
+									intent2.setAction("backgroundTask.action.chatActivity."+friend_id);
+									sendBroadcast(intent2);
+									
+									showNewMsgNotification(friend_id,ta_nickname,MyTools.resolveSpecialChar(msg_content),MyTools.formatTime(send_time));
+									
+								}
 								
-								// insert data to database
-								MsgSQLiteHelper mh=new MsgSQLiteHelper(NetworkService.this,"msg_"+friend_id+".db",1);
-								mh.insertNewMsg(mh.getReadableDatabase(),friend_id,send_time,msg_content);
+								clh.close();
 								
-								mh.close();
-								
-								SQLiteDatabase chat_list_db=clh.getReadableDatabase();
-								// update info.
-								clh.updateChatList(chat_list_db,friend_id,send_time,msg_content);
-								// fetch nickname.
-								String ta_nickname=clh.fetchNickname(chat_list_db,friend_id);
-								// release resource
-								chat_list_db.close();
-								
-								String[] new_data=new String[]{"",friend_id,"",send_time,MyTools.resolveSpecialChar(msg_content)};
-								
-								// Send broadcast to ChatActivity
-								Intent intent2 = new Intent();
-								intent2.putExtra("todo_action", "updateChatRecord"); // ChatActivity
-								intent2.putExtra("new_record",new_data);
-								intent2.setAction("backgroundTask.action.chatActivity."+friend_id);
-								sendBroadcast(intent2);
-								
-								showNewMsgNotification(friend_id,ta_nickname,MyTools.resolveSpecialChar(msg_content),MyTools.formatTime(send_time));
-								
+								// Send broadcast to MainActivity
+								Intent intent=new Intent();
+								intent.putExtra("todo_action","reLoadChatList");
+								intent.setAction("backgroundTask.action");
+								sendBroadcast(intent);
 							}
-							
-							clh.close();
-							
-							// Send broadcast to MainActivity
-							Intent intent = new Intent();
-							intent.putExtra("todo_action", "reLoadChatList");
-							intent.setAction("backgroundTask.action");
-							sendBroadcast(intent);
+						}catch(JSONException e){
+							e.printStackTrace();
 						}
-					}catch(JSONException e){
-						e.printStackTrace();
 					}
 				}
 			};
 			
-			SWS.startSocket(jsonMsg,handler);
+			SWS.startSocket(jsonMsg,handler,msgWhat);
 			
 		}
 	}

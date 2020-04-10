@@ -15,12 +15,9 @@ import android.os.Message;
  * **/
 class SocketWithServer{
 	
-	void startSocket(final String DataSend,final Handler recallHandler){
+	void startSocket(final String DataSend,final Handler recallHandler,int what){
 		
-//		new Thread(){
-//			@Override
-//			public void run(){
-		new__NetworkService.swapData swapData=new new__NetworkService.swapData(recallHandler);
+		new__NetworkService.swapData swapData=new new__NetworkService.swapData(recallHandler,what);
 				
 		swapData.start();
 		
@@ -37,9 +34,6 @@ class SocketWithServer{
 		}
 		
 		swapData.sendMsgHandler.sendMessage(msg);
-				
-//			}
-//		}.start();
 		
 	}
 }

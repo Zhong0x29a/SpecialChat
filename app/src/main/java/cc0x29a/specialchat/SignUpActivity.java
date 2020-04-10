@@ -67,38 +67,40 @@ public class SignUpActivity extends AppCompatActivity{
 							"\"secret\":\"I love you.\"" +
 							"}";
 					
+					final int msgWhat=MyTools.getRandomNum(100000,10);
+					
 					@SuppressLint("HandlerLeak")
 					Handler handler=new Handler(){
 						@Override
 						public void handleMessage(Message msg){
-							try{
-								JSONObject data=new JSONObject(msg.obj.toString());
-								if(data.getString("status").equals("true")){
-									Toast.makeText(SignUpActivity.this,
-											"Congratulations!!! \n" +
-													"You are now one of Special Chat's VIPs!! ",Toast.LENGTH_LONG).show();
-									
-									SharedPreferences preferences=getSharedPreferences("sign_up_info",MODE_PRIVATE);
-									SharedPreferences.Editor editor=preferences.edit();
-									
-									editor.putString("user_id",user_id);
-									editor.apply();
-									
-									startActivity(new Intent(SignUpActivity.this,LoginActivity.class));
-									finish();
-								}else if(data.getString("status").equals("false")){
-									Toast.makeText(SignUpActivity.this,"Perhaps server made a mistake...",Toast.LENGTH_SHORT).show();
-								}else{
-									Toast.makeText(SignUpActivity.this,"Unknown error(1006+85)",Toast.LENGTH_SHORT).show();
+							if(msg.what==msgWhat){
+								try{
+									JSONObject data=new JSONObject(msg.obj.toString());
+									if(data.getString("status").equals("true")){
+										Toast.makeText(SignUpActivity.this,"Congratulations!!! \n"+"You are now one of Special Chat's VIPs!! ",Toast.LENGTH_LONG).show();
+										
+										SharedPreferences preferences=getSharedPreferences("sign_up_info",MODE_PRIVATE);
+										SharedPreferences.Editor editor=preferences.edit();
+										
+										editor.putString("user_id",user_id);
+										editor.apply();
+										
+										startActivity(new Intent(SignUpActivity.this,LoginActivity.class));
+										finish();
+									}else if(data.getString("status").equals("false")){
+										Toast.makeText(SignUpActivity.this,"Perhaps server made a mistake...",Toast.LENGTH_SHORT).show();
+									}else{
+										Toast.makeText(SignUpActivity.this,"Unknown error(1006+85)",Toast.LENGTH_SHORT).show();
+									}
+								}catch(JSONException e){
+									e.printStackTrace();
 								}
-							}catch(JSONException e){
-								e.printStackTrace();
 							}
 						}
 					};
 					
 					try{
-						socket.startSocket(DataSend,handler);
+						socket.startSocket(DataSend,handler,msgWhat);
 					}catch(Exception e){
 						e.printStackTrace();
 					}
@@ -195,27 +197,31 @@ public class SignUpActivity extends AppCompatActivity{
 			
 			String DataSend="{'action':'0005','user_id':'"+user_id+"'}";
 			
+			final int msgWhat=MyTools.getRandomNum(100000,10);
+			
 			@SuppressLint("HandlerLeak")
 			Handler handler=new Handler(){
 				@Override
 				public void handleMessage(Message msg){
-					try{
-						JSONObject data=new JSONObject(msg.obj.toString());
-						if(data.getString("status").equals("true")){
-							TextView textView=findViewById(R.id.sign_user_id);
-							textView.setText(data.getString("new_id"));
-						}else{
-							Thread.sleep(200);
-							refreshNewID();
+					if(msg.what==msgWhat){
+						try{
+							JSONObject data=new JSONObject(msg.obj.toString());
+							if(data.getString("status").equals("true")){
+								TextView textView=findViewById(R.id.sign_user_id);
+								textView.setText(data.getString("new_id"));
+							}else{
+								Thread.sleep(200);
+								refreshNewID();
+							}
+						}catch(JSONException|InterruptedException e){
+							Toast.makeText(SignUpActivity.this,"Network error!!",Toast.LENGTH_SHORT).show();
+							e.printStackTrace();
 						}
-					}catch(JSONException|InterruptedException e){
-						Toast.makeText(SignUpActivity.this,"Network error!!",Toast.LENGTH_SHORT).show();
-						e.printStackTrace();
 					}
 				}
 			};
 			
-			socket.startSocket(DataSend,handler);
+			socket.startSocket(DataSend,handler,msgWhat);
 			
 		}catch(Exception e){
 			Toast.makeText(SignUpActivity.this,"Network error",Toast.LENGTH_SHORT).show();

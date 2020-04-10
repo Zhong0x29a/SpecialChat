@@ -74,38 +74,41 @@ public class ContactDetailActivity extends AppCompatActivity{
 							"'token_key':'"+token_key+"'" +
 							"}";
 					
+					final int msgWhat=MyTools.getRandomNum(100000,10);
+					
 					@SuppressLint("HandlerLeak")
 					Handler handler=new Handler(){
 						@Override
 						public void handleMessage(Message msg){
-							try{
-								JSONObject data=new JSONObject(msg.obj.toString());
-								if( data.getString("status").equals("true")){
-									// insert data into contact list.
-									ContactListSQLiteHelper helper=new ContactListSQLiteHelper(ContactDetailActivity.this,"contact_list.db",1);
-									helper.insertNewContact(helper.getReadableDatabase(),ta_id,ta_name,ta_name,ta_phone);
-									
-									// insert data into chat list.
-									ChatListSQLiteHelper helper2=new ChatListSQLiteHelper(ContactDetailActivity.this,"chat_list.db",1);
-									helper2.insertNewChatListItem(helper2.getReadableDatabase(),ta_id,ta_name,MyTools.getCurrentTime()+"");
-									
-									Toast.makeText(ContactDetailActivity.this,"Succeed!\n"+ta_name+"\n"+ta_phone,Toast.LENGTH_SHORT).show();
-									finish();
-								}else{
-									Toast.makeText(ContactDetailActivity.this,"Something wrong.",Toast.LENGTH_SHORT).show();
+							if(msg.what==msgWhat){
+								try{
+									JSONObject data=new JSONObject(msg.obj.toString());
+									if(data.getString("status").equals("true")){
+										// insert data into contact list.
+										ContactListSQLiteHelper helper=new ContactListSQLiteHelper(ContactDetailActivity.this,"contact_list.db",1);
+										helper.insertNewContact(helper.getReadableDatabase(),ta_id,ta_name,ta_name,ta_phone);
+										
+										// insert data into chat list.
+										ChatListSQLiteHelper helper2=new ChatListSQLiteHelper(ContactDetailActivity.this,"chat_list.db",1);
+										helper2.insertNewChatListItem(helper2.getReadableDatabase(),ta_id,ta_name,MyTools.getCurrentTime()+"");
+										
+										Toast.makeText(ContactDetailActivity.this,"Succeed!\n"+ta_name+"\n"+ta_phone,Toast.LENGTH_SHORT).show();
+										finish();
+									}else{
+										Toast.makeText(ContactDetailActivity.this,"Something wrong.",Toast.LENGTH_SHORT).show();
+									}
+								}catch(Exception e){
+									e.printStackTrace();
 								}
-							}catch(Exception e){
-								e.printStackTrace();
 							}
 						}
 					};
 					
 					try{
-						socket.startSocket(DataSend,handler);
+						socket.startSocket(DataSend,handler,msgWhat);
 					}catch(Exception e){
 						e.printStackTrace();
 					}
-					
 					
 				}
 			}
@@ -126,31 +129,35 @@ public class ContactDetailActivity extends AppCompatActivity{
 							"'secret':'I love you.'" +
 							"}";
 					
+					final int msgWhat=MyTools.getRandomNum(100000,10);
+					
 					@SuppressLint("HandlerLeak")
 					Handler handler=new Handler(){
 						@Override
 						public void handleMessage(Message msg){
-							try{
-								JSONObject data=new JSONObject(msg.obj.toString());
-								if(data.getString("status").equals("true")){
-									TextView tv_user_name=findViewById(R.id.detail_userName);
-									TextView tv_user_phone=findViewById(R.id.detail_userPhone);
-									
-									ta_name=MyTools.resolveSpecialChar(data.getString("user_name"));
-									ta_phone=data.getString("user_phone");
-									
-									tv_user_name.setText(ta_name);
-									tv_user_phone.setText(ta_phone);
-								}else{
-									Toast.makeText(getApplicationContext(),"Error!",Toast.LENGTH_LONG).show();
+							if(msg.what==msgWhat){
+								try{
+									JSONObject data=new JSONObject(msg.obj.toString());
+									if(data.getString("status").equals("true")){
+										TextView tv_user_name=findViewById(R.id.detail_userName);
+										TextView tv_user_phone=findViewById(R.id.detail_userPhone);
+										
+										ta_name=MyTools.resolveSpecialChar(data.getString("user_name"));
+										ta_phone=data.getString("user_phone");
+										
+										tv_user_name.setText(ta_name);
+										tv_user_phone.setText(ta_phone);
+									}else{
+										Toast.makeText(getApplicationContext(),"Error!",Toast.LENGTH_LONG).show();
+									}
+								}catch(JSONException e){
+									e.printStackTrace();
 								}
-							}catch(JSONException e){
-								e.printStackTrace();
 							}
 						}
 					};
 					
-					socket.startSocket(DataSend,handler);
+					socket.startSocket(DataSend,handler,msgWhat);
 					
 				}catch(Exception e){
 					e.printStackTrace();
@@ -175,32 +182,36 @@ public class ContactDetailActivity extends AppCompatActivity{
 							"'secret':'I love you.'" +
 							"}";
 					
+					final int msgWhat=MyTools.getRandomNum(100000,10);
+					
 					@SuppressLint("HandlerLeak")
 					Handler handler=new Handler(){
 						@Override
 						public void handleMessage(@NotNull Message msg){
-							try{
-								JSONObject data=new JSONObject(msg.obj.toString());
-								if(data.getString("status").equals("true")&&data.getString("is_friend").equals("true")){
-									
-									ContactDetailActivity.this.runOnUiThread(new Runnable(){
-										public void run(){
-											Button btn=findViewById(R.id.btn_add_or_chat);
-											btn.setText("Chat");
-										}
-									});
-									
-									btn_mode=1;
-								}else{
-									btn_mode=2;
+							if(msg.what==msgWhat){
+								try{
+									JSONObject data=new JSONObject(msg.obj.toString());
+									if(data.getString("status").equals("true")&&data.getString("is_friend").equals("true")){
+										
+										ContactDetailActivity.this.runOnUiThread(new Runnable(){
+											public void run(){
+												Button btn=findViewById(R.id.btn_add_or_chat);
+												btn.setText("Chat");
+											}
+										});
+										
+										btn_mode=1;
+									}else{
+										btn_mode=2;
+									}
+								}catch(JSONException e){
+									e.printStackTrace();
 								}
-							}catch(JSONException e){
-								e.printStackTrace();
 							}
 						}
 					};
 					
-					socket.startSocket(DataSend,handler);
+					socket.startSocket(DataSend,handler,msgWhat);
 					
 					
 				}catch(Exception e){

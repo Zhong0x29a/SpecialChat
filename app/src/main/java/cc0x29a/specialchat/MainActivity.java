@@ -215,28 +215,31 @@ public class MainActivity extends AppCompatActivity{
 					
 					String DataSend="{'action':'CheckUpdate','version_number':'"+version_number+"'}";
 					
+					final int msgWhat=MyTools.getRandomNum(100000,10);
+					
 					@SuppressLint("HandlerLeak")
 					Handler handler=new Handler(){
 						@Override
 						public void handleMessage(Message msg){
-							try{
-								JSONObject data=new JSONObject(msg.obj.toString());
-								if(data!=null && data.getString("status").equals("true")
-										&& data.getString("is_update").equals("true")){
-									Uri uri = Uri.parse("https://github.com/Galaxy-cube/SpecialChat/releases"); //todo
-									Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-									startActivity(intent);
-									Looper.prepare();
-									Toast.makeText(MainActivity.this,"New upgrade available! ",Toast.LENGTH_LONG).show();
-									Looper.loop();
+							if(msg.what==msgWhat){
+								try{
+									JSONObject data=new JSONObject(msg.obj.toString());
+									if(data!=null&&data.getString("status").equals("true")&&data.getString("is_update").equals("true")){
+										Uri uri=Uri.parse("https://github.com/Galaxy-cube/SpecialChat/releases"); //todo
+										Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+										startActivity(intent);
+										Looper.prepare();
+										Toast.makeText(MainActivity.this,"New upgrade available! ",Toast.LENGTH_LONG).show();
+										Looper.loop();
+									}
+								}catch(JSONException e){
+									e.printStackTrace();
 								}
-							}catch(JSONException e){
-								e.printStackTrace();
 							}
 						}
 					};
 					
-					socket.startSocket(DataSend,handler);
+					socket.startSocket(DataSend,handler,msgWhat);
 					
 				}catch(Exception e){
 					e.printStackTrace();
@@ -715,32 +718,36 @@ public class MainActivity extends AppCompatActivity{
 								"\"new_user_phone\":\""+new_user_phone+"\""+
 								"}";
 						
+						final int msgWhat=MyTools.getRandomNum(100000,10);
+						
 						@SuppressLint("HandlerLeak")
 						Handler handler=new Handler(){
 							@Override
 							public void handleMessage(Message msg){
-								try{
-									JSONObject data=new JSONObject(msg.obj.toString());
-									if(data.getString("status").equals("true")&&data.getString("is_updated").equals("true")){
-										SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
-										SharedPreferences.Editor editor=preferences.edit();
-										
-										editor.putString("user_name",new_user_name);
-										editor.putString("user_phone",new_user_phone);
-										
-										editor.apply();
-										
-										resumeViews();
-									}else{
-										Toast.makeText(MainActivity.this,"Error! ",Toast.LENGTH_SHORT).show();
+								if(msg.what==msgWhat){
+									try{
+										JSONObject data=new JSONObject(msg.obj.toString());
+										if(data.getString("status").equals("true")&&data.getString("is_updated").equals("true")){
+											SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
+											SharedPreferences.Editor editor=preferences.edit();
+											
+											editor.putString("user_name",new_user_name);
+											editor.putString("user_phone",new_user_phone);
+											
+											editor.apply();
+											
+											resumeViews();
+										}else{
+											Toast.makeText(MainActivity.this,"Error! ",Toast.LENGTH_SHORT).show();
+										}
+									}catch(JSONException e){
+										e.printStackTrace();
 									}
-								}catch(JSONException e){
-									e.printStackTrace();
 								}
 							}
 						};
 						
-						socket.startSocket(DataSend,handler);
+						socket.startSocket(DataSend,handler,msgWhat);
 						
 						
 					}catch(Exception e){
@@ -827,32 +834,36 @@ public class MainActivity extends AppCompatActivity{
 				"}";
 		SocketWithServer SWS=new SocketWithServer();
 		
+		final int msgWhat=MyTools.getRandomNum(100000,10);
+		
 		@SuppressLint("HandlerLeak")
 		Handler handler=new Handler(){
 			@Override
 			public void handleMessage(Message msg){
-				try{
-					JSONObject data=new JSONObject(msg.obj.toString());
-					if(data.getString("status").equals("true")){
-						if(preferences.getInt("is_login",0)!=1){
+				if(msg.what==msgWhat){
+					try{
+						JSONObject data=new JSONObject(msg.obj.toString());
+						if(data.getString("status").equals("true")){
+							if(preferences.getInt("is_login",0)!=1){
+								SharedPreferences.Editor editor=preferences.edit();
+								editor.putInt("is_login",1);
+								editor.apply();
+							}
+						}else{
 							SharedPreferences.Editor editor=preferences.edit();
-							editor.putInt("is_login",1);
+							editor.putInt("is_login",0);
 							editor.apply();
+							
+							changeViewToFontLogin();
 						}
-					}else{
-						SharedPreferences.Editor editor=preferences.edit();
-						editor.putInt("is_login",0);
-						editor.apply();
-						
-						changeViewToFontLogin();
+					}catch(JSONException e){
+						e.printStackTrace();
 					}
-				}catch(JSONException e){
-					e.printStackTrace();
 				}
 			}
 		};
 		
-		SWS.startSocket(jsonMsg,handler);
+		SWS.startSocket(jsonMsg,handler,msgWhat);
 		
 		
 	}

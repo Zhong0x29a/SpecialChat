@@ -62,43 +62,47 @@ public class SearchNewContact extends AppCompatActivity{
 							"'search_id':'"+uid+"'" +
 							"}";
 					
+					final int msgWhat=MyTools.getRandomNum(100000,10);
+					
 					@SuppressLint("HandlerLeak")
 					Handler handler=new Handler(){
 						@Override
 						public void handleMessage(Message msg){
-							try{
-								JSONObject data_temp=new JSONObject(msg.obj.toString());
-								if(data_temp.getString("status").equals("true")){
-									int number=Integer.parseInt(data_temp.getString("number"));
-									String[][] data=new String[number][2];
-									//to do: debug
-									JSONObject temp;
-									for(int i=0;i<number;i++){
-										temp=new JSONObject(data_temp.getString("index_"+(i+1)));
-										data[i][0]=temp.getString("user_id");
-										data[i][1]=MyTools.resolveSpecialChar(temp.getString("user_name"));
+							if(msg.what==msgWhat){
+								try{
+									JSONObject data_temp=new JSONObject(msg.obj.toString());
+									if(data_temp.getString("status").equals("true")){
+										int number=Integer.parseInt(data_temp.getString("number"));
+										String[][] data=new String[number][2];
+										//to do: debug
+										JSONObject temp;
+										for(int i=0;i<number;i++){
+											temp=new JSONObject(data_temp.getString("index_"+(i+1)));
+											data[i][0]=temp.getString("user_id");
+											data[i][1]=MyTools.resolveSpecialChar(temp.getString("user_name"));
+										}
+										
+										RecyclerView recyclerView=findViewById(R.id.search_recyclerView);
+										LinearLayoutManager layoutManager=new LinearLayoutManager(SearchNewContact.this);
+										recyclerView.setLayoutManager(layoutManager);
+										
+										SearchContactAdapter adapter=new SearchContactAdapter(data);
+										adapter.count=number;
+										
+										recyclerView.setAdapter(adapter);
+										recyclerView.setItemAnimator(new DefaultItemAnimator());
+									}else{
+										Toast.makeText(SearchNewContact.this,"Perhaps Network made a mistake? ",Toast.LENGTH_SHORT).show();
 									}
-									
-									RecyclerView recyclerView=findViewById(R.id.search_recyclerView);
-									LinearLayoutManager layoutManager=new LinearLayoutManager(SearchNewContact.this);
-									recyclerView.setLayoutManager(layoutManager);
-									
-									SearchContactAdapter adapter=new SearchContactAdapter(data);
-									adapter.count=number;
-									
-									recyclerView.setAdapter(adapter);
-									recyclerView.setItemAnimator(new DefaultItemAnimator());
-								}else{
-									Toast.makeText(SearchNewContact.this,"Perhaps Network made a mistake? ",Toast.LENGTH_SHORT).show();
+								}catch(JSONException e){
+									e.printStackTrace();
 								}
-							}catch(JSONException e){
-								e.printStackTrace();
 							}
 						}
 					};
 					
 					try{
-						socket.startSocket(DataSend,handler);
+						socket.startSocket(DataSend,handler,msgWhat);
 						
 					}catch(Exception e){
 						e.printStackTrace();

@@ -89,8 +89,11 @@ public class new__NetworkService extends Service{
 		Handler revMsgHandler;
 		Handler sendMsgHandler;
 		
-		swapData(Handler revMsgHandler){
+		int msgWhat;
+		
+		swapData(Handler revMsgHandler,int msgWhat){
 			this.revMsgHandler=revMsgHandler;
+			this.msgWhat=msgWhat;
 		}
 		
 		@SuppressLint("HandlerLeak")
@@ -102,18 +105,20 @@ public class new__NetworkService extends Service{
 					public void run(){
 						String str;
 						try{
+							// when received message from serer.
 							while((str=br.readLine())!=null){
-								
-								System.out.println("got data:\n");
-								System.out.println(str);
+								System.out.println("got data:\n"+str);
 								
 								Message msg=new Message();
-								msg.what=0x29a0;
+								
+								msg.what=msgWhat;
+								
 								msg.obj=str;
 
 								revMsgHandler.sendMessage(msg); //todo handler has bug, try fix.
 							}
-							System.out.println("readLine broke.\n\n\n\n\n\n\n");
+							System.out.println("readLine broke.");
+							
 							// recall a empty message
 							Message emptyMsg=new Message();
 							emptyMsg.what=0x29a;
@@ -149,7 +154,6 @@ public class new__NetworkService extends Service{
 									revMsgHandler.sendMessage(emptyMsg);
 									return;
 								}
-//								sleep(233); //todo bug may here
 								os.write((msg.obj.toString()+"\n").getBytes(StandardCharsets.UTF_8));
 							}catch(Exception e){
 								// recall a empty message
