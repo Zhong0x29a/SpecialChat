@@ -17,6 +17,11 @@ class SocketWithServer{
 	
 	void startSocket(final String DataSend,final Handler recallHandler,int what){
 		
+		if(new__NetworkService.socket==null || new__NetworkService.socket.isClosed() || !new__NetworkService.socket.isConnected()){
+			new__NetworkService.StartConnect st=new new__NetworkService.StartConnect();
+			st.start();
+		}
+		
 		new__NetworkService.swapData swapData=new new__NetworkService.swapData(recallHandler,what);
 				
 		swapData.start();

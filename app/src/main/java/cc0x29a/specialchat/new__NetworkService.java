@@ -20,7 +20,7 @@ import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 
 public class new__NetworkService extends Service{
-	public new__NetworkService() throws IOException{
+	public new__NetworkService(){
 	}
 	
 	@Override
@@ -29,21 +29,24 @@ public class new__NetworkService extends Service{
 		throw new UnsupportedOperationException("Not yet implemented");
 	}
 	
+	static StartConnect startConnect;
+	
 	@Override
 	public void onCreate(){
-		new startConnect().start();
+		startConnect = new StartConnect();
+		startConnect.start();
 	}
 	
 	public void onDestroy(){
 	
 	}
 	
-	private static Socket socket;
+	static Socket socket;
 	
 	public static BufferedReader br;
 	public static OutputStream os;
 	
-	private static class startConnect extends Thread{
+	static class StartConnect extends Thread{
 		@Override
 		public void run(){
 			try{
@@ -67,7 +70,7 @@ public class new__NetworkService extends Service{
 					}
 					System.out.println("Connection status:\nisClosed:"+socket.isClosed()+"\nisConnected:"+socket.isConnected());
 					try{
-						sleep(6000);
+						sleep(20000);
 					}catch(InterruptedException e){
 						e.printStackTrace();
 					}
@@ -75,11 +78,12 @@ public class new__NetworkService extends Service{
 			}catch(Exception e){
 				e.printStackTrace();
 				try{
-					socket.close();
+					socket.close();socket=null;
 				}catch(IOException ex){
 					ex.printStackTrace();
 				}
-				new startConnect().start();
+				startConnect=new StartConnect();
+				startConnect.start();
 			}
 		}
 	};
@@ -100,79 +104,87 @@ public class new__NetworkService extends Service{
 		@Override
 		public void run(){
 			try{
-				new Thread(){
-					@Override
-					public void run(){
-						String str;
-						try{
-							// when received message from serer.
-							while((str=br.readLine())!=null){
-								System.out.println("got data:\n"+str);
-								
-								Message msg=new Message();
-								
-								msg.what=msgWhat;
-								
-								msg.obj=str;
-
-								revMsgHandler.sendMessage(msg); //todo handler has bug, try fix.
-							}
-							System.out.println("readLine broke.");
-							
-							// recall a empty message
-							Message emptyMsg=new Message();
-							emptyMsg.what=0x29a;
-							emptyMsg.obj="{}";
-							revMsgHandler.sendMessage(emptyMsg);
-							
-							socket.close();socket=null;
-						}catch(SocketTimeoutException e){
-							e.printStackTrace();
-							try{
-								socket.close();socket=null;
-							}catch(Exception ex){
-								ex.printStackTrace();
-							}
-						}catch(Exception e){
-							e.printStackTrace();
-						}
-					}
-				}.start();
-				
-				// send data to server
-				Looper.prepare();
-				sendMsgHandler=new Handler(){
-					@Override
-					public void handleMessage(@NonNull Message msg){
-						if(msg.what==0x29a1){
-							try{
-								if(socket==null || socket.isClosed() || !socket.isConnected()){
+				synchronized(this){
+					
+					new Thread(){
+						@Override
+						public void run(){
+							synchronized(this){
+								String str;
+								try{
+									// when received message from serer.
+									while((str=br.readLine())!=null){
+										System.out.println("got data:\n"+str);
+										
+										Message msg=new Message();
+										
+										msg.what=msgWhat;
+										
+										msg.obj=str;
+										
+										revMsgHandler.sendMessage(msg); //todo handler has bug, try fix.
+									}
+									System.out.println("readLine broke.");
+									
 									// recall a empty message
 									Message emptyMsg=new Message();
 									emptyMsg.what=0x29a;
 									emptyMsg.obj="{}";
 									revMsgHandler.sendMessage(emptyMsg);
-									return;
-								}
-								os.write((msg.obj.toString()+"\n").getBytes(StandardCharsets.UTF_8));
-							}catch(Exception e){
-								// recall a empty message
-								Message emptyMsg=new Message();
-								emptyMsg.what=0x29a;
-								emptyMsg.obj="{}";
-								revMsgHandler.sendMessage(emptyMsg);
-								
-								try{
+									
 									socket.close();
-								}catch(IOException ex){
-									ex.printStackTrace();
+									socket=null;
+								}catch(SocketTimeoutException e){
+									e.printStackTrace();
+									try{
+										socket.close();
+										socket=null;
+									}catch(Exception ex){
+										ex.printStackTrace();
+									}
+								}catch(Exception e){
+									e.printStackTrace();
 								}
-								e.printStackTrace();
 							}
 						}
-					}
-				};
-				Looper.loop();
+					}.start();
+					
+					// send data to server
+					Looper.prepare();
+					sendMsgHandler=new Handler(){
+						@Override
+						public void handleMessage(@NonNull Message msg){
+							if(msg.what==0x29a1){
+								try{
+									if(socket==null||socket.isClosed()||!socket.isConnected()){
+										// recall a empty message
+										Message emptyMsg=new Message();
+										emptyMsg.what=0x29a;
+										emptyMsg.obj="{}";
+										revMsgHandler.sendMessage(emptyMsg);
+										return;
+									}
+									os.write((msg.obj.toString()+"\n").getBytes(StandardCharsets.UTF_8));
+								}catch(Exception e){
+									// recall a empty message
+									Message emptyMsg=new Message();
+									emptyMsg.what=0x29a;
+									emptyMsg.obj="{}";
+									revMsgHandler.sendMessage(emptyMsg);
+									
+									try{
+										socket.close();
+										socket=null;
+									}catch(IOException ex){
+										ex.printStackTrace();
+									}
+									e.printStackTrace();
+								}
+							}
+						}
+					};
+					Looper.loop();
+				}
 			}catch(Exception e){
 				e.printStackTrace();
 			}
