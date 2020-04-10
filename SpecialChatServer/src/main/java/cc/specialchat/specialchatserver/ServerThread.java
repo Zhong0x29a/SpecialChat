@@ -33,7 +33,7 @@ public class ServerThread extends Thread {
 				String temp;
 				while((temp=br.readLine())!=null){
 					os.write((ProcessData(temp)+"\n").getBytes(StandardCharsets.UTF_8));
-					sleep(888);
+					sleep(66);
 				}
 			}
 		}catch(Exception e){

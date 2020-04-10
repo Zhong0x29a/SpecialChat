@@ -107,15 +107,20 @@ public class new__NetworkService extends Service{
 								System.out.println("got data:\n");
 								System.out.println(str);
 								
-								Message msg=Message.obtain();
+								Message msg=new Message();
 								msg.what=0x29a0;
 								msg.obj=str;
 
-								while(revMsgHandler==null){
-									sleep(5);
-								}
-								revMsgHandler.sendMessage(msg);
+								revMsgHandler.sendMessage(msg); //todo handler has bug, try fix.
 							}
+							System.out.println("readLine broke.\n\n\n\n\n\n\n");
+							// recall a empty message
+							Message emptyMsg=new Message();
+							emptyMsg.what=0x29a;
+							emptyMsg.obj="{}";
+							revMsgHandler.sendMessage(emptyMsg);
+							
+							socket.close();socket=null;
 						}catch(SocketTimeoutException e){
 							e.printStackTrace();
 							try{
@@ -144,10 +149,15 @@ public class new__NetworkService extends Service{
 									revMsgHandler.sendMessage(emptyMsg);
 									return;
 								}
-								sleep(233); //todo bug here
+//								sleep(233); //todo bug may here
 								os.write((msg.obj.toString()+"\n").getBytes(StandardCharsets.UTF_8));
 							}catch(Exception e){
-								revMsgHandler.sendEmptyMessage(0x29a);
+								// recall a empty message
+								Message emptyMsg=new Message();
+								emptyMsg.what=0x29a;
+								emptyMsg.obj="{}";
+								revMsgHandler.sendMessage(emptyMsg);
+								
 								try{
 									socket.close();
 								}catch(IOException ex){

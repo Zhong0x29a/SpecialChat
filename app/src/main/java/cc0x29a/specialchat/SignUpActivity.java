@@ -113,6 +113,13 @@ public class SignUpActivity extends AppCompatActivity{
 	 */
 	private boolean checkInfo(){
 		try{
+			TextView user_id=findViewById(R.id.sign_user_id);
+			
+			if(user_id.getText().toString().equals("")){
+				Toast.makeText(SignUpActivity.this,"id error\ntry a new one",Toast.LENGTH_SHORT).show();
+				return false;
+			}
+			
 			EditText user_phone=findViewById(R.id.sign_user_phone);
 			EditText user_name=findViewById(R.id.sign_user_name);
 			EditText password=findViewById(R.id.sign_password);
@@ -121,7 +128,7 @@ public class SignUpActivity extends AppCompatActivity{
 			Pattern pattern_password=Pattern.compile("^[a-zA-Z0-9._]{8,20}$");
 			Matcher m_pass=pattern_password.matcher(password.getText().toString());
 			
-			Pattern pattern_user_name=Pattern.compile("^[a-zA-Z0-9\\u4e00-\\u9fa5_\\-.。?？!！() ]{2,10}$");
+			Pattern pattern_user_name=Pattern.compile("^[a-zA-Z0-9\\u4e00-\\u9fa5_\\-.。?？!！()\\ ]{2,10}$");
 			Matcher m_um=pattern_user_name.matcher(user_name.getText().toString());
 			
 			Pattern pattern_user_phone=Pattern.compile("^[1]([3-9])[0-9]{9}$");
@@ -132,7 +139,7 @@ public class SignUpActivity extends AppCompatActivity{
 				return false;
 			}else if(!m_um.matches()){
 				Toast.makeText(SignUpActivity.this,"User name should only be \n"+
-						"(a-zA-Z0-9\\u4e00-\\u9fa5_\\-.。?？!！() )\nand 1~10 bits!", Toast.LENGTH_LONG).show();
+						"(a-zA-Z0-9\u4e00-\u9fa5_-.。?？!！() )\nand 1~10 bits!", Toast.LENGTH_LONG).show();
 				return false;
 			}else if(!m_pass.matches()){
 				Toast.makeText(SignUpActivity.this,"Password should only be '0-9a-zA-Z._' and 8~20 bits !",Toast.LENGTH_LONG).show();
@@ -198,9 +205,11 @@ public class SignUpActivity extends AppCompatActivity{
 							TextView textView=findViewById(R.id.sign_user_id);
 							textView.setText(data.getString("new_id"));
 						}else{
+							Thread.sleep(200);
 							refreshNewID();
 						}
-					}catch(JSONException e){
+					}catch(JSONException|InterruptedException e){
+						Toast.makeText(SignUpActivity.this,"Network error!!",Toast.LENGTH_SHORT).show();
 						e.printStackTrace();
 					}
 				}
@@ -209,6 +218,7 @@ public class SignUpActivity extends AppCompatActivity{
 			socket.startSocket(DataSend,handler);
 			
 		}catch(Exception e){
+			Toast.makeText(SignUpActivity.this,"Network error",Toast.LENGTH_SHORT).show();
 			e.printStackTrace();
 		}
 	}
