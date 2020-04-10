@@ -16,29 +16,35 @@ import android.os.Message;
 class SocketWithServer{
 	
 	void startSocket(final String DataSend,final Handler recallHandler,int what){
-		
-		if(new__NetworkService.socket==null || new__NetworkService.socket.isClosed() || !new__NetworkService.socket.isConnected()){
-			new__NetworkService.StartConnect st=new new__NetworkService.StartConnect();
-			st.start();
-		}
-		
-		new__NetworkService.swapData swapData=new new__NetworkService.swapData(recallHandler,what);
-				
-		swapData.start();
-		
-		Message msg=new Message();
-		msg.what=0x29a1;
-		msg.obj=DataSend.replaceAll("\n","<br>");
-		
-		while(swapData.sendMsgHandler==null){
-			try{
-				Thread.sleep(5);
-			}catch(InterruptedException e){
-				e.printStackTrace();
+		synchronized(this){
+			if(new__NetworkService.socket==null||new__NetworkService.socket.isClosed()||!new__NetworkService.socket.isConnected()){
+				new__NetworkService.StartConnect st=new new__NetworkService.StartConnect();
+				st.start();
 			}
+			
+//			new__NetworkService.swapData swapData=new new__NetworkService.swapData(recallHandler,what);
+			
+			new__NetworkService.swapData swapData=new new__NetworkService.swapData();
+			
+			swapData.msgWhat=what;
+			swapData.revMsgHandler=recallHandler;
+			
+//			swapData.start();
+			
+			Message msg=new Message();
+			msg.what=0x29a1;
+			msg.obj=DataSend.replaceAll("\n","<br>");
+			
+			while(swapData.sendMsgHandler==null){
+				try{
+					Thread.sleep(5);
+				}catch(InterruptedException e){
+					e.printStackTrace();
+				}
+			}
+			
+			swapData.sendMsgHandler.sendMessage(msg);
 		}
-		
-		swapData.sendMsgHandler.sendMessage(msg);
 		
 	}
 }

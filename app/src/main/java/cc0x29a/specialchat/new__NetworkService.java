@@ -63,14 +63,14 @@ public class new__NetworkService extends Service{
 							
 							os=socket.getOutputStream();
 							
-//							new swapData(null).start();
+							new swapData().start();
 						}catch(IOException e){
 							e.printStackTrace();
 						}
 					}
 					System.out.println("Connection status:\nisClosed:"+socket.isClosed()+"\nisConnected:"+socket.isConnected());
 					try{
-						sleep(20000);
+						sleep(6000);
 					}catch(InterruptedException e){
 						e.printStackTrace();
 					}
@@ -95,10 +95,10 @@ public class new__NetworkService extends Service{
 		
 		int msgWhat;
 		
-		swapData(Handler revMsgHandler,int msgWhat){
-			this.revMsgHandler=revMsgHandler;
-			this.msgWhat=msgWhat;
-		}
+//		swapData(Handler revMsgHandler,int msgWhat){
+//			this.revMsgHandler=revMsgHandler;
+//			this.msgWhat=msgWhat;
+//		}
 		
 		@SuppressLint("HandlerLeak")
 		@Override
