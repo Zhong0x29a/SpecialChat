@@ -104,7 +104,7 @@ public class new__NetworkService extends Service{
 		@Override
 		public void run(){
 			try{
-				synchronized(this){
+				synchronized(this){ //todo cased by thread.
 					
 					new Thread(){
 						@Override
@@ -113,7 +113,7 @@ public class new__NetworkService extends Service{
 								String str;
 								try{
 									// when received message from serer.
-									while((str=br.readLine())!=null){
+									while((str=br.readLine())!=null){ //todo: don't use while
 										System.out.println("got data:\n"+str);
 										
 										Message msg=new Message();
