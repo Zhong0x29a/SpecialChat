@@ -113,17 +113,24 @@ public class new__NetworkService extends Service{
 								String str;
 								try{
 									// when received message from serer.
-									while((str=br.readLine())!=null){ //todo: don't use while
-										System.out.println("got data:\n"+str);
-										
-										Message msg=new Message();
-										
-										msg.what=msgWhat;
-										
-										msg.obj=str;
-										
-										revMsgHandler.sendMessage(msg); //todo handler has bug, try fix.
-									}
+//									while((str=br.readLine())!=null){
+//										System.out.println("got data:\n"+str);
+//
+//										Message msg=new Message();
+//
+//										msg.what=msgWhat;
+//
+//										msg.obj=str;
+//
+//										revMsgHandler.sendMessage(msg); //todo handler has bug, try fix.
+//									}
+									
+									str=br.readLine();
+									
+									//todo:
+									// rebuild it as a method ,
+									// return the str .
+									
 									System.out.println("readLine broke.");
 									
 									// recall a empty message
