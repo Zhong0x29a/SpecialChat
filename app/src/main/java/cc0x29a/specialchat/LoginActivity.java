@@ -1,18 +1,15 @@
 package cc0x29a.specialchat;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -62,37 +59,66 @@ public class LoginActivity extends AppCompatActivity{
 							"'secret':'I love you.'," +
 							"'user_phone':'"+IdOrPhone+"'" +
 							"}";
-					SocketWithServer socket=new SocketWithServer();
 					
-					final int msgWhat=MyTools.getRandomNum(100000,10);
-					
-					@SuppressLint("HandlerLeak") Handler handler=new Handler(){
+					new Thread(new Runnable(){
 						@Override
-						public void handleMessage(@NotNull Message msg){
-							if(msg.what==msgWhat){
-								try{
-									JSONObject data=new JSONObject(msg.obj.toString());
-									String user_id;
-									if(data.getString("status").equals("true")&&!(user_id=data.getString("user_id")).equals("")){
-										Toast.makeText(LoginActivity.this,"Using mobile phone to login.",Toast.LENGTH_SHORT).show();
-										String password=MyTools.md5(ET_password.getText().toString()+user_id);
-										startLogin(user_id,password);
-									}else{
-										Toast.makeText(LoginActivity.this,"No this account!",Toast.LENGTH_SHORT).show();
+						public void run(){
+							final String dataStr=new__NetworkService.sendData(data_send);
+							new Handler().post(new Runnable(){
+								@Override
+								public void run(){
+									try{
+										JSONObject data=new JSONObject(dataStr);
+										String user_id;
+										if(data.getString("status").equals("true")&&!(user_id=data.getString("user_id")).equals("")){
+											Toast.makeText(LoginActivity.this,"Using mobile phone to login.",Toast.LENGTH_SHORT).show();
+											String password=MyTools.md5(ET_password.getText().toString()+user_id);
+											startLogin(user_id,password);
+										}else{
+											Toast.makeText(LoginActivity.this,"No this account!",Toast.LENGTH_SHORT).show();
+										}
+									}catch(JSONException e){
+										Toast.makeText(LoginActivity.this,"Something Error.",Toast.LENGTH_LONG).show();
+										e.printStackTrace();
 									}
-								}catch(Exception e){
-									e.printStackTrace();
-									Toast.makeText(LoginActivity.this,"Something Error.",Toast.LENGTH_LONG).show();
 								}
-							}
+							});
 						}
-					};
+					}).start();
 					
-					try{
-						socket.startSocket(data_send,handler,msgWhat);
-					}catch(Exception e){
-						e.printStackTrace();
-					}
+					
+					
+//					SocketWithServer socket=new SocketWithServer();
+//
+//					final int msgWhat=MyTools.getRandomNum(100000,10);
+//
+//					@SuppressLint("HandlerLeak") Handler handler=new Handler(){
+//						@Override
+//						public void handleMessage(@NotNull Message msg){
+//							if(msg.what==msgWhat){
+//								try{
+//									JSONObject data=new JSONObject(msg.obj.toString());
+//									String user_id;
+//									if(data.getString("status").equals("true")&&!(user_id=data.getString("user_id")).equals("")){
+//										Toast.makeText(LoginActivity.this,"Using mobile phone to login.",Toast.LENGTH_SHORT).show();
+//										String password=MyTools.md5(ET_password.getText().toString()+user_id);
+//										startLogin(user_id,password);
+//									}else{
+//										Toast.makeText(LoginActivity.this,"No this account!",Toast.LENGTH_SHORT).show();
+//									}
+//								}catch(Exception e){
+//									e.printStackTrace();
+//									Toast.makeText(LoginActivity.this,"Something Error.",Toast.LENGTH_LONG).show();
+//								}
+//							}
+//						}
+//					};
+//
+//					try{
+//						socket.startSocket(data_send,handler,msgWhat);
+//					}catch(Exception e){
+//						e.printStackTrace();
+//					}
 					
 					
 				}else{
@@ -155,52 +181,50 @@ public class LoginActivity extends AppCompatActivity{
 				"\"password\":\""+password+"\"" +
 				"}";
 		
-		SocketWithServer SWS=new SocketWithServer();
+		final Handler handler=new Handler();
 		
-		final int msgWhat=MyTools.getRandomNum(100000,10);
-		
-		@SuppressLint("HandlerLeak")
-		Handler handler=new Handler(){
+		new Thread(new Runnable(){
 			@Override
-			public void handleMessage(Message msg){
-				if(msg.what==msgWhat){
-					try{
-						JSONObject data=new JSONObject(msg.obj.toString());
-						if(data.getString("status").equals("true")){
-							SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
-							SharedPreferences.Editor editor=preferences.edit();
-							
-							editor.putString("user_id",data.getString("user_id")+"");
-							editor.putString("user_name",data.getString("user_name")+"");
-							editor.putString("user_phone",data.getString("user_phone")+"");
-							editor.putString("token_key",data.getString("token_key")+"");
-							editor.putString("login_time",data.getString("login_time")+"");
-							editor.putInt("is_login",1);
-							editor.apply();
-							
-							Toast.makeText(LoginActivity.this,"Login succeed! \n"+"Enjoy your time~",Toast.LENGTH_LONG).show();
-							
-							startActivity(new Intent(LoginActivity.this,MainActivity.class));
-							finish();
-						}else if(data.getString("status").equals("false")){
-							EditText ET_password=findViewById(R.id.text_password);
-							ET_password.getText().clear();
-							Toast.makeText(LoginActivity.this,"Login failed! \n"+"Please check your ID number and password.",Toast.LENGTH_LONG).show();
-						}else{
-							Toast.makeText(LoginActivity.this,"Unknown ERROR! (LA0002)",Toast.LENGTH_LONG).show();
+			public void run(){
+				final String dataStr=new__NetworkService.sendData(dataToSend);
+				
+				System.out.println(dataStr);
+				
+				handler.post(new Runnable(){
+					@Override
+					public void run(){
+						try{
+							JSONObject data=new JSONObject(dataStr);
+							if(data.getString("status").equals("true")){
+								SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
+								SharedPreferences.Editor editor=preferences.edit();
+								
+								editor.putString("user_id",data.getString("user_id")+"");
+								editor.putString("user_name",data.getString("user_name")+"");
+								editor.putString("user_phone",data.getString("user_phone")+"");
+								editor.putString("token_key",data.getString("token_key")+"");
+								editor.putString("login_time",data.getString("login_time")+"");
+								editor.putInt("is_login",1);
+								editor.apply();
+								
+								Toast.makeText(LoginActivity.this,"Login succeed! \n"+"Enjoy your time~",Toast.LENGTH_LONG).show();
+								
+								startActivity(new Intent(LoginActivity.this,MainActivity.class));
+								finish();
+							}else if(data.getString("status").equals("false")){
+								EditText ET_password=findViewById(R.id.text_password);
+								ET_password.getText().clear();
+								Toast.makeText(LoginActivity.this,"Login failed! \n"+"Please check your ID number and password.",Toast.LENGTH_LONG).show();
+							}else{
+								Toast.makeText(LoginActivity.this,"Unknown ERROR! (LA0002)",Toast.LENGTH_LONG).show();
+							}
+						}catch(JSONException e){
+							e.printStackTrace();
+							Toast.makeText(LoginActivity.this,"Unknown ERROR! (LA0002+)",Toast.LENGTH_LONG).show();
 						}
-					}catch(JSONException e){
-						e.printStackTrace();
-						Toast.makeText(LoginActivity.this,"Unknown ERROR! (LA0002+)",Toast.LENGTH_LONG).show();
 					}
-				}
+				});
 			}
-		};
-		
-		try{
-			SWS.startSocket(dataToSend,handler,msgWhat);
-		}catch(Exception e){
-			e.printStackTrace();
-		}
+		}).start();
 	}
 }

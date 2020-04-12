@@ -1,14 +1,8 @@
 package cc0x29a.specialchat;
 
-import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
-import android.os.Message;
-
-import androidx.annotation.NonNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,7 +10,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 
 public class new__NetworkService extends Service{
@@ -46,12 +39,14 @@ public class new__NetworkService extends Service{
 	public static BufferedReader br;
 	public static OutputStream os;
 	
+	public static boolean isIOBusy;
+	
 	static class StartConnect extends Thread{
 		@Override
 		public void run(){
 			try{
 				while(true){
-					if(socket==null || socket.isClosed() || !socket.isConnected() || socket.isInputShutdown()){
+					if(isSocketOn()){
 						try{
 							System.out.println("Retry for new connection.");
 							
@@ -63,7 +58,6 @@ public class new__NetworkService extends Service{
 							
 							os=socket.getOutputStream();
 							
-							new swapData().start();
 						}catch(IOException e){
 							e.printStackTrace();
 						}
@@ -78,7 +72,7 @@ public class new__NetworkService extends Service{
 			}catch(Exception e){
 				e.printStackTrace();
 				try{
-					socket.close();socket=null;
+					closeSocket();
 				}catch(IOException ex){
 					ex.printStackTrace();
 				}
@@ -88,116 +82,143 @@ public class new__NetworkService extends Service{
 		}
 	};
 	
-	public static class swapData extends Thread{
-		
-		Handler revMsgHandler;
-		Handler sendMsgHandler;
-		
-		int msgWhat;
-		
-//		swapData(Handler revMsgHandler,int msgWhat){
-//			this.revMsgHandler=revMsgHandler;
-//			this.msgWhat=msgWhat;
-//		}
-		
-		@SuppressLint("HandlerLeak")
-		@Override
-		public void run(){
+	public static String sendData(String data){
+		try{
+			int startTime=MyTools.getCurrentTime();
+			while(isIOBusy ||isSocketOn()){
+				Thread.sleep(500);
+				if(MyTools.getCurrentTime()>=startTime+5) return "";
+			}
+			
+			isIOBusy=true;
+			os.write((data+"\n").getBytes(StandardCharsets.UTF_8));
+			String str=br.readLine();
+			System.out.println(data+"\n"+str);
+			isIOBusy=false;
+			return str;
+		}catch(IOException|InterruptedException e){
 			try{
-				synchronized(this){ //todo cased by thread.
-					
-					new Thread(){
-						@Override
-						public void run(){
-							synchronized(this){
-								String str;
-								try{
-									// when received message from serer.
-//									while((str=br.readLine())!=null){
-//										System.out.println("got data:\n"+str);
-//
-//										Message msg=new Message();
-//
-//										msg.what=msgWhat;
-//
-//										msg.obj=str;
-//
-//										revMsgHandler.sendMessage(msg); //todo handler has bug, try fix.
-//									}
-									
-									str=br.readLine();
-									
-									//todo:
-									// rebuild it as a method ,
-									// return the str .
-									
-									System.out.println("readLine broke.");
-									
-									// recall a empty message
-									Message emptyMsg=new Message();
-									emptyMsg.what=0x29a;
-									emptyMsg.obj="{}";
-									revMsgHandler.sendMessage(emptyMsg);
-									
-									socket.close();
-									socket=null;
-								}catch(SocketTimeoutException e){
-									e.printStackTrace();
-									try{
-										socket.close();
-										socket=null;
-									}catch(Exception ex){
-										ex.printStackTrace();
-									}
-								}catch(Exception e){
-									e.printStackTrace();
-								}
-							}
-						}
-					}.start();
-					
-					// send data to server
-					Looper.prepare();
-					sendMsgHandler=new Handler(){
-						@Override
-						public void handleMessage(@NonNull Message msg){
-							if(msg.what==0x29a1){
-								try{
-									if(socket==null||socket.isClosed()||!socket.isConnected()){
-										// recall a empty message
-										Message emptyMsg=new Message();
-										emptyMsg.what=0x29a;
-										emptyMsg.obj="{}";
-										revMsgHandler.sendMessage(emptyMsg);
-										return;
-									}
-									os.write((msg.obj.toString()+"\n").getBytes(StandardCharsets.UTF_8));
-								}catch(Exception e){
-									// recall a empty message
-									Message emptyMsg=new Message();
-									emptyMsg.what=0x29a;
-									emptyMsg.obj="{}";
-									revMsgHandler.sendMessage(emptyMsg);
-									
-									try{
-										socket.close();
-										socket=null;
-									}catch(IOException ex){
-										ex.printStackTrace();
-									}
-									e.printStackTrace();
-								}
-							}
-						}
-					};
-					Looper.loop();
-				}
-			}catch(Exception e){
-				e.printStackTrace();
+				closeSocket();
+			}catch(IOException ex){
+				ex.printStackTrace();
 			}
 		}
+		return "";
 	}
 	
+//	public static class swapData extends Thread{
+//
+//		Handler revMsgHandler;
+//		Handler sendMsgHandler;
+//
+//		int msgWhat;
+//
+//		@SuppressLint("HandlerLeak")
+//		@Override
+//		public void run(){
+//			try{
+//				synchronized(this){
+//
+//					new Thread(){
+//						@Override
+//						public void run(){
+//							synchronized(this){
+//								String str;
+//								try{
+//									// when received message from serer.
+////									while((str=br.readLine())!=null){
+////										System.out.println("got data:\n"+str);
+////
+////										Message msg=new Message();
+////
+////										msg.what=msgWhat;
+////
+////										msg.obj=str;
+////
+////										revMsgHandler.sendMessage(msg); //todo handler has bug, try fix.
+////									}
+//
+//									str=br.readLine();
+//
+//									//todo:
+//									// rebuild it as a method ,
+//									// return the str .
+//
+//									System.out.println("readLine broke.");
+//
+//									// recall a empty message
+//									Message emptyMsg=new Message();
+//									emptyMsg.what=0x29a;
+//									emptyMsg.obj="{}";
+//									revMsgHandler.sendMessage(emptyMsg);
+//
+//								}catch(SocketTimeoutException e){
+//									e.printStackTrace();
+//									try{
+//										socket.close();
+//										socket=null;
+//									}catch(Exception ex){
+//										ex.printStackTrace();
+//									}
+//								}catch(Exception e){
+//									e.printStackTrace();
+//								}
+//							}
+//						}
+//					}.start();
+//
+//					// send data to server
+//					Looper.prepare();
+//					sendMsgHandler=new Handler(){
+//						@Override
+//						public void handleMessage(@NonNull Message msg){
+//							if(msg.what==0x29a1){
+//								try{
+//									if(socket==null||socket.isClosed()||!socket.isConnected()){
+//										// recall a empty message
+//										Message emptyMsg=new Message();
+//										emptyMsg.what=0x29a;
+//										emptyMsg.obj="{}";
+//										revMsgHandler.sendMessage(emptyMsg);
+//										return;
+//									}
+//									os.write((msg.obj.toString()+"\n").getBytes(StandardCharsets.UTF_8));
+//								}catch(Exception e){
+//									// recall a empty message
+//									Message emptyMsg=new Message();
+//									emptyMsg.what=0x29a;
+//									emptyMsg.obj="{}";
+//									revMsgHandler.sendMessage(emptyMsg);
+//
+//									try{
+//										socket.close();
+//										socket=null;
+//									}catch(IOException ex){
+//										ex.printStackTrace();
+//									}
+//									e.printStackTrace();
+//								}
+//							}
+//						}
+//					};
+//					Looper.loop();
+//				}
+//			}catch(Exception e){
+//				e.printStackTrace();
+//			}
+//		}
+//	}
+	
+	public static boolean isSocketOn(){
+		return !(socket==null || socket.isClosed() || !socket.isConnected());
+	}
+	
+	public static void closeSocket() throws IOException{
+		socket.shutdownInput();
+		socket.shutdownOutput();
+		socket.close();
+		socket=null;
+	}
 }
 
 /*

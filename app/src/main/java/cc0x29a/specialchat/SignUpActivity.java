@@ -56,7 +56,7 @@ public class SignUpActivity extends AppCompatActivity{
 					
 					SocketWithServer socket=new SocketWithServer();
 					
-					String DataSend="{" +
+					final String DataSend="{" +
 							"\"client\":\"SCC-1.0\"," +
 							"\"action\":\"0006\"," +
 							"\"user_name\":\""+user_name+"\"," +
@@ -67,43 +67,39 @@ public class SignUpActivity extends AppCompatActivity{
 							"\"secret\":\"I love you.\"" +
 							"}";
 					
-					final int msgWhat=MyTools.getRandomNum(100000,10);
-					
-					@SuppressLint("HandlerLeak")
-					Handler handler=new Handler(){
+					new Thread(new Runnable(){
 						@Override
-						public void handleMessage(Message msg){
-							if(msg.what==msgWhat){
-								try{
-									JSONObject data=new JSONObject(msg.obj.toString());
-									if(data.getString("status").equals("true")){
-										Toast.makeText(SignUpActivity.this,"Congratulations!!! \n"+"You are now one of Special Chat's VIPs!! ",Toast.LENGTH_LONG).show();
-										
-										SharedPreferences preferences=getSharedPreferences("sign_up_info",MODE_PRIVATE);
-										SharedPreferences.Editor editor=preferences.edit();
-										
-										editor.putString("user_id",user_id);
-										editor.apply();
-										
-										startActivity(new Intent(SignUpActivity.this,LoginActivity.class));
-										finish();
-									}else if(data.getString("status").equals("false")){
-										Toast.makeText(SignUpActivity.this,"Perhaps server made a mistake...",Toast.LENGTH_SHORT).show();
-									}else{
-										Toast.makeText(SignUpActivity.this,"Unknown error(1006+85)",Toast.LENGTH_SHORT).show();
+						public void run(){
+							final String dataStr=new__NetworkService.sendData(DataSend);
+							
+							new Handler().post(new Runnable(){
+								@Override
+								public void run(){
+									try{
+										JSONObject data=new JSONObject(dataStr);
+										if(data.getString("status").equals("true")){
+											Toast.makeText(SignUpActivity.this,"Congratulations!!! \n"+"You are now one of Special Chat's VIPs!! ",Toast.LENGTH_LONG).show();
+											
+											SharedPreferences preferences=getSharedPreferences("sign_up_info",MODE_PRIVATE);
+											SharedPreferences.Editor editor=preferences.edit();
+											
+											editor.putString("user_id",user_id);
+											editor.apply();
+											
+											startActivity(new Intent(SignUpActivity.this,LoginActivity.class));
+											finish();
+										}else if(data.getString("status").equals("false")){
+											Toast.makeText(SignUpActivity.this,"Perhaps server made a mistake...",Toast.LENGTH_SHORT).show();
+										}else{
+											Toast.makeText(SignUpActivity.this,"Unknown error(1006+85)",Toast.LENGTH_SHORT).show();
+										}
+									}catch(JSONException e){
+										e.printStackTrace();
 									}
-								}catch(JSONException e){
-									e.printStackTrace();
 								}
-							}
+							});
 						}
-					};
-					
-					try{
-						socket.startSocket(DataSend,handler,msgWhat);
-					}catch(Exception e){
-						e.printStackTrace();
-					}
+					}).start();
 				}
 			}
 		});
