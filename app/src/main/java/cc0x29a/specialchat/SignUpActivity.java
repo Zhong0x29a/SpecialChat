@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -25,12 +26,17 @@ public class SignUpActivity extends AppCompatActivity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sign_up);
 		
-		refreshNewID();
+//		refreshNewID();
 		
 		findViewById(R.id.signUp_btn_new_user_id).setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View v){
-				refreshNewID();
+				new Thread(new Runnable(){
+					@Override
+					public void run(){
+						refreshNewID();
+					}
+				}).start();
 			}
 		});
 		
@@ -191,6 +197,7 @@ public class SignUpActivity extends AppCompatActivity{
 				public void run(){
 					String DataSend="{'action':'0005','user_id':'"+user_id+"'}";
 					final String dataStr=new__NetworkService.sendData(DataSend);
+					Looper.prepare();
 					new Handler().post(new Runnable(){
 						@Override
 						public void run(){
@@ -200,15 +207,15 @@ public class SignUpActivity extends AppCompatActivity{
 									TextView textView=findViewById(R.id.sign_user_id);
 									textView.setText(data.getString("new_id"));
 								}else{
-									Thread.sleep(200);
-									refreshNewID();
+									//refreshNewID();
 								}
-							}catch(JSONException|InterruptedException e){
+							}catch(JSONException e){
 								Toast.makeText(SignUpActivity.this,"Network error!!",Toast.LENGTH_SHORT).show();
 								e.printStackTrace();
 							}
 						}
 					});
+					Looper.loop();
 				}
 			}).start();
 		}catch(Exception e){

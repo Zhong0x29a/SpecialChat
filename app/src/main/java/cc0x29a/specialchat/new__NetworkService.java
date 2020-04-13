@@ -38,17 +38,23 @@ public class new__NetworkService extends Service{
 	public void onDestroy(){
 		try{
 			closeSocket();
-		}catch(IOException e){
+		}catch(Exception e){
 			e.printStackTrace();
 		}
 	}
 	
-	static class StartConnect extends Thread{ //todo this need to be perfected.
+	/*
+	* todo：
+	*   Verify the client at the first connection.
+	*   0................
+	* */
+	
+	class StartConnect extends Thread{ //todo this need to be perfected.
 		@Override
 		public void run(){
 			try{
 				while(true){
-					if(isSocketOn()){
+					if(!isSocketOn()){
 						try{
 							System.out.println("Retry for new connection.");
 							
@@ -61,10 +67,11 @@ public class new__NetworkService extends Service{
 							os=socket.getOutputStream();
 							
 						}catch(IOException e){
+//							Toast.makeText(new__NetworkService.this,"Network error!",Toast.LENGTH_SHORT).show();
 							e.printStackTrace();
 						}
 					}
-					System.out.println("Connection status:\nisClosed:"+socket.isClosed()+"\nisConnected:"+socket.isConnected());
+//					System.out.println("Connection status:\nisClosed:"+(!(socket==null) && socket.isClosed())+"\nisConnected:"+ (!(socket==null) && socket.isConnected()) );
 					try{
 						sleep(6000);
 					}catch(InterruptedException e){
@@ -75,8 +82,13 @@ public class new__NetworkService extends Service{
 				e.printStackTrace();
 				try{
 					closeSocket();
-				}catch(IOException ex){
+				}catch(Exception ex){
 					ex.printStackTrace();
+				}
+				try{
+					sleep(6000);
+				}catch(InterruptedException ee){
+					ee.printStackTrace();
 				}
 				startConnect=new StartConnect();
 				startConnect.start();
@@ -87,7 +99,7 @@ public class new__NetworkService extends Service{
 	public static String sendData(String data){
 		try{
 			int startTime=MyTools.getCurrentTime();
-			while(isIOBusy ||isSocketOn()){
+			while(isIOBusy || !isSocketOn()){
 				Thread.sleep(500);
 				if(MyTools.getCurrentTime()>=startTime+5) return "";
 			}
@@ -101,7 +113,7 @@ public class new__NetworkService extends Service{
 		}catch(IOException|InterruptedException e){
 			try{
 				closeSocket();
-			}catch(IOException ex){
+			}catch(Exception ex){
 				ex.printStackTrace();
 			}
 		}
@@ -109,13 +121,15 @@ public class new__NetworkService extends Service{
 	}
 	
 	public static boolean isSocketOn(){
-		return !(socket==null || socket.isClosed() || !socket.isConnected());
+		return !(socket==null) && (socket.isConnected() && !socket.isClosed());
 	}
 	
-	public static void closeSocket() throws IOException{
+	public static void closeSocket() throws Exception{
+		if(socket==null){return;}
 		socket.shutdownInput();
 		socket.shutdownOutput();
 		socket.close();
 		socket=null;
 	}
+	
 }
