@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
@@ -211,6 +212,7 @@ public class NetworkService extends Service{
 						"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
 						"}";
 				final String dataStr=new__NetworkService.sendData(DataSend);
+				Looper.prepare();
 				new Handler().post(new Runnable(){
 					@Override
 					public void run(){
@@ -265,6 +267,7 @@ public class NetworkService extends Service{
 						}
 					}
 				});
+				Looper.loop();
 			}
 		}).start();
 	}

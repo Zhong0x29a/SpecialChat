@@ -210,6 +210,7 @@ public class MainActivity extends AppCompatActivity{
 			public void run(){
 				String DataSend="{'action':'CheckUpdate','version_number':'"+version_number+"'}";
 				final String dataStr=new__NetworkService.sendData(DataSend);
+				Looper.prepare();
 				new Handler().post(new Runnable(){
 					@Override
 					public void run(){
@@ -228,6 +229,7 @@ public class MainActivity extends AppCompatActivity{
 						}
 					}
 				});
+				Looper.loop();
 			}
 		}).start();
 	}
@@ -703,6 +705,7 @@ public class MainActivity extends AppCompatActivity{
 									"\"new_user_phone\":\""+new_user_phone+"\""+
 									"}";
 								final String dataStr=new__NetworkService.sendData(DataSend);
+								Looper.prepare();
 								new Handler().post(new Runnable(){
 									@Override
 									public void run(){
@@ -726,6 +729,7 @@ public class MainActivity extends AppCompatActivity{
 										}
 									}
 								});
+								Looper.prepare();
 							}
 						}).start();
 						
@@ -816,6 +820,7 @@ public class MainActivity extends AppCompatActivity{
 						"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
 						"}";
 				final String dataStr=new__NetworkService.sendData(DataSend);
+				Looper.prepare();
 				new Handler().post(new Runnable(){
 					@Override
 					public void run(){
@@ -839,6 +844,7 @@ public class MainActivity extends AppCompatActivity{
 						}
 					}
 				});
+				Looper.loop();
 			}
 		}).start();
 		

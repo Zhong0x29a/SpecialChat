@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -116,6 +117,7 @@ public class BackgroundTaskService extends Service{
 					"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
 					"}";
 				final String dataStr=new__NetworkService.sendData(DataSend);
+				Looper.prepare();
 				new Handler().post(new Runnable(){
 					@Override
 					public void run(){
@@ -151,6 +153,7 @@ public class BackgroundTaskService extends Service{
 						}
 					}
 				});
+				Looper.loop();
 			}
 		}).start();
 		

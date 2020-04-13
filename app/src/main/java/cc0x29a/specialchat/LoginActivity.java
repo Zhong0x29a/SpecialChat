@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -64,6 +65,7 @@ public class LoginActivity extends AppCompatActivity{
 						@Override
 						public void run(){
 							final String dataStr=new__NetworkService.sendData(data_send);
+							Looper.prepare();
 							new Handler().post(new Runnable(){
 								@Override
 								public void run(){
@@ -83,6 +85,7 @@ public class LoginActivity extends AppCompatActivity{
 									}
 								}
 							});
+							Looper.loop();
 						}
 					}).start();
 					
@@ -155,7 +158,7 @@ public class LoginActivity extends AppCompatActivity{
 			@Override
 			public void run(){
 				final String dataStr=new__NetworkService.sendData(dataToSend);
-				
+				Looper.prepare();
 				handler.post(new Runnable(){
 					@Override
 					public void run(){
@@ -190,6 +193,7 @@ public class LoginActivity extends AppCompatActivity{
 						}
 					}
 				});
+				Looper.loop();
 			}
 		}).start();
 	}

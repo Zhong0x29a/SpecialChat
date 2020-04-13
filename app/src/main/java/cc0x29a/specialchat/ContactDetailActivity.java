@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -70,6 +71,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 								"'token_key':'"+token_key+"'" +
 								"}";
 							final String dataStr=new__NetworkService.sendData(DataSend);
+							Looper.prepare();
 							new Handler().post(new Runnable(){
 								@Override
 								public void run(){
@@ -94,6 +96,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 									}
 								}
 							});
+							Looper.loop();
 						}
 					}).start();
 					
@@ -111,6 +114,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 					"'secret':'I love you.'" +
 					"}";
 				final String dataStr=new__NetworkService.sendData(DataSend);
+				Looper.prepare();
 				new Handler().post(new Runnable(){
 					@Override
 					public void run(){
@@ -133,6 +137,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 						}
 					}
 				});
+				Looper.loop();
 			}
 		}).start();
 		
@@ -148,6 +153,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 					"'secret':'I love you.'" +
 					"}";
 				final String dataStr=new__NetworkService.sendData(DataSend);
+				Looper.prepare();
 				new Handler().post(new Runnable(){
 					@Override
 					public void run(){
@@ -165,6 +171,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 						}
 					}
 				});
+				Looper.loop();
 			}
 		}).start();
 		

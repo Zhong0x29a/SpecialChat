@@ -74,7 +74,7 @@ public class SignUpActivity extends AppCompatActivity{
 						@Override
 						public void run(){
 							final String dataStr=new__NetworkService.sendData(DataSend);
-							
+							Looper.prepare();
 							new Handler().post(new Runnable(){
 								@Override
 								public void run(){
@@ -101,6 +101,7 @@ public class SignUpActivity extends AppCompatActivity{
 									}
 								}
 							});
+							Looper.loop();
 						}
 					}).start();
 				}
