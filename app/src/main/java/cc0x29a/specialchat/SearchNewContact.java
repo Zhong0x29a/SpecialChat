@@ -1,10 +1,8 @@
 package cc0x29a.specialchat;
 
-import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -34,10 +32,9 @@ public class SearchNewContact extends AppCompatActivity{
 		findViewById(R.id.btn_search).setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View v){
-//				Toast.makeText(SearchNewContact.this,"start...soon...",Toast.LENGTH_LONG).show();
 				
 				EditText et_uid=findViewById(R.id.search_user_id);
-				String uid=et_uid.getText().toString();
+				final String uid=et_uid.getText().toString();
 				
 				if(uid.equals("")){
 					Toast.makeText(SearchNewContact.this,"Please input user id or phone. ",Toast.LENGTH_SHORT).show();
@@ -51,26 +48,27 @@ public class SearchNewContact extends AppCompatActivity{
 					return;
 				}
 				
-				if(null!=user_id && null!=token_key){
-					SocketWithServer socket=new SocketWithServer();
-					
-					String DataSend="{" +
-							"'client':'SCC-1.0'," +
-							"'action':'0009'," +
-							"'token_key':'"+token_key+"'," +
-							"'user_id':'"+user_id+"'," +
-							"'search_id':'"+uid+"'" +
-							"}";
-					
-					final int msgWhat=MyTools.getRandomNum(100000,10);
-					
-					@SuppressLint("HandlerLeak")
-					Handler handler=new Handler(){
-						@Override
-						public void handleMessage(Message msg){
-							if(msg.what==msgWhat){
+				if(null==user_id && null==token_key){
+					Toast.makeText(SearchNewContact.this,"login info error!",Toast.LENGTH_LONG).show();
+					return;
+				}
+				
+				new Thread(new Runnable(){
+					@Override
+					public void run(){
+						String DataSend="{" +
+								"'client':'SCC-1.0'," +
+								"'action':'0009'," +
+								"'token_key':'"+token_key+"'," +
+								"'user_id':'"+user_id+"'," +
+								"'search_id':'"+uid+"'" +
+								"}";
+						final String dataStr=new__NetworkService.sendData(DataSend);
+						new Handler().post(new Runnable(){
+							@Override
+							public void run(){
 								try{
-									JSONObject data_temp=new JSONObject(msg.obj.toString());
+									JSONObject data_temp=new JSONObject(dataStr);
 									if(data_temp.getString("status").equals("true")){
 										int number=Integer.parseInt(data_temp.getString("number"));
 										String[][] data=new String[number][2];
@@ -98,22 +96,10 @@ public class SearchNewContact extends AppCompatActivity{
 									e.printStackTrace();
 								}
 							}
-						}
-					};
-					
-					try{
-						socket.startSocket(DataSend,handler,msgWhat);
-						
-					}catch(Exception e){
-						e.printStackTrace();
+						});
 					}
-					
-				}else{
-					Toast.makeText(SearchNewContact.this,"login info error!",Toast.LENGTH_LONG).show();
-				}
+				}).start();
 			}
 		});
-		
-		//to do recycleView
 	}
 }

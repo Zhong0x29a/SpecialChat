@@ -1,12 +1,10 @@
 package cc0x29a.specialchat;
 
-import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -103,61 +101,58 @@ public class BackgroundTaskService extends Service{
 	 * Fetch contacts list (sync from server)
 	 */
 	private void syncContactsList(){
-		SocketWithServer socket=new SocketWithServer();
 		if(user_id==null || token_key==null){
 			return;
 		}
 		
-		String DataSend="{" +
-				"'client':'SCC-1.0'," +
-				"'action':'0010'," +
-				"'user_id':'"+user_id+"'," +
-				"'token_key':'"+token_key+"'," +
-				"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
-				"}";
-		
-		final int msgWhat=MyTools.getRandomNum(100000,10);
-		
-		@SuppressLint("HandlerLeak")
-		Handler handler=new Handler(){
+		new Thread(new Runnable(){
 			@Override
-			public void handleMessage(Message msg){
-				if(msg.what==msgWhat){
-					try{
-						JSONObject data=new JSONObject(msg.obj.toString());
-						
-						ContactListSQLiteHelper helper=new ContactListSQLiteHelper(BackgroundTaskService.this,"contact_list.db",1);
-						ChatListSQLiteHelper helper2=new ChatListSQLiteHelper(BackgroundTaskService.this,"chat_list.db",1);
-						
-						// parse data;
-						if(data.getString("status").equals("true")){
-							for(int i=1;i<=Integer.parseInt(data.getString("number"));i++){
-								// Save/update SQLite data
-								JSONObject temp=new JSONObject(data.getString("index_"+i));
-								helper.updateContactList(helper.getReadableDatabase(),temp.getString("user_id"),temp.getString("nickname"));
-								helper2.fixNickname(helper2.getReadableDatabase(),temp.getString("user_id"),temp.getString("nickname"));
+			public void run(){
+				String DataSend="{" +
+					"'client':'SCC-1.0'," +
+					"'action':'0010'," +
+					"'user_id':'"+user_id+"'," +
+					"'token_key':'"+token_key+"'," +
+					"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
+					"}";
+				final String dataStr=new__NetworkService.sendData(DataSend);
+				new Handler().post(new Runnable(){
+					@Override
+					public void run(){
+						try{
+							JSONObject data=new JSONObject(dataStr);
+							
+							ContactListSQLiteHelper helper=new ContactListSQLiteHelper(BackgroundTaskService.this,"contact_list.db",1);
+							ChatListSQLiteHelper helper2=new ChatListSQLiteHelper(BackgroundTaskService.this,"chat_list.db",1);
+							
+							// parse data;
+							if(data.getString("status").equals("true")){
+								for(int i=1;i<=Integer.parseInt(data.getString("number"));i++){
+									// Save/update SQLite data
+									JSONObject temp=new JSONObject(data.getString("index_"+i));
+									helper.updateContactList(helper.getReadableDatabase(),temp.getString("user_id"),temp.getString("nickname"));
+									helper2.fixNickname(helper2.getReadableDatabase(),temp.getString("user_id"),temp.getString("nickname"));
+								}
+								
+								// Send broadcast to MainActivity.
+								Intent intent=new Intent();
+								intent.putExtra("todo_action","reLoadContactList");
+								intent.setAction("backgroundTask.action");
+								sendBroadcast(intent);
+								
+								Intent intent2=new Intent();
+								intent2.putExtra("todo_action","reLoadChatList");
+								intent2.setAction("backgroundTask.action");
+								sendBroadcast(intent2);
 							}
 							
-							// Send broadcast to MainActivity.
-							Intent intent=new Intent();
-							intent.putExtra("todo_action","reLoadContactList");
-							intent.setAction("backgroundTask.action");
-							sendBroadcast(intent);
-							
-							Intent intent2=new Intent();
-							intent2.putExtra("todo_action","reLoadChatList");
-							intent2.setAction("backgroundTask.action");
-							sendBroadcast(intent2);
+						}catch(JSONException e){
+							e.printStackTrace();
 						}
-						
-					}catch(JSONException e){
-						e.printStackTrace();
 					}
-				}
+				});
 			}
-		};
-		
-		socket.startSocket(DataSend,handler,msgWhat);
+		}).start();
 		
 	}
 	

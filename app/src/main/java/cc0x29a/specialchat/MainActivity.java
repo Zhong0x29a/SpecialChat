@@ -11,7 +11,6 @@ package cc0x29a.specialchat;
 
 
 import android.animation.ObjectAnimator;
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -23,7 +22,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -207,45 +205,31 @@ public class MainActivity extends AppCompatActivity{
 	 */
 	private void checkAppUpgrade(){
 		// check app upgrade.
-		new Thread(){
+		new Thread(new Runnable(){
 			@Override
 			public void run(){
-				try{
-					SocketWithServer socket=new SocketWithServer();
-					
-					String DataSend="{'action':'CheckUpdate','version_number':'"+version_number+"'}";
-					
-					final int msgWhat=MyTools.getRandomNum(100000,10);
-					
-					@SuppressLint("HandlerLeak")
-					Handler handler=new Handler(){
-						@Override
-						public void handleMessage(Message msg){
-							if(msg.what==msgWhat){
-								try{
-									JSONObject data=new JSONObject(msg.obj.toString());
-									if(data!=null&&data.getString("status").equals("true")&&data.getString("is_update").equals("true")){
-										Uri uri=Uri.parse("https://github.com/Galaxy-cube/SpecialChat/releases"); //todo
-										Intent intent=new Intent(Intent.ACTION_VIEW,uri);
-										startActivity(intent);
-										Looper.prepare();
-										Toast.makeText(MainActivity.this,"New upgrade available! ",Toast.LENGTH_LONG).show();
-										Looper.loop();
-									}
-								}catch(JSONException e){
-									e.printStackTrace();
-								}
+				String DataSend="{'action':'CheckUpdate','version_number':'"+version_number+"'}";
+				final String dataStr=new__NetworkService.sendData(DataSend);
+				new Handler().post(new Runnable(){
+					@Override
+					public void run(){
+						try{
+							JSONObject data=new JSONObject(dataStr);
+							if(data.getString("status").equals("true")&&data.getString("is_update").equals("true")){
+								Uri uri=Uri.parse("https://github.com/Galaxy-cube/SpecialChat/releases"); //todo
+								Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+								startActivity(intent);
+								Looper.prepare();
+								Toast.makeText(MainActivity.this,"New upgrade available! ",Toast.LENGTH_LONG).show();
+								Looper.loop();
 							}
+						}catch(JSONException e){
+							e.printStackTrace();
 						}
-					};
-					
-					socket.startSocket(DataSend,handler,msgWhat);
-					
-				}catch(Exception e){
-					e.printStackTrace();
-				}
+					}
+				});
 			}
-		}.start();
+		}).start();
 	}
 	
 	/**
@@ -706,49 +690,44 @@ public class MainActivity extends AppCompatActivity{
 						final String new_user_name=MyTools.filterSpecialChar(my_name.getText().toString());
 						final String new_user_phone=my_phone.getText().toString();
 						
-						SocketWithServer socket=new SocketWithServer();
-						
-						String DataSend="{"+
-								"\"client\":\"SCC-1.0\","+
-								"\"action\":\"0013\","+
-								"\"secret\":\"I love you.\","+
-								"\"user_id\":\""+user_id+"\","+
-								"\"token_key\":\""+token_key+"\","+
-								"\"new_user_name\":\""+new_user_name+"\"," +
-								"\"new_user_phone\":\""+new_user_phone+"\""+
-								"}";
-						
-						final int msgWhat=MyTools.getRandomNum(100000,10);
-						
-						@SuppressLint("HandlerLeak")
-						Handler handler=new Handler(){
+						new Thread(new Runnable(){
 							@Override
-							public void handleMessage(Message msg){
-								if(msg.what==msgWhat){
-									try{
-										JSONObject data=new JSONObject(msg.obj.toString());
-										if(data.getString("status").equals("true")&&data.getString("is_updated").equals("true")){
-											SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
-											SharedPreferences.Editor editor=preferences.edit();
-											
-											editor.putString("user_name",new_user_name);
-											editor.putString("user_phone",new_user_phone);
-											
-											editor.apply();
-											
-											resumeViews();
-										}else{
-											Toast.makeText(MainActivity.this,"Error! ",Toast.LENGTH_SHORT).show();
+							public void run(){
+								String DataSend="{"+
+									"\"client\":\"SCC-1.0\","+
+									"\"action\":\"0013\","+
+									"\"secret\":\"I love you.\","+
+									"\"user_id\":\""+user_id+"\","+
+									"\"token_key\":\""+token_key+"\","+
+									"\"new_user_name\":\""+new_user_name+"\"," +
+									"\"new_user_phone\":\""+new_user_phone+"\""+
+									"}";
+								final String dataStr=new__NetworkService.sendData(DataSend);
+								new Handler().post(new Runnable(){
+									@Override
+									public void run(){
+										try{
+											JSONObject data=new JSONObject(dataStr);
+											if(data.getString("status").equals("true")&&data.getString("is_updated").equals("true")){
+												SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
+												SharedPreferences.Editor editor=preferences.edit();
+												
+												editor.putString("user_name",new_user_name);
+												editor.putString("user_phone",new_user_phone);
+												
+												editor.apply();
+												
+												resumeViews();
+											}else{
+												Toast.makeText(MainActivity.this,"Error! ",Toast.LENGTH_SHORT).show();
+											}
+										}catch(JSONException e){
+											e.printStackTrace();
 										}
-									}catch(JSONException e){
-										e.printStackTrace();
 									}
-								}
+								});
 							}
-						};
-						
-						socket.startSocket(DataSend,handler,msgWhat);
-						
+						}).start();
 						
 					}catch(Exception e){
 						Toast.makeText(MainActivity.this,"Something Error! ",Toast.LENGTH_SHORT).show();
@@ -825,46 +804,43 @@ public class MainActivity extends AppCompatActivity{
 			changeViewToFontLogin();
 			return;
 		}
-		String jsonMsg="{" +
-				"\"client\":\"SCC-1.0\"," +
-				"\"action\":\"0001\"," +
-				"\"user_id\":\""+user_id+"\"," +
-				"\"token_key\":\""+token_key+"\"," +
-				"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
-				"}";
-		SocketWithServer SWS=new SocketWithServer();
 		
-		final int msgWhat=MyTools.getRandomNum(100000,10);
-		
-		@SuppressLint("HandlerLeak")
-		Handler handler=new Handler(){
+		new Thread(new Runnable(){
 			@Override
-			public void handleMessage(Message msg){
-				if(msg.what==msgWhat){
-					try{
-						JSONObject data=new JSONObject(msg.obj.toString());
-						if(data.getString("status").equals("true")){
-							if(preferences.getInt("is_login",0)!=1){
+			public void run(){
+				String DataSend="{" +
+						"\"client\":\"SCC-1.0\"," +
+						"\"action\":\"0001\"," +
+						"\"user_id\":\""+user_id+"\"," +
+						"\"token_key\":\""+token_key+"\"," +
+						"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
+						"}";
+				final String dataStr=new__NetworkService.sendData(DataSend);
+				new Handler().post(new Runnable(){
+					@Override
+					public void run(){
+						try{
+							JSONObject data=new JSONObject(dataStr);
+							if(data.getString("status").equals("true")){
+								if(preferences.getInt("is_login",0)!=1){
+									SharedPreferences.Editor editor=preferences.edit();
+									editor.putInt("is_login",1);
+									editor.apply();
+								}
+							}else{
 								SharedPreferences.Editor editor=preferences.edit();
-								editor.putInt("is_login",1);
+								editor.putInt("is_login",0);
 								editor.apply();
+								
+								changeViewToFontLogin();
 							}
-						}else{
-							SharedPreferences.Editor editor=preferences.edit();
-							editor.putInt("is_login",0);
-							editor.apply();
-							
-							changeViewToFontLogin();
+						}catch(JSONException e){
+							e.printStackTrace();
 						}
-					}catch(JSONException e){
-						e.printStackTrace();
 					}
-				}
+				});
 			}
-		};
-		
-		SWS.startSocket(jsonMsg,handler,msgWhat);
-		
+		}).start();
 		
 	}
 	

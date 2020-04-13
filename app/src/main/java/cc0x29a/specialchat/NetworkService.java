@@ -1,6 +1,5 @@
 package cc0x29a.specialchat;
 
-import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -13,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
@@ -197,28 +195,27 @@ public class NetworkService extends Service{
 	 *      4->Unknown Error..
 	 *
 	 */
-	private void refreshNewMsg() throws Exception{
-		String jsonMsg;
-		SocketWithServer SWS=new SocketWithServer();
+	private void refreshNewMsg(){
+		if(user_id==null || token_key==null){
+			return;
+		}
 		
-		if(user_id != null && token_key != null){
-			jsonMsg="{" +
-					"\"client\":\"SCC-1.0\"," +
-					"\"action\":\"0003\"," +
-					"\"user_id\":\""+user_id+"\"," +
-					"\"token_key\":\""+token_key+"\"," +
-					"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
-					"}";
-			
-			final int msgWhat=MyTools.getRandomNum(100000,10);
-			
-			@SuppressLint("HandlerLeak")
-			Handler handler=new Handler(){
-				@Override
-				public void handleMessage(Message msg){
-					if(msg.what==msgWhat){
+		new Thread(new Runnable(){
+			@Override
+			public void run(){
+				String DataSend="{" +
+						"\"client\":\"SCC-1.0\"," +
+						"\"action\":\"0003\"," +
+						"\"user_id\":\""+user_id+"\"," +
+						"\"token_key\":\""+token_key+"\"," +
+						"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
+						"}";
+				final String dataStr=new__NetworkService.sendData(DataSend);
+				new Handler().post(new Runnable(){
+					@Override
+					public void run(){
 						try{
-							JSONObject data=new JSONObject(msg.obj.toString());
+							JSONObject data=new JSONObject(dataStr);
 							if(data.getString("is_new_msg").equals("true")){
 								int new_msg_num=Integer.parseInt(data.getString("new_msg_num"));
 								ChatListSQLiteHelper clh=new ChatListSQLiteHelper(NetworkService.this,"chat_list.db",1);
@@ -267,12 +264,9 @@ public class NetworkService extends Service{
 							e.printStackTrace();
 						}
 					}
-				}
-			};
-			
-			SWS.startSocket(jsonMsg,handler,msgWhat);
-			
-		}
+				});
+			}
+		}).start();
 	}
 	
 	// Notification info

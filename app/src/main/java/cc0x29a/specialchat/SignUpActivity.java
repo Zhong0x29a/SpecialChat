@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -53,8 +52,6 @@ public class SignUpActivity extends AppCompatActivity{
 					String user_name=MyTools.filterSpecialChar(et_user_name.getText().toString());
 					String password=MyTools.md5(et_password.getText().toString()+user_id);
 					String invite_code=et_invite_code.getText().toString();
-					
-					SocketWithServer socket=new SocketWithServer();
 					
 					final String DataSend="{" +
 							"\"client\":\"SCC-1.0\"," +
@@ -187,38 +184,33 @@ public class SignUpActivity extends AppCompatActivity{
 				Thread.sleep(128);
 				sb.append(pool[MyTools.getRandomNum(10,1)-1]);
 			}
-			String user_id=sb.toString();
+			final String user_id=sb.toString();
 			
-			SocketWithServer socket=new SocketWithServer();
-			
-			String DataSend="{'action':'0005','user_id':'"+user_id+"'}";
-			
-			final int msgWhat=MyTools.getRandomNum(100000,10);
-			
-			@SuppressLint("HandlerLeak")
-			Handler handler=new Handler(){
+			new Thread(new Runnable(){
 				@Override
-				public void handleMessage(Message msg){
-					if(msg.what==msgWhat){
-						try{
-							JSONObject data=new JSONObject(msg.obj.toString());
-							if(data.getString("status").equals("true")){
-								TextView textView=findViewById(R.id.sign_user_id);
-								textView.setText(data.getString("new_id"));
-							}else{
-								Thread.sleep(200);
-								refreshNewID();
+				public void run(){
+					String DataSend="{'action':'0005','user_id':'"+user_id+"'}";
+					final String dataStr=new__NetworkService.sendData(DataSend);
+					new Handler().post(new Runnable(){
+						@Override
+						public void run(){
+							try{
+								JSONObject data=new JSONObject(dataStr);
+								if(data.getString("status").equals("true")){
+									TextView textView=findViewById(R.id.sign_user_id);
+									textView.setText(data.getString("new_id"));
+								}else{
+									Thread.sleep(200);
+									refreshNewID();
+								}
+							}catch(JSONException|InterruptedException e){
+								Toast.makeText(SignUpActivity.this,"Network error!!",Toast.LENGTH_SHORT).show();
+								e.printStackTrace();
 							}
-						}catch(JSONException|InterruptedException e){
-							Toast.makeText(SignUpActivity.this,"Network error!!",Toast.LENGTH_SHORT).show();
-							e.printStackTrace();
 						}
-					}
+					});
 				}
-			};
-			
-			socket.startSocket(DataSend,handler,msgWhat);
-			
+			}).start();
 		}catch(Exception e){
 			Toast.makeText(SignUpActivity.this,"Network error",Toast.LENGTH_SHORT).show();
 			e.printStackTrace();

@@ -88,38 +88,6 @@ public class LoginActivity extends AppCompatActivity{
 					
 					
 					
-//					SocketWithServer socket=new SocketWithServer();
-//
-//					final int msgWhat=MyTools.getRandomNum(100000,10);
-//
-//					@SuppressLint("HandlerLeak") Handler handler=new Handler(){
-//						@Override
-//						public void handleMessage(@NotNull Message msg){
-//							if(msg.what==msgWhat){
-//								try{
-//									JSONObject data=new JSONObject(msg.obj.toString());
-//									String user_id;
-//									if(data.getString("status").equals("true")&&!(user_id=data.getString("user_id")).equals("")){
-//										Toast.makeText(LoginActivity.this,"Using mobile phone to login.",Toast.LENGTH_SHORT).show();
-//										String password=MyTools.md5(ET_password.getText().toString()+user_id);
-//										startLogin(user_id,password);
-//									}else{
-//										Toast.makeText(LoginActivity.this,"No this account!",Toast.LENGTH_SHORT).show();
-//									}
-//								}catch(Exception e){
-//									e.printStackTrace();
-//									Toast.makeText(LoginActivity.this,"Something Error.",Toast.LENGTH_LONG).show();
-//								}
-//							}
-//						}
-//					};
-//
-//					try{
-//						socket.startSocket(data_send,handler,msgWhat);
-//					}catch(Exception e){
-//						e.printStackTrace();
-//					}
-					
 					
 				}else{
 					user_id=IdOrPhone;
@@ -187,8 +155,6 @@ public class LoginActivity extends AppCompatActivity{
 			@Override
 			public void run(){
 				final String dataStr=new__NetworkService.sendData(dataToSend);
-				
-				System.out.println(dataStr);
 				
 				handler.post(new Runnable(){
 					@Override
