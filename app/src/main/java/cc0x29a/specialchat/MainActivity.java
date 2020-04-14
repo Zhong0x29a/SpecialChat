@@ -20,7 +20,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -210,8 +209,8 @@ public class MainActivity extends AppCompatActivity{
 			public void run(){
 				String DataSend="{'action':'CheckUpdate','version_number':'"+version_number+"'}";
 				final String dataStr=new__NetworkService.sendData(DataSend);
-				Looper.prepare();
-				new Handler().post(new Runnable(){
+				
+				MainActivity.this.runOnUiThread(new Runnable(){
 					@Override
 					public void run(){
 						try{
@@ -229,7 +228,7 @@ public class MainActivity extends AppCompatActivity{
 						}
 					}
 				});
-				Looper.loop();
+				
 			}
 		}).start();
 	}
@@ -705,8 +704,8 @@ public class MainActivity extends AppCompatActivity{
 									"\"new_user_phone\":\""+new_user_phone+"\""+
 									"}";
 								final String dataStr=new__NetworkService.sendData(DataSend);
-								Looper.prepare();
-								new Handler().post(new Runnable(){
+								
+								MainActivity.this.runOnUiThread(new Runnable(){
 									@Override
 									public void run(){
 										try{
@@ -729,7 +728,7 @@ public class MainActivity extends AppCompatActivity{
 										}
 									}
 								});
-								Looper.prepare();
+								
 							}
 						}).start();
 						
@@ -781,7 +780,7 @@ public class MainActivity extends AppCompatActivity{
 				// reload ImageView
 				my_profile.setImageResource(R.mipmap.logo2);
 				
-				btn_edit.setText("Edit");
+				btn_edit.setText(R.string.edit);
 				btn_status=0;
 			}
 		});
@@ -801,7 +800,7 @@ public class MainActivity extends AppCompatActivity{
 	 * Server return:
 	 *      {"status":"true"|"false"}
 	 * **/
-	private void checkLogin() throws Exception{
+	private void checkLogin(){
 		final SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 
 		if(token_key==null || user_id==null){
@@ -820,8 +819,8 @@ public class MainActivity extends AppCompatActivity{
 						"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
 						"}";
 				final String dataStr=new__NetworkService.sendData(DataSend);
-				Looper.prepare();
-				new Handler().post(new Runnable(){
+				
+				MainActivity.this.runOnUiThread(new Runnable(){
 					@Override
 					public void run(){
 						try{
@@ -844,7 +843,7 @@ public class MainActivity extends AppCompatActivity{
 						}
 					}
 				});
-				Looper.loop();
+				
 			}
 		}).start();
 		
@@ -892,13 +891,3 @@ public class MainActivity extends AppCompatActivity{
 	
 	
 }
-
-
-/*
-* 		RSATools RSAT=new RSATools();
-		byte[] raw_data=new byte[]{9,12,3};
-		byte[] encrypted=RSAT.encryptData(raw_data);
-		byte[] decrypted=RSAT.decryptData(encrypted);
-		System.out.println("raw_data:"+raw_data+"\nencrypted:"+encrypted);
-		System.out.println("\ndecrypted:"+decrypted);
-* */

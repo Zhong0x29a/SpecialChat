@@ -51,7 +51,7 @@ public class new__NetworkService extends Service{
 	*   Verify the client at the first connection.
 	*   0................
 	* */
-	
+	@SuppressWarnings("InfiniteLoopStatement")
 	static class StartConnect extends Thread{ //todo this need to be perfected.
 		@Override
 		public void run(){
@@ -62,13 +62,17 @@ public class new__NetworkService extends Service{
 							System.out.println("Retry for new connection.");
 							
 							socket=new Socket();
+							
+//							socket.connect(new InetSocketAddress("server.specialchat.cn",21027),1111);
+							
 							socket.connect(new InetSocketAddress("192.168.1.18",21027),1111);
 							socket.setSoTimeout(30000);
 							
 							br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
 							os=socket.getOutputStream();
 							
-							// todo Send "heartbeat" to server.
+							// Send "heartbeat" to server.
+							new heart().start();
 							
 						}catch(IOException e){
 							e.printStackTrace();
@@ -137,7 +141,7 @@ public class new__NetworkService extends Service{
 					e.printStackTrace();
 				}
 				try{
-					sleep(30000);
+					sleep(28888);
 				}catch(InterruptedException e){
 					e.printStackTrace();
 				}

@@ -10,9 +10,7 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
@@ -27,7 +25,6 @@ public class NetworkService extends Service{
 	public NetworkService(){
 	}
 	
-//	static SocketWithServer2 socketW;
 	
 	static String user_id;
 	static String token_key;
@@ -53,12 +50,6 @@ public class NetworkService extends Service{
 			}
 		},1700,3666);
 		
-//		try{
-//			socketW=new SocketWithServer2();
-//			socketW.start();
-//		}catch(IOException e){
-//			e.printStackTrace();
-//		}
 	}
 	
 	public void onDestroy(){
@@ -70,94 +61,6 @@ public class NetworkService extends Service{
 		// TO DO: Return the communication channel to the service.
 		throw new UnsupportedOperationException("Not yet implemented");
 	}
-	
-//	public static class SocketWithServer2 extends Thread{
-//
-////		Socket socket = new Socket("specialchat.0x29a.cc", 21027);
-//		Socket socket = new Socket("192.168.1.18", 21027);
-//
-//		// Heart beat bag
-//		String dataSend="heartbeat";
-//
-//		// interval time
-//		int interval=16;
-//
-//		// status of output stream
-//		boolean is_outputStream_busy;
-//
-//		// status of input stream
-//		boolean is_inputStream_busy;
-//
-//		SocketWithServer2() throws IOException{}
-//
-//		@Override
-//		public void run(){
-//
-//		}
-//
-//		public class readingDataThread extends Thread{
-//			JSONObject dataJsonReturn;
-//			@Override
-//			public void run(){
-//				while(!socket.isClosed()){
-//					// socket is connected.
-//
-//					int startTime=MyTools.getCurrentTime();
-//					while(MyTools.getCurrentTime()<startTime+interval){
-//						try{
-//							Thread.sleep(10);
-//						}catch(InterruptedException e){
-//							e.printStackTrace();
-//						}
-//					}
-//
-//					try{
-//						is_outputStream_busy=true;
-//
-//						// Output, send data to server.
-//						OutputStream outputStream=socket.getOutputStream();
-//						outputStream.write(dataSend.getBytes(StandardCharsets.UTF_8));
-//						outputStream.flush();
-//
-//						outputStream.close();
-//						socket.shutdownOutput();
-//
-//						is_outputStream_busy=false;
-//
-//						is_inputStream_busy=true;
-//
-//						StringBuilder DataReturn=new StringBuilder();
-//
-//						// Input, receive data from server.
-//						BufferedReader br=new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//						DataReturn.append(br.readLine());
-//						String temp;
-//						while((temp=br.readLine())!=null){
-//							DataReturn.append("\n").append(temp);
-//						}
-//
-//						is_inputStream_busy=false;
-//
-//					}catch(Exception e){
-//						e.printStackTrace();
-//					}
-//					//reset message to heartbeat bag
-//					dataSend="heartbeat";
-//				}
-//
-//				// if socket connection stopped,
-//				// wait 5s , try to reconnect
-//				try{
-//					Thread.sleep(5000);
-//					socketW=new SocketWithServer2();
-//					socketW.start();
-//				}catch(Exception e){
-//					e.printStackTrace();
-//				}
-//			}
-//		}
-//	}
-	
 	
 	/**
 	 * Refresh New Message(s)
@@ -212,62 +115,62 @@ public class NetworkService extends Service{
 						"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
 						"}";
 				final String dataStr=new__NetworkService.sendData(DataSend);
-				Looper.prepare();
-				new Handler().post(new Runnable(){
-					@Override
-					public void run(){
-						try{
-							JSONObject data=new JSONObject(dataStr);
-							if(data.getString("is_new_msg").equals("true")){
-								int new_msg_num=Integer.parseInt(data.getString("new_msg_num"));
-								ChatListSQLiteHelper clh=new ChatListSQLiteHelper(NetworkService.this,"chat_list.db",1);
-								for(int i=1;i<=new_msg_num;i++){
-									JSONObject jsonTemp=new JSONObject(data.getString("index_"+i));
-									String friend_id=jsonTemp.getString("user_id");
-									String send_time=jsonTemp.getString("send_time");
-									String msg_content=jsonTemp.getString("msg_content");
-									
-									// insert data to database
-									MsgSQLiteHelper mh=new MsgSQLiteHelper(NetworkService.this,"msg_"+friend_id+".db",1);
-									mh.insertNewMsg(mh.getReadableDatabase(),friend_id,send_time,msg_content);
-									
-									mh.close();
-									
-									SQLiteDatabase chat_list_db=clh.getReadableDatabase();
-									// update info.
-									clh.updateChatList(chat_list_db,friend_id,send_time,msg_content);
-									// fetch nickname.
-									String ta_nickname=clh.fetchNickname(chat_list_db,friend_id);
-									// release resource
-									chat_list_db.close();
-									
-									String[] new_data=new String[]{"",friend_id,"",send_time,MyTools.resolveSpecialChar(msg_content)};
-									
-									// Send broadcast to ChatActivity
-									Intent intent2=new Intent();
-									intent2.putExtra("todo_action","updateChatRecord"); // ChatActivity
-									intent2.putExtra("new_record",new_data);
-									intent2.setAction("backgroundTask.action.chatActivity."+friend_id);
-									sendBroadcast(intent2);
-									
-									showNewMsgNotification(friend_id,ta_nickname,MyTools.resolveSpecialChar(msg_content),MyTools.formatTime(send_time));
-									
-								}
-								
-								clh.close();
-								
-								// Send broadcast to MainActivity
-								Intent intent=new Intent();
-								intent.putExtra("todo_action","reLoadChatList");
-								intent.setAction("backgroundTask.action");
-								sendBroadcast(intent);
-							}
-						}catch(JSONException e){
-							e.printStackTrace();
+//				Looper.prepare();
+//				new Handler().post(new Runnable(){
+//					@Override
+//					public void run(){
+				try{
+					JSONObject data=new JSONObject(dataStr);
+					if(data.getString("is_new_msg").equals("true")){
+						int new_msg_num=Integer.parseInt(data.getString("new_msg_num"));
+						ChatListSQLiteHelper clh=new ChatListSQLiteHelper(NetworkService.this,"chat_list.db",1);
+						for(int i=1;i<=new_msg_num;i++){
+							JSONObject jsonTemp=new JSONObject(data.getString("index_"+i));
+							String friend_id=jsonTemp.getString("user_id");
+							String send_time=jsonTemp.getString("send_time");
+							String msg_content=jsonTemp.getString("msg_content");
+							
+							// insert data to database
+							MsgSQLiteHelper mh=new MsgSQLiteHelper(NetworkService.this,"msg_"+friend_id+".db",1);
+							mh.insertNewMsg(mh.getReadableDatabase(),friend_id,send_time,msg_content);
+							
+							mh.close();
+							
+							SQLiteDatabase chat_list_db=clh.getReadableDatabase();
+							// update info.
+							clh.updateChatList(chat_list_db,friend_id,send_time,msg_content);
+							// fetch nickname.
+							String ta_nickname=clh.fetchNickname(chat_list_db,friend_id);
+							// release resource
+							chat_list_db.close();
+							
+							String[] new_data=new String[]{"",friend_id,"",send_time,MyTools.resolveSpecialChar(msg_content)};
+							
+							// Send broadcast to ChatActivity
+							Intent intent2=new Intent();
+							intent2.putExtra("todo_action","updateChatRecord"); // ChatActivity
+							intent2.putExtra("new_record",new_data);
+							intent2.setAction("backgroundTask.action.chatActivity."+friend_id);
+							sendBroadcast(intent2);
+							
+							showNewMsgNotification(friend_id,ta_nickname,MyTools.resolveSpecialChar(msg_content),MyTools.formatTime(send_time));
+							
 						}
+						
+						clh.close();
+						
+						// Send broadcast to MainActivity
+						Intent intent=new Intent();
+						intent.putExtra("todo_action","reLoadChatList");
+						intent.setAction("backgroundTask.action");
+						sendBroadcast(intent);
 					}
-				});
-				Looper.loop();
+				}catch(JSONException e){
+					e.printStackTrace();
+				}
+//					}
+//				});
+//				Looper.loop();
 			}
 		}).start();
 	}

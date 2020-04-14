@@ -3,8 +3,6 @@ package cc0x29a.specialchat;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -65,8 +63,8 @@ public class LoginActivity extends AppCompatActivity{
 						@Override
 						public void run(){
 							final String dataStr=new__NetworkService.sendData(data_send);
-							Looper.prepare();
-							new Handler().post(new Runnable(){
+							
+							LoginActivity.this.runOnUiThread(new Runnable(){
 								@Override
 								public void run(){
 									try{
@@ -85,12 +83,9 @@ public class LoginActivity extends AppCompatActivity{
 									}
 								}
 							});
-							Looper.loop();
+							
 						}
 					}).start();
-					
-					
-					
 					
 				}else{
 					user_id=IdOrPhone;
@@ -152,14 +147,12 @@ public class LoginActivity extends AppCompatActivity{
 				"\"password\":\""+password+"\"" +
 				"}";
 		
-		final Handler handler=new Handler();
-		
 		new Thread(new Runnable(){
 			@Override
 			public void run(){
 				final String dataStr=new__NetworkService.sendData(dataToSend);
-				Looper.prepare();
-				handler.post(new Runnable(){
+				
+				LoginActivity.this.runOnUiThread(new Runnable(){
 					@Override
 					public void run(){
 						try{
@@ -193,7 +186,7 @@ public class LoginActivity extends AppCompatActivity{
 						}
 					}
 				});
-				Looper.loop();
+				
 			}
 		}).start();
 	}

@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -237,8 +235,7 @@ public class ChatActivity extends AppCompatActivity{
 							@Override
 							public void run(){
 								final String dataStr=new__NetworkService.sendData(dataToSend);
-								Looper.prepare();
-								new Handler().post(new Runnable(){
+								ChatActivity.this.runOnUiThread(new Runnable(){
 									@Override
 									public void run(){
 										try{
@@ -259,12 +256,11 @@ public class ChatActivity extends AppCompatActivity{
 											}else{
 												Toast.makeText(ChatActivity.this,"Unknown error! (CA111)",Toast.LENGTH_SHORT).show();
 											}
-										}catch(JSONException e){
+										}catch(JSONException|NullPointerException e){
 											e.printStackTrace();
 										}
 									}
 								});
-								Looper.loop();
 							}
 						}).start();
 						

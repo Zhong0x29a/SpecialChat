@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -26,7 +24,7 @@ public class SignUpActivity extends AppCompatActivity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sign_up);
 		
-//		refreshNewID();
+		refreshNewID();
 		
 		findViewById(R.id.signUp_btn_new_user_id).setOnClickListener(new View.OnClickListener(){
 			@Override
@@ -74,8 +72,8 @@ public class SignUpActivity extends AppCompatActivity{
 						@Override
 						public void run(){
 							final String dataStr=new__NetworkService.sendData(DataSend);
-							Looper.prepare();
-							new Handler().post(new Runnable(){
+							
+							SignUpActivity.this.runOnUiThread(new Runnable(){
 								@Override
 								public void run(){
 									try{
@@ -101,7 +99,7 @@ public class SignUpActivity extends AppCompatActivity{
 									}
 								}
 							});
-							Looper.loop();
+							
 						}
 					}).start();
 				}
@@ -198,8 +196,7 @@ public class SignUpActivity extends AppCompatActivity{
 				public void run(){
 					String DataSend="{'action':'0005','user_id':'"+user_id+"'}";
 					final String dataStr=new__NetworkService.sendData(DataSend);
-					Looper.prepare();
-					new Handler().post(new Runnable(){
+					SignUpActivity.this.runOnUiThread(new Runnable(){
 						@Override
 						public void run(){
 							try{
@@ -208,7 +205,7 @@ public class SignUpActivity extends AppCompatActivity{
 									TextView textView=findViewById(R.id.sign_user_id);
 									textView.setText(data.getString("new_id"));
 								}else{
-									//refreshNewID();
+									Toast.makeText(SignUpActivity.this,"Lucky as you to meet a rare bug~\nPlz, retry :)",Toast.LENGTH_LONG).show();
 								}
 							}catch(JSONException e){
 								Toast.makeText(SignUpActivity.this,"Network error!!",Toast.LENGTH_SHORT).show();
@@ -216,7 +213,6 @@ public class SignUpActivity extends AppCompatActivity{
 							}
 						}
 					});
-					Looper.loop();
 				}
 			}).start();
 		}catch(Exception e){

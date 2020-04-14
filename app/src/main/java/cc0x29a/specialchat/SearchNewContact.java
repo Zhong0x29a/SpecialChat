@@ -2,8 +2,6 @@ package cc0x29a.specialchat;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -65,8 +63,8 @@ public class SearchNewContact extends AppCompatActivity{
 								"'search_id':'"+uid+"'" +
 								"}";
 						final String dataStr=new__NetworkService.sendData(DataSend);
-						Looper.prepare();
-						new Handler().post(new Runnable(){
+						
+						SearchNewContact.this.runOnUiThread(new Runnable(){
 							@Override
 							public void run(){
 								try{
@@ -99,7 +97,7 @@ public class SearchNewContact extends AppCompatActivity{
 								}
 							}
 						});
-						Looper.loop();
+						
 					}
 				}).start();
 			}
