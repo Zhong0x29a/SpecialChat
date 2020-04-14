@@ -73,6 +73,11 @@ public class NetworkService extends Service{
 		if(syncCL!=null){syncCL.cancel();}
 	}
 	
+	public static void manuallyStop(){
+		if(refreshMsgTimer!=null){refreshMsgTimer.cancel();}
+		if(syncCL!=null){syncCL.cancel();}
+	}
+	
 	@Override
 	public IBinder onBind(Intent intent){
 		// TO DO: Return the communication channel to the service.

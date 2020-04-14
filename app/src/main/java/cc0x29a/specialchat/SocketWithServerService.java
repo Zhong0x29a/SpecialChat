@@ -54,7 +54,6 @@ public class SocketWithServerService extends Service{
 	* todo next ver：
 	*   Verify the client at the first connection.
 	* */
-	@SuppressWarnings("InfiniteLoopStatement")
 	void StartConnect(){ //todo this need to be perfected.
 		try{
 			while(true){
@@ -74,6 +73,8 @@ public class SocketWithServerService extends Service{
 						if(heart!=null) {heart.interrupt();}
 						
 						heart=new heart();
+						
+						stopService(new Intent(SocketWithServerService.this,NetworkService.class));
 						
 						startService(new Intent(SocketWithServerService.this,NetworkService.class));
 						
@@ -150,6 +151,7 @@ public class SocketWithServerService extends Service{
 					e.printStackTrace();
 				}
 			}
+			this.interrupt();
 		}
 	}
 	
@@ -161,6 +163,11 @@ public class SocketWithServerService extends Service{
 	}
 	
 	public static void closeSocket(){
+		try{
+			NetworkService.manuallyStop();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		try{
 			socket.shutdownInput();
 			socket.shutdownOutput();
