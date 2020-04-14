@@ -297,7 +297,7 @@ class ProcessAction{
 				msg.append("'number':'").append(contacts[0][0]).append("'}");
 				return msg.toString();
 			}
-			return "{'status':'false','msg':'Warning (PA1010inner)'}";
+			return "{'status':'false','msg':'Warning (PA1010inner). No friends yet , or login info error. '}";
 		}catch(JSONException e){
 			e.printStackTrace();
 			return "{'status':'false','msg':'Error(PA1010)'}";

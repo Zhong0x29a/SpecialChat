@@ -234,7 +234,7 @@ public class ChatActivity extends AppCompatActivity{
 						new Thread(new Runnable(){
 							@Override
 							public void run(){
-								final String dataStr=new__NetworkService.sendData(dataToSend);
+								final String dataStr=SocketWithServerService.sendData(dataToSend);
 								ChatActivity.this.runOnUiThread(new Runnable(){
 									@Override
 									public void run(){

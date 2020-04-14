@@ -20,7 +20,7 @@
 
         <!-- Services -->
         <service
-            android:name=".new__NetworkService"
+            android:name=".SocketWithServerService"
             android:enabled="true"
             android:exported="false"/>
         <service

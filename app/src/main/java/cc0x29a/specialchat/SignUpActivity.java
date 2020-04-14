@@ -71,7 +71,7 @@ public class SignUpActivity extends AppCompatActivity{
 					new Thread(new Runnable(){
 						@Override
 						public void run(){
-							final String dataStr=new__NetworkService.sendData(DataSend);
+							final String dataStr=SocketWithServerService.sendData(DataSend);
 							
 							SignUpActivity.this.runOnUiThread(new Runnable(){
 								@Override
@@ -195,7 +195,7 @@ public class SignUpActivity extends AppCompatActivity{
 				@Override
 				public void run(){
 					String DataSend="{'action':'0005','user_id':'"+user_id+"'}";
-					final String dataStr=new__NetworkService.sendData(DataSend);
+					final String dataStr=SocketWithServerService.sendData(DataSend);
 					SignUpActivity.this.runOnUiThread(new Runnable(){
 						@Override
 						public void run(){

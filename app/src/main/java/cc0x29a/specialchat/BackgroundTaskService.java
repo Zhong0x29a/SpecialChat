@@ -3,12 +3,7 @@ package cc0x29a.specialchat;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Timer;
@@ -17,7 +12,6 @@ import java.util.TimerTask;
 public class BackgroundTaskService extends Service{
 	
 	static Timer syncLM;
-	static Timer syncCL;
 	
 	static String user_id;
 	static String token_key;
@@ -33,7 +27,6 @@ public class BackgroundTaskService extends Service{
 		token_key=preferences.getString("token_key",null);
 		
 		syncLM=new Timer();
-		syncCL=new Timer();
 		
 		syncLM.schedule(new TimerTask(){
 			@Override
@@ -41,18 +34,6 @@ public class BackgroundTaskService extends Service{
 				syncLatestMsg();
 			}
 		},20,3000);
-		
-		syncCL.schedule(new TimerTask(){
-			@Override
-			public void run(){
-				try{
-					syncContactsList();
-				}catch(Exception e){
-					e.printStackTrace();
-				}
-			}
-		},8888,25000);
-		
 		
 	}
 	
@@ -64,7 +45,6 @@ public class BackgroundTaskService extends Service{
 	
 	@Override
 	public void onDestroy(){
-		if(syncCL!=null){syncCL.cancel();}
 		if(syncLM!=null){syncLM.cancel();}
 	}
 	
@@ -96,67 +76,6 @@ public class BackgroundTaskService extends Service{
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-	}
-	
-	/**
-	 * Fetch contacts list (sync from server)
-	 */
-	private void syncContactsList(){
-		if(user_id==null || token_key==null){
-			return;
-		}
-		
-		new Thread(new Runnable(){
-			@Override
-			public void run(){
-				String DataSend="{" +
-					"'client':'SCC-1.0'," +
-					"'action':'0010'," +
-					"'user_id':'"+user_id+"'," +
-					"'token_key':'"+token_key+"'," +
-					"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
-					"}";
-				final String dataStr=new__NetworkService.sendData(DataSend);
-				Looper.prepare();
-				new Handler().post(new Runnable(){
-					@Override
-					public void run(){
-						try{
-							JSONObject data=new JSONObject(dataStr);
-							
-							ContactListSQLiteHelper helper=new ContactListSQLiteHelper(BackgroundTaskService.this,"contact_list.db",1);
-							ChatListSQLiteHelper helper2=new ChatListSQLiteHelper(BackgroundTaskService.this,"chat_list.db",1);
-							
-							// parse data;
-							if(data.getString("status").equals("true")){
-								for(int i=1;i<=Integer.parseInt(data.getString("number"));i++){
-									// Save/update SQLite data
-									JSONObject temp=new JSONObject(data.getString("index_"+i));
-									helper.updateContactList(helper.getReadableDatabase(),temp.getString("user_id"),temp.getString("nickname"));
-									helper2.fixNickname(helper2.getReadableDatabase(),temp.getString("user_id"),temp.getString("nickname"));
-								}
-								
-								// Send broadcast to MainActivity.
-								Intent intent=new Intent();
-								intent.putExtra("todo_action","reLoadContactList");
-								intent.setAction("backgroundTask.action");
-								sendBroadcast(intent);
-								
-								Intent intent2=new Intent();
-								intent2.putExtra("todo_action","reLoadChatList");
-								intent2.setAction("backgroundTask.action");
-								sendBroadcast(intent2);
-							}
-							
-						}catch(JSONException e){
-							e.printStackTrace();
-						}
-					}
-				});
-				Looper.loop();
-			}
-		}).start();
-		
 	}
 	
 }

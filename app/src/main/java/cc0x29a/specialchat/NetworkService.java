@@ -10,7 +10,9 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
@@ -30,6 +32,8 @@ public class NetworkService extends Service{
 	static String token_key;
 	
 	static Timer refreshMsgTimer;
+	static Timer syncCL;
+	
 	
 	@Override
 	public void onCreate(){
@@ -50,10 +54,23 @@ public class NetworkService extends Service{
 			}
 		},1700,3666);
 		
+		syncCL=new Timer();
+		syncCL.schedule(new TimerTask(){
+			@Override
+			public void run(){
+				try{
+					syncContactsList();
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		},8888,25000);
+		
 	}
 	
 	public void onDestroy(){
 		if(refreshMsgTimer!=null){refreshMsgTimer.cancel();}
+		if(syncCL!=null){syncCL.cancel();}
 	}
 	
 	@Override
@@ -101,6 +118,7 @@ public class NetworkService extends Service{
 	 */
 	private void refreshNewMsg(){
 		if(user_id==null || token_key==null){
+			refreshMsgTimer.cancel();
 			return;
 		}
 		
@@ -114,17 +132,14 @@ public class NetworkService extends Service{
 						"\"token_key\":\""+token_key+"\"," +
 						"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
 						"}";
-				final String dataStr=new__NetworkService.sendData(DataSend);
-//				Looper.prepare();
-//				new Handler().post(new Runnable(){
-//					@Override
-//					public void run(){
+				final String dataStr=SocketWithServerService.sendData(DataSend);
+				
 				try{
 					JSONObject data=new JSONObject(dataStr);
 					if(data.getString("is_new_msg").equals("true")){
 						int new_msg_num=Integer.parseInt(data.getString("new_msg_num"));
 						ChatListSQLiteHelper clh=new ChatListSQLiteHelper(NetworkService.this,"chat_list.db",1);
-						for(int i=1;i<=new_msg_num;i++){
+						for(int i=1; i<=new_msg_num; i++){
 							JSONObject jsonTemp=new JSONObject(data.getString("index_"+i));
 							String friend_id=jsonTemp.getString("user_id");
 							String send_time=jsonTemp.getString("send_time");
@@ -165,12 +180,10 @@ public class NetworkService extends Service{
 						intent.setAction("backgroundTask.action");
 						sendBroadcast(intent);
 					}
-				}catch(JSONException e){
+				}catch(JSONException|NullPointerException e){
 					e.printStackTrace();
 				}
-//					}
-//				});
-//				Looper.loop();
+				
 			}
 		}).start();
 	}
@@ -228,6 +241,68 @@ public class NetworkService extends Service{
 		if (notificationManager != null) {
 			notificationManager.notify(PUSH_NOTIFICATION_ID, notification);
 		}
+		
+	}
+	
+	/**
+	 * Fetch contacts list (sync from server)
+	 */
+	private void syncContactsList(){
+		if(user_id==null || token_key==null){
+			syncCL.cancel();
+			return;
+		}
+		
+		new Thread(new Runnable(){
+			@Override
+			public void run(){
+				String DataSend="{" +
+						"'client':'SCC-1.0'," +
+						"'action':'0010'," +
+						"'user_id':'"+user_id+"'," +
+						"'token_key':'"+token_key+"'," +
+						"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
+						"}";
+				final String dataStr=SocketWithServerService.sendData(DataSend);
+				Looper.prepare();
+				new Handler().post(new Runnable(){
+					@Override
+					public void run(){
+						try{
+							JSONObject data=new JSONObject(dataStr);
+							
+							ContactListSQLiteHelper helper=new ContactListSQLiteHelper(NetworkService.this,"contact_list.db",1);
+							ChatListSQLiteHelper helper2=new ChatListSQLiteHelper(NetworkService.this,"chat_list.db",1);
+							
+							// parse data;
+							if(data.getString("status").equals("true")){
+								for(int i=1;i<=Integer.parseInt(data.getString("number"));i++){
+									// Save/update SQLite data
+									JSONObject temp=new JSONObject(data.getString("index_"+i));
+									helper.updateContactList(helper.getReadableDatabase(),temp.getString("user_id"),temp.getString("nickname"));
+									helper2.fixNickname(helper2.getReadableDatabase(),temp.getString("user_id"),temp.getString("nickname"));
+								}
+								
+								// Send broadcast to MainActivity.
+								Intent intent=new Intent();
+								intent.putExtra("todo_action","reLoadContactList");
+								intent.setAction("backgroundTask.action");
+								sendBroadcast(intent);
+								
+								Intent intent2=new Intent();
+								intent2.putExtra("todo_action","reLoadChatList");
+								intent2.setAction("backgroundTask.action");
+								sendBroadcast(intent2);
+							}
+							
+						}catch(JSONException e){
+							e.printStackTrace();
+						}
+					}
+				});
+				Looper.loop();
+			}
+		}).start();
 		
 	}
 	

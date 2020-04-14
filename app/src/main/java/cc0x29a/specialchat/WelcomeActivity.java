@@ -21,7 +21,7 @@ public class WelcomeActivity extends AppCompatActivity{
 		
 		// Add animation to them.
 		AlphaAnimation alpha=new AlphaAnimation(0,1);
-		alpha.setDuration(233);
+		alpha.setDuration(4555);
 		AnimationSet set=new AnimationSet(false);
 		set.addAnimation(alpha);
 		

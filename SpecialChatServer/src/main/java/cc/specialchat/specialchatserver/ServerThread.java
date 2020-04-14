@@ -109,7 +109,7 @@ public class ServerThread extends Thread {
 			msgSend="{'exception':'!'}";
 		}
 		
-		System.out.println(msgSend);
+		System.out.println(msgSend+"\n");
 		
 		return msgSend.replaceAll("\n","<br>");
 	}

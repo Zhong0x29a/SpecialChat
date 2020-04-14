@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity{
 					new Thread(new Runnable(){
 						@Override
 						public void run(){
-							final String dataStr=new__NetworkService.sendData(data_send);
+							final String dataStr=SocketWithServerService.sendData(data_send);
 							
 							LoginActivity.this.runOnUiThread(new Runnable(){
 								@Override
@@ -150,7 +150,7 @@ public class LoginActivity extends AppCompatActivity{
 		new Thread(new Runnable(){
 			@Override
 			public void run(){
-				final String dataStr=new__NetworkService.sendData(dataToSend);
+				final String dataStr=SocketWithServerService.sendData(dataToSend);
 				
 				LoginActivity.this.runOnUiThread(new Runnable(){
 					@Override

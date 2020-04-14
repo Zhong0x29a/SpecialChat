@@ -70,7 +70,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 								"'user_id':'"+user_id+"'," +
 								"'token_key':'"+token_key+"'" +
 								"}";
-							final String dataStr=new__NetworkService.sendData(DataSend);
+							final String dataStr=SocketWithServerService.sendData(DataSend);
 							ContactDetailActivity.this.runOnUiThread(new Runnable(){
 								@Override
 								public void run(){
@@ -112,7 +112,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 					"'ta_id':'"+ta_id+"'," +
 					"'secret':'I love you.'" +
 					"}";
-				final String dataStr=new__NetworkService.sendData(DataSend);
+				final String dataStr=SocketWithServerService.sendData(DataSend);
 				
 				ContactDetailActivity.this.runOnUiThread(new Runnable(){
 					@Override
@@ -159,7 +159,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 					"'ta_id':'"+ta_id+"'," +
 					"'secret':'I love you.'" +
 					"}";
-				final String dataStr=new__NetworkService.sendData(DataSend);
+				final String dataStr=SocketWithServerService.sendData(DataSend);
 				
 				ContactDetailActivity.this.runOnUiThread(new Runnable(){
 					@Override
@@ -171,6 +171,8 @@ public class ContactDetailActivity extends AppCompatActivity{
 								btn.setText("Chat");
 								btn_mode=1;
 							}else{
+								Button btn=findViewById(R.id.btn_add_or_chat);
+								btn.setText("Add");
 								btn_mode=2;
 							}
 						}catch(JSONException e){

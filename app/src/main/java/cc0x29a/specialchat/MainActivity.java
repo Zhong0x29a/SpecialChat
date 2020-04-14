@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity{
 		// UI views init
 		init();
 		
-		startService(new Intent(MainActivity.this,new__NetworkService.class) );
+		startService(new Intent(MainActivity.this,SocketWithServerService.class) );
 		
 		//test codes
 		
@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity{
 			@Override
 			public void run(){
 				String DataSend="{'action':'CheckUpdate','version_number':'"+version_number+"'}";
-				final String dataStr=new__NetworkService.sendData(DataSend);
+				final String dataStr=SocketWithServerService.sendData(DataSend);
 				
 				MainActivity.this.runOnUiThread(new Runnable(){
 					@Override
@@ -457,7 +457,6 @@ public class MainActivity extends AppCompatActivity{
 	 */
 	private void normalMode(){
 		startService(new Intent(this,BackgroundTaskService.class));
-		startService(new Intent(this,NetworkService.class));
 		
 		// to clear timers in front
 		cancelRefreshTimers();
@@ -703,7 +702,7 @@ public class MainActivity extends AppCompatActivity{
 									"\"new_user_name\":\""+new_user_name+"\"," +
 									"\"new_user_phone\":\""+new_user_phone+"\""+
 									"}";
-								final String dataStr=new__NetworkService.sendData(DataSend);
+								final String dataStr=SocketWithServerService.sendData(DataSend);
 								
 								MainActivity.this.runOnUiThread(new Runnable(){
 									@Override
@@ -818,7 +817,7 @@ public class MainActivity extends AppCompatActivity{
 						"\"token_key\":\""+token_key+"\"," +
 						"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
 						"}";
-				final String dataStr=new__NetworkService.sendData(DataSend);
+				final String dataStr=SocketWithServerService.sendData(DataSend);
 				
 				MainActivity.this.runOnUiThread(new Runnable(){
 					@Override
@@ -838,7 +837,7 @@ public class MainActivity extends AppCompatActivity{
 								
 								changeViewToFontLogin();
 							}
-						}catch(JSONException e){
+						}catch(JSONException|NullPointerException e){
 							e.printStackTrace();
 						}
 					}
