@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#333"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:gravity="top"
     android:orientation="vertical">
 
@@ -35,7 +35,7 @@
         android:id="@+id/detail_userName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Special Chat"
+        android:text="@string/app_name"
         android:background="@drawable/set_button_selector"
         android:textSize="20sp"
         android:paddingVertical="3dp"
@@ -58,13 +58,26 @@
         android:paddingVertical="3dp"
         android:paddingHorizontal="9dp"/>
 
-    <Button
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/set_button_selector"
-        android:layout_marginVertical="20dp"
-        android:layout_marginHorizontal="88dp"
-        android:text="Add"
-        android:id="@+id/btn_add_or_chat"/>
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="50"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/set_button_selector"
+            android:layout_marginVertical="20dp"
+            android:layout_weight="50"
+            android:text=""
+            android:id="@+id/btn_add_or_chat"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="50"/>
 
+    </LinearLayout>
 </LinearLayout>

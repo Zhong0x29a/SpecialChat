@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.AnimationSet;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,12 +16,17 @@ public class WelcomeActivity extends AppCompatActivity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-//		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_welcome);
 		
+		// Add animation to them.
+		AlphaAnimation alpha=new AlphaAnimation(0,1);
+		alpha.setDuration(233);
+		AnimationSet set=new AnimationSet(false);
+		set.addAnimation(alpha);
 		
 		final TextView tv=findViewById(R.id.welcome_tv);
+		tv.setAnimation(set);
 		
 		new Handler().postDelayed(new Runnable() {
 			@Override
@@ -67,5 +74,7 @@ public class WelcomeActivity extends AppCompatActivity{
 				finish();
 			}
 		});
+		
 	}
+	
 }

@@ -55,7 +55,7 @@ public class ServerThread extends Thread {
 		try{
 			switch(dataJsonReturn.getString("action")){
 				case "beat": // heartbeat.
-					msgSend="{'alive':'true'}";
+					msgSend="{'alive':true}";
 					break;
 				case "CheckUpdate": // check update
 					msgSend=ProcessAction.action_checkUpdate(dataJsonReturn);

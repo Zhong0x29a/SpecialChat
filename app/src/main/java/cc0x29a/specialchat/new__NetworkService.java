@@ -4,6 +4,9 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -31,7 +34,7 @@ public class new__NetworkService extends Service{
 	
 	@Override
 	public void onCreate(){
-		startConnect = new StartConnect();
+		startConnect =new StartConnect();
 		startConnect.start();
 	}
 	
@@ -49,7 +52,7 @@ public class new__NetworkService extends Service{
 	*   0................
 	* */
 	
-	class StartConnect extends Thread{ //todo this need to be perfected.
+	static class StartConnect extends Thread{ //todo this need to be perfected.
 		@Override
 		public void run(){
 			try{
@@ -63,15 +66,14 @@ public class new__NetworkService extends Service{
 							socket.setSoTimeout(30000);
 							
 							br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
-							
 							os=socket.getOutputStream();
 							
+							// todo Send "heartbeat" to server.
+							
 						}catch(IOException e){
-//							Toast.makeText(new__NetworkService.this,"Network error!",Toast.LENGTH_SHORT).show();
 							e.printStackTrace();
 						}
 					}
-//					System.out.println("Connection status:\nisClosed:"+(!(socket==null) && socket.isClosed())+"\nisConnected:"+ (!(socket==null) && socket.isConnected()) );
 					try{
 						sleep(6000);
 					}catch(InterruptedException e){
@@ -109,6 +111,7 @@ public class new__NetworkService extends Service{
 			String str=br.readLine();
 			System.out.println(data+"\n"+str);
 			isIOBusy=false;
+			
 			return str;
 		}catch(IOException|InterruptedException e){
 			try{
@@ -120,16 +123,46 @@ public class new__NetworkService extends Service{
 		return "";
 	}
 	
+	public static class heart extends Thread{
+		@Override
+		public void run(){
+			while(isSocketOn()){
+				String dataStr=sendData("{'action':'beat'}");
+				try{
+					JSONObject data=new JSONObject(dataStr);
+					if(!data.getBoolean("alive")){
+						closeSocket();
+					}
+				}catch(JSONException e){
+					e.printStackTrace();
+				}
+				try{
+					sleep(30000);
+				}catch(InterruptedException e){
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	/**
+	 * @return  Weather the socket started.
+	 */
 	public static boolean isSocketOn(){
 		return !(socket==null) && (socket.isConnected() && !socket.isClosed());
 	}
 	
-	public static void closeSocket() throws Exception{
-		if(socket==null){return;}
-		socket.shutdownInput();
-		socket.shutdownOutput();
-		socket.close();
-		socket=null;
+	public static void closeSocket(){
+		try{
+			socket.shutdownInput();
+			socket.shutdownOutput();
+			socket.close();
+			socket=null;
+		}catch(NullPointerException e){
+//			e.printStackTrace();
+		}catch(IOException e){
+			socket=null;
+		}
 	}
 	
 }

@@ -616,7 +616,7 @@ public class MainActivity extends AppCompatActivity{
 		user_phone=preferences.getString("user_phone","null");
 		
 		my_name.setText(user_name);
-		my_id.setText("id:"+user_id);
+		my_id.setText(String.format("id:%s",user_id));
 		my_phone.setText(user_phone);
 		
 		btn_edit.setOnClickListener(new View.OnClickListener(){

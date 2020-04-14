@@ -36,7 +36,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 		ta_id= (bundle != null) ? bundle.getString("user_id") : null;
 		
 		TextView tv_user_id=findViewById(R.id.detail_userID);
-		tv_user_id.setText(ta_id); //todo phone has bug!
+		tv_user_id.setText(ta_id);
 		
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 		user_id=preferences.getString("user_id",null);
@@ -46,7 +46,8 @@ public class ContactDetailActivity extends AppCompatActivity{
 			@Override
 			public void onClick(View v){
 				
-				if(btn_mode==1){ // chat
+				if(btn_mode==1){
+					// chat
 					// Start chat activity, send user_id and ta's nickname by bundle
 					Intent intent=new Intent(v.getContext(),ChatActivity.class);
 					Bundle bundle=new Bundle();
@@ -55,7 +56,8 @@ public class ContactDetailActivity extends AppCompatActivity{
 					intent.putExtras(bundle);
 					startActivity(intent);
 					finish();
-				}else if(btn_mode==2){ // add contact
+				}else if(btn_mode==2){
+					// add contact
 					if(token_key==null || user_id==null){
 						Toast.makeText(ContactDetailActivity.this,"Login info error!",Toast.LENGTH_LONG).show();
 						return;
@@ -104,6 +106,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 			}
 		});
 		
+		// Fetch contact's detail
 		new Thread(new Runnable(){
 			@Override
 			public void run(){
@@ -133,6 +136,10 @@ public class ContactDetailActivity extends AppCompatActivity{
 								Toast.makeText(ContactDetailActivity.this,"Error!",Toast.LENGTH_LONG).show();
 							}
 						}catch(JSONException e){
+							TextView tv_user_name=findViewById(R.id.detail_userName);
+							TextView tv_user_phone=findViewById(R.id.detail_userPhone);
+							tv_user_name.setText(R.string.error);
+							tv_user_phone.setText(R.string.error);
 							e.printStackTrace();
 						}
 					}
@@ -145,6 +152,11 @@ public class ContactDetailActivity extends AppCompatActivity{
 		new Thread(new Runnable(){
 			@Override
 			public void run(){
+				try{
+					Thread.sleep(500);
+				}catch(InterruptedException e){
+					e.printStackTrace();
+				}
 				String DataSend="{" +
 					"'client':'SCC-1.0'," +
 					"'action':'0011'," +
@@ -167,6 +179,8 @@ public class ContactDetailActivity extends AppCompatActivity{
 								btn_mode=2;
 							}
 						}catch(JSONException e){
+							Button btn=findViewById(R.id.btn_add_or_chat);
+							btn.setText(R.string.error);
 							e.printStackTrace();
 						}
 					}

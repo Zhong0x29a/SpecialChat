@@ -12,6 +12,7 @@
     <string name="nbsp">" "</string>
     <string name="label_phone">Phone:</string>
     <string name="edit">Edit</string>
+    <string name="error">Error</string>
     <string name="an_icon">an icon</string>
     <string name="add_contacts">Add Contacts</string>
     <string name="stop_auto_refresh">Stop auto refresh</string>
