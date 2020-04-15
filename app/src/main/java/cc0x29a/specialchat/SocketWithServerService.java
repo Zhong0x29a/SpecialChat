@@ -101,12 +101,6 @@ public class SocketWithServerService extends Service{
 				ex.printStackTrace();
 			}
 			
-//			try{
-//				Thread.sleep(8888);
-//			}catch(InterruptedException ee){
-//				ee.printStackTrace();
-//			}
-//			StartConnect();
 		}
 	}
 	
@@ -135,7 +129,12 @@ public class SocketWithServerService extends Service{
 			}catch(Exception ex){
 				ex.printStackTrace();
 			}
-			StartConnect();
+			new Thread(new Runnable(){
+				@Override
+				public void run(){
+					StartConnect();
+				}
+			}).start();
 		}
 		return "{'network':'error'}";
 	}
