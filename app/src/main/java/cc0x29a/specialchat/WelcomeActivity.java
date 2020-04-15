@@ -17,6 +17,15 @@ public class WelcomeActivity extends AppCompatActivity{
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		
+//		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+//			getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+//			Explode explode=new Explode();
+//			explode.setDuration(2330);
+//
+//			getWindow().setExitTransition(explode);
+//		}
+		
 		setContentView(R.layout.activity_welcome);
 		
 		// Add animation to them.

@@ -34,6 +34,8 @@ public class SocketWithServerService extends Service{
 	
 	@Override
 	public void onCreate(){
+		startService(new Intent(SocketWithServerService.this,NetworkService.class));
+		
 		new Thread(new Runnable(){
 			@Override
 			public void run(){
@@ -51,10 +53,15 @@ public class SocketWithServerService extends Service{
 	}
 	
 	/*
+	* todo: issues:
+	*  Cannot reconnect to server when connection broke!
+	* */
+	
+	/*
 	* todo next ver：
 	*   Verify the client at the first connection.
 	* */
-	void StartConnect(){ //todo this need to be perfected.
+	static void StartConnect(){ //todo this need to be perfected.
 		try{
 			while(true){
 				if(!isSocketOn()){
@@ -73,10 +80,6 @@ public class SocketWithServerService extends Service{
 						if(heart!=null) {heart.interrupt();}
 						
 						heart=new heart();
-						
-						stopService(new Intent(SocketWithServerService.this,NetworkService.class));
-						
-						startService(new Intent(SocketWithServerService.this,NetworkService.class));
 						
 					}catch(IOException e){
 						closeSocket();
@@ -97,15 +100,20 @@ public class SocketWithServerService extends Service{
 			}catch(Exception ex){
 				ex.printStackTrace();
 			}
-			try{
-				Thread.sleep(6000);
-			}catch(InterruptedException ee){
-				ee.printStackTrace();
-			}
-			StartConnect();
+			
+//			try{
+//				Thread.sleep(8888);
+//			}catch(InterruptedException ee){
+//				ee.printStackTrace();
+//			}
+//			StartConnect();
 		}
 	}
 	
+	/**
+	 * @param data , the data send to server
+	 * @return data returned from server.
+	 */
 	public static String sendData(String data){
 		try{
 			int startTime=MyTools.getCurrentTime();
@@ -120,15 +128,16 @@ public class SocketWithServerService extends Service{
 			System.out.println(data+"\n"+str);
 			isIOBusy=false;
 			
-			return str!=null ? str : "";
+			return str != null ? str : "{'network':'error'}";
 		}catch(IOException|InterruptedException e){
 			try{
 				closeSocket();
 			}catch(Exception ex){
 				ex.printStackTrace();
 			}
+			StartConnect();
 		}
-		return "";
+		return "{'network':'error'}";
 	}
 	
 	public static class heart extends Thread{
@@ -159,7 +168,13 @@ public class SocketWithServerService extends Service{
 	 * @return  Weather the socket started.
 	 */
 	public static boolean isSocketOn(){
-		return !(socket==null) && (socket.isConnected() && !socket.isClosed());
+		if(socket==null){
+			return false;
+		}
+		if(socket.isClosed()){
+			return false;
+		}
+		return (socket.isConnected() && !socket.isClosed());
 	}
 	
 	public static void closeSocket(){
@@ -174,7 +189,7 @@ public class SocketWithServerService extends Service{
 			socket.close();
 			socket=null;
 		}catch(NullPointerException e){
-//			e.printStackTrace();
+			e.printStackTrace();
 		}catch(IOException e){
 			socket=null;
 		}

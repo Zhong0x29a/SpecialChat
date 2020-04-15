@@ -113,8 +113,6 @@ public class MainActivity extends AppCompatActivity{
 		//test codes end
 		
 		
-		
-		
 	}
 	
 	@Override
@@ -447,6 +445,10 @@ public class MainActivity extends AppCompatActivity{
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 		if(preferences.getInt("is_login",0)!=1){
 			changeViewToFontLogin();
+		}else{
+			findViewById(R.id.font_login_linear_layout).setVisibility(View.GONE);
+			findViewById(R.id.main_linear_layout).setVisibility(View.VISIBLE);
+			findViewById(R.id.main_relative_layout).setVisibility(View.VISIBLE);
 		}
 	}
 	
