@@ -54,7 +54,7 @@ public class ChatActivity extends AppCompatActivity{
 		Bundle bundle = this.getIntent().getExtras();
 		ta_id= (null != bundle) ? bundle.getString("user_id") : null;
 		ContactListSQLiteHelper helper=new ContactListSQLiteHelper(this,"contact_list.db",1);
-		nickname=helper.fetchNickname(helper.getReadableDatabase(),ta_id);
+		nickname=MyTools.resolveSpecialChar( helper.fetchNickname(helper.getReadableDatabase(), ta_id ) );
 		
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 		my_id=preferences.getString("user_id",null);

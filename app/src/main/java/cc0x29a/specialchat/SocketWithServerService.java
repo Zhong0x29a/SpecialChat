@@ -42,6 +42,7 @@ public class SocketWithServerService extends Service{
 				StartConnect();
 			}
 		}).start();
+		
 	}
 	
 	public void onDestroy(){
@@ -71,6 +72,7 @@ public class SocketWithServerService extends Service{
 						socket=new Socket();
 //						socket.connect(new InetSocketAddress("server.specialchat.cn",21027),1111);
 						socket.connect(new InetSocketAddress("192.168.1.18",21027),1111);
+						
 						socket.setSoTimeout(30000);
 						
 						br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
@@ -80,6 +82,7 @@ public class SocketWithServerService extends Service{
 						if(heart!=null) {heart.interrupt();}
 						
 						heart=new heart();
+						heart.start();
 						
 					}catch(IOException e){
 						closeSocket();
@@ -100,9 +103,12 @@ public class SocketWithServerService extends Service{
 			}catch(Exception ex){
 				ex.printStackTrace();
 			}
-			
+		}finally{
+			tryingConnect=false;
 		}
 	}
+	
+	static boolean tryingConnect=false;
 	
 	/**
 	 * @param data , the data send to server
@@ -129,12 +135,22 @@ public class SocketWithServerService extends Service{
 			}catch(Exception ex){
 				ex.printStackTrace();
 			}
-			new Thread(new Runnable(){
-				@Override
-				public void run(){
-					StartConnect();
-				}
-			}).start();
+			if(!tryingConnect){
+				tryingConnect=true;
+				new Thread(new Runnable(){
+					@Override
+					public void run(){
+						try{
+							Thread.sleep(8000);
+						}catch(InterruptedException ex){
+							ex.printStackTrace();
+						}
+						StartConnect();
+					}
+				}).start();
+			}
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 		return "{'network':'error'}";
 	}
@@ -177,11 +193,11 @@ public class SocketWithServerService extends Service{
 	}
 	
 	public static void closeSocket(){
-		try{
-			NetworkService.manuallyStop();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
+//		try{
+//			NetworkService.manuallyStop();
+//		}catch(Exception e){
+//			e.printStackTrace();
+//		}
 		try{
 			socket.shutdownInput();
 			socket.shutdownOutput();
