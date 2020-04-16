@@ -39,7 +39,9 @@ public class SocketWithServerService extends Service{
 		new Thread(new Runnable(){
 			@Override
 			public void run(){
-				StartConnect();
+				synchronized(this){
+					StartConnect();
+				}
 			}
 		}).start();
 		
@@ -64,9 +66,12 @@ public class SocketWithServerService extends Service{
 	* */
 	static void StartConnect(){ //todo this need to be perfected.
 		try{
+			if(tryingConnect){ return; }
+			tryingConnect=true;
 			while(true){
 				if(!isSocketOn()){
 					try{
+						closeSocket();
 						System.out.println("Retry for new connection.");
 						
 						socket=new Socket();
@@ -79,7 +84,7 @@ public class SocketWithServerService extends Service{
 						os=socket.getOutputStream();
 						
 						// Send "heartbeat" to server.
-						if(heart!=null) {heart.interrupt();}
+						try{ if(heart!=null){ heart.interrupt(); } }catch(Exception e){e.printStackTrace();}
 						
 						heart=new heart();
 						heart.start();
@@ -119,7 +124,17 @@ public class SocketWithServerService extends Service{
 			int startTime=MyTools.getCurrentTime();
 			while(isIOBusy || !isSocketOn()){
 				Thread.sleep(500);
-				if(MyTools.getCurrentTime()>=startTime+5) return "";
+				if(MyTools.getCurrentTime()>=startTime+5) {
+					new Thread(new Runnable(){
+						@Override
+						public void run(){
+							synchronized(this){
+								StartConnect();
+							}
+						}
+					}).start();
+					return "";
+				}
 			}
 			
 			isIOBusy=true;
@@ -135,20 +150,14 @@ public class SocketWithServerService extends Service{
 			}catch(Exception ex){
 				ex.printStackTrace();
 			}
-			if(!tryingConnect){
-				tryingConnect=true;
-				new Thread(new Runnable(){
-					@Override
-					public void run(){
-						try{
-							Thread.sleep(8000);
-						}catch(InterruptedException ex){
-							ex.printStackTrace();
-						}
+			new Thread(new Runnable(){
+				@Override
+				public void run(){
+					synchronized(this){
 						StartConnect();
 					}
-				}).start();
-			}
+				}
+			}).start();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -182,14 +191,14 @@ public class SocketWithServerService extends Service{
 	/**
 	 * @return  Weather the socket started.
 	 */
-	public static boolean isSocketOn(){
+	public static boolean isSocketOn(){ //todo bug cased by he!
 		if(socket==null){
 			return false;
 		}
 		if(socket.isClosed()){
 			return false;
 		}
-		return (socket.isConnected() && !socket.isClosed());
+		return (socket.isConnected());
 	}
 	
 	public static void closeSocket(){
