@@ -93,7 +93,7 @@ public class NetworkService extends Service{
 	 *     token_key:[token_key]
 	 * }
 	 *
-	 * return{
+	 * return{ //todo: rebuild the message format, use JSONArray !!
 	 *     is_new_msg:[true|false],
 	 *     new_msg_num:[new_message_number],    // 50 pieces MAX !
 	 *     // below data sort by time, the oldest on top !!

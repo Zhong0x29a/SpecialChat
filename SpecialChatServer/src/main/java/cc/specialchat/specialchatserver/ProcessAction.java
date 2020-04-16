@@ -94,7 +94,7 @@ class ProcessAction{
 				if((msg_temp=MsgCacheSQLite.fetchMsg(user_id)).length>0){
 					StringBuffer p;
 					if(msg_temp != null && !msg_temp[0][0].equals("0")){
-						p=new StringBuffer("{\"new_msg_num\":\""+msg_temp[0][0]+"\",");
+						p=new StringBuffer("{\"new_msg_num\":\""+msg_temp[0][0]+"\","); // todo: rebuild the message format, use JSONArray!
 						for(int i=0;i<Integer.parseInt(msg_temp[0][0]);i++){
 							p.append("\"index_").append((i+1)).append("\":" +
 									"\"{'user_id':'").append(msg_temp[i+1][1]).append("'," +
