@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 public class SocketWithServerService extends Service{
 	
@@ -32,18 +33,20 @@ public class SocketWithServerService extends Service{
 	
 	public static boolean isIOBusy;
 	
+	private static List<Object> StartConnectionThreads;
+	
 	@Override
 	public void onCreate(){
 		startService(new Intent(SocketWithServerService.this,NetworkService.class));
 		
-		new Thread(new Runnable(){
+		Thread startConnectionThread=new Thread(new Runnable(){
 			@Override
 			public void run(){
-				synchronized(this){
-					StartConnection();
-				}
+				StartConnection();
 			}
-		}).start();
+		},"StartConnectionThread");
+		
+		StartConnectionThreads.add(startConnectionThread);
 		
 	}
 	
@@ -98,7 +101,6 @@ public class SocketWithServerService extends Service{
 					Thread.sleep(6000);
 				}catch(InterruptedException e){
 					e.printStackTrace();
-					return;
 				}
 			}
 		}catch(Exception e){
@@ -128,12 +130,10 @@ public class SocketWithServerService extends Service{
 					new Thread(new Runnable(){
 						@Override
 						public void run(){
-							synchronized(this){
-								StartConnection();
-							}
+							StartConnection();
 						}
-					},"StartConnectionThread").start(); // todo here
-					return "";
+					},"StartConnectionThread").start();
+					return "{'network':'error'}";
 				}
 			}
 			
@@ -155,7 +155,7 @@ public class SocketWithServerService extends Service{
 				public void run(){
 					StartConnection();
 				}
-			}).start();
+			},"StartConnectionThread").start();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
