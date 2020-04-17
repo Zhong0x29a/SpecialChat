@@ -40,7 +40,7 @@ public class SocketWithServerService extends Service{
 			@Override
 			public void run(){
 				synchronized(this){
-					StartConnect();
+					StartConnection();
 				}
 			}
 		}).start();
@@ -64,7 +64,7 @@ public class SocketWithServerService extends Service{
 	* todo next ver：
 	*   Verify the client at the first connection.
 	* */
-	static void StartConnect(){ //todo this need to be perfected.
+	static void StartConnection(){ //todo this need to be perfected.
 		try{
 			if(tryingConnect){ return; }
 			tryingConnect=true;
@@ -129,10 +129,10 @@ public class SocketWithServerService extends Service{
 						@Override
 						public void run(){
 							synchronized(this){
-								StartConnect();
+								StartConnection();
 							}
 						}
-					}).start();
+					},"StartConnectionThread").start(); // todo here
 					return "";
 				}
 			}
@@ -153,9 +153,7 @@ public class SocketWithServerService extends Service{
 			new Thread(new Runnable(){
 				@Override
 				public void run(){
-					synchronized(this){
-						StartConnect();
-					}
+					StartConnection();
 				}
 			}).start();
 		}catch(Exception e){
@@ -191,14 +189,11 @@ public class SocketWithServerService extends Service{
 	/**
 	 * @return  Weather the socket started.
 	 */
-	public static boolean isSocketOn(){ //todo bug cased by he!
+	public static boolean isSocketOn(){ //todo: bug cased by he!
 		if(socket==null){
 			return false;
 		}
-		if(socket.isClosed()){
-			return false;
-		}
-		return (socket.isConnected());
+		return !socket.isClosed();
 	}
 	
 	public static void closeSocket(){
