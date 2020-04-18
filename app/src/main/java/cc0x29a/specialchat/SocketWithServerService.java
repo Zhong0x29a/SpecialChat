@@ -14,7 +14,6 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 public class SocketWithServerService extends Service{
 	
@@ -33,20 +32,21 @@ public class SocketWithServerService extends Service{
 	
 	public static boolean isIOBusy;
 	
-	private static List<Object> StartConnectionThreads;
+//	private static List<Object> StartConnectionThreads;
+	
+	static boolean tryingConnect=false;
+	
 	
 	@Override
 	public void onCreate(){
 		startService(new Intent(SocketWithServerService.this,NetworkService.class));
 		
-		Thread startConnectionThread=new Thread(new Runnable(){
+		new Thread(new Runnable(){
 			@Override
 			public void run(){
 				StartConnection();
 			}
-		},"StartConnectionThread");
-		
-		StartConnectionThreads.add(startConnectionThread);
+		},"StartConnectionThread").start();
 		
 	}
 	
@@ -59,11 +59,6 @@ public class SocketWithServerService extends Service{
 	}
 	
 	/*
-	* todo: issues:
-	*  Cannot reconnect to server when connection broke!
-	* */
-	
-	/*
 	* todo next ver：
 	*   Verify the client at the first connection.
 	* */
@@ -71,51 +66,40 @@ public class SocketWithServerService extends Service{
 		try{
 			if(tryingConnect){ return; }
 			tryingConnect=true;
-			while(true){
-				if(!isSocketOn()){
-					try{
-						closeSocket();
-						System.out.println("Retry for new connection.");
-						
-						socket=new Socket();
-//						socket.connect(new InetSocketAddress("server.specialchat.cn",21027),1111);
-						socket.connect(new InetSocketAddress("192.168.1.18",21027),1111);
-						
-						socket.setSoTimeout(30000);
-						
-						br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
-						os=socket.getOutputStream();
-						
-						// Send "heartbeat" to server.
-						try{ if(heart!=null){ heart.interrupt(); } }catch(Exception e){e.printStackTrace();}
-						
-						heart=new heart();
-						heart.start();
-						
-					}catch(IOException e){
-						closeSocket();
-						e.printStackTrace();
-					}
-				}
+			if(!isSocketOn()){
 				try{
-					Thread.sleep(6000);
-				}catch(InterruptedException e){
-					e.printStackTrace();
+					closeSocket();
+					System.out.println("Retry for new connection.");
+					
+					socket=new Socket();
+//						socket.connect(new InetSocketAddress("server.specialchat.cn",21027),1111);
+					socket.connect(new InetSocketAddress("192.168.1.18",21027),1111);
+					
+					socket.setSoTimeout(30000);
+					
+					//
+					System.out.println("Connected.\n");
+					
+					br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
+					os=socket.getOutputStream();
+					
+					// Send "heartbeat" to server.
+//					if(heart!=null){heart.interrupt();}
+					
+					heart=new heart();
+					heart.start();
+				}catch(IOException e){
+					closeSocket();
+//					e.printStackTrace();
 				}
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-			try{
-				closeSocket();
-			}catch(Exception ex){
-				ex.printStackTrace();
-			}
+			closeSocket();
 		}finally{
 			tryingConnect=false;
 		}
 	}
-	
-	static boolean tryingConnect=false;
 	
 	/**
 	 * @param data , the data send to server
@@ -124,16 +108,11 @@ public class SocketWithServerService extends Service{
 	public static String sendData(String data){
 		try{
 			int startTime=MyTools.getCurrentTime();
-			while(isIOBusy || !isSocketOn()){
-				Thread.sleep(500);
-				if(MyTools.getCurrentTime()>=startTime+5) {
-					new Thread(new Runnable(){
-						@Override
-						public void run(){
-							StartConnection();
-						}
-					},"StartConnectionThread").start();
-					return "{'network':'error'}";
+			while(isIOBusy){
+				Thread.sleep(333);
+				if(MyTools.getCurrentTime() > startTime+4) {
+					System.out.println("IO busy! ");
+					return "{'Error':'IO busy! '}";
 				}
 			}
 			
@@ -144,21 +123,15 @@ public class SocketWithServerService extends Service{
 			isIOBusy=false;
 			
 			return str != null ? str : "{'network':'error'}";
-		}catch(IOException|InterruptedException e){
-			try{
-				closeSocket();
-			}catch(Exception ex){
-				ex.printStackTrace();
-			}
+		}catch(IOException|InterruptedException|NullPointerException e){
 			new Thread(new Runnable(){
 				@Override
 				public void run(){
 					StartConnection();
 				}
 			},"StartConnectionThread").start();
-		}catch(Exception e){
-			e.printStackTrace();
 		}
+		isIOBusy=false;
 		return "{'network':'error'}";
 	}
 	
@@ -173,24 +146,24 @@ public class SocketWithServerService extends Service{
 						closeSocket();
 					}
 				}catch(JSONException e){
-					closeSocket();
 					e.printStackTrace();
+					closeSocket();
+					return;
 				}
 				try{
 					sleep(28888);
 				}catch(InterruptedException e){
-					e.printStackTrace();
+//					e.printStackTrace();
 				}
 			}
-			this.interrupt();
 		}
 	}
 	
 	/**
 	 * @return  Weather the socket started.
 	 */
-	public static boolean isSocketOn(){ //todo: bug cased by he!
-		if(socket==null){
+	public static boolean isSocketOn(){
+		if(socket == null){
 			return false;
 		}
 		return !socket.isClosed();
@@ -206,10 +179,9 @@ public class SocketWithServerService extends Service{
 			socket.shutdownInput();
 			socket.shutdownOutput();
 			socket.close();
-			socket=null;
-		}catch(NullPointerException e){
-			e.printStackTrace();
-		}catch(IOException e){
+		}catch(NullPointerException|IOException e){
+//			e.printStackTrace();
+		}finally{
 			socket=null;
 		}
 	}

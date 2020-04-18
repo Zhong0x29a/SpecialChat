@@ -123,9 +123,8 @@ public class MainActivity extends AppCompatActivity{
 	@Override
 	protected void onStart(){
 		super.onStart();
-		// choose whether to redirect page
 		
-		//todo test
+		// choose whether to redirect page
 		redirect();
 		
 		normalMode();
@@ -142,6 +141,7 @@ public class MainActivity extends AppCompatActivity{
 		filter.addAction("backgroundTask.action");
 		registerReceiver(receiver, filter);
 		
+		NetworkService.cancelNotification();
 	}
 	
 	// stop background tasks service
