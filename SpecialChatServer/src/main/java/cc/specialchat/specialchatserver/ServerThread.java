@@ -32,8 +32,8 @@ public class ServerThread extends Thread {
 			while(socket!=null && !socket.isClosed() && socket.isConnected()){
 				String temp;
 				while((temp=br.readLine())!=null){
-					os.write((ProcessData(temp)+"\n").getBytes(StandardCharsets.UTF_8));
-					sleep(66);
+					os.write( (ProcessData(temp.replaceAll("<br>","\n")).replaceAll("\n","<br>") +"\n").getBytes(StandardCharsets.UTF_8));
+					sleep(88);
 				}
 			}
 		}catch(Exception e){

@@ -32,10 +32,7 @@ public class SocketWithServerService extends Service{
 	
 	public static boolean isIOBusy;
 	
-//	private static List<Object> StartConnectionThreads;
-	
 	static boolean tryingConnect=false;
-	
 	
 	@Override
 	public void onCreate(){
@@ -51,11 +48,7 @@ public class SocketWithServerService extends Service{
 	}
 	
 	public void onDestroy(){
-		try{
-			closeSocket();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
+		closeSocket();
 	}
 	
 	/*
@@ -67,31 +60,21 @@ public class SocketWithServerService extends Service{
 			if(tryingConnect){ return; }
 			tryingConnect=true;
 			if(!isSocketOn()){
-				try{
-					closeSocket();
-					System.out.println("Retry for new connection.");
-					
-					socket=new Socket();
+				closeSocket();
+				System.out.println("Retry for new connection.");
+				
+				socket=new Socket();
 //						socket.connect(new InetSocketAddress("server.specialchat.cn",21027),1111);
-					socket.connect(new InetSocketAddress("192.168.1.18",21027),1111);
-					
-					socket.setSoTimeout(30000);
-					
-					//
-					System.out.println("Connected.\n");
-					
-					br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
-					os=socket.getOutputStream();
-					
-					// Send "heartbeat" to server.
-//					if(heart!=null){heart.interrupt();}
-					
-					heart=new heart();
-					heart.start();
-				}catch(IOException e){
-					closeSocket();
-//					e.printStackTrace();
-				}
+				socket.connect(new InetSocketAddress("192.168.1.18",21027),1111);
+				
+				socket.setSoTimeout(30000);
+				
+				br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
+				os=socket.getOutputStream();
+				
+				// a thread that Send "heartbeat" to server.
+				heart=new heart();
+				heart.start();
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -110,19 +93,19 @@ public class SocketWithServerService extends Service{
 			int startTime=MyTools.getCurrentTime();
 			while(isIOBusy){
 				Thread.sleep(333);
-				if(MyTools.getCurrentTime() > startTime+4) {
+				if( MyTools.getCurrentTime() > (startTime+4) ) {
 					System.out.println("IO busy! ");
 					return "{'Error':'IO busy! '}";
 				}
 			}
 			
 			isIOBusy=true;
-			os.write((data+"\n").getBytes(StandardCharsets.UTF_8));
+			os.write((data.replaceAll("\n","<br>")+"\n").getBytes(StandardCharsets.UTF_8));
 			String str=br.readLine();
 			System.out.println(data+"\n"+str);
 			isIOBusy=false;
 			
-			return str != null ? str : "{'network':'error'}";
+			return str != null ? str.replaceAll("<br>","\n") : "{'network':'error'}";
 		}catch(IOException|InterruptedException|NullPointerException e){
 			new Thread(new Runnable(){
 				@Override
@@ -139,19 +122,15 @@ public class SocketWithServerService extends Service{
 		@Override
 		public void run(){
 			while(isSocketOn()){
-				String dataStr=sendData("{'action':'beat'}");
 				try{
+					String dataStr=sendData("{'action':'beat'}");
 					JSONObject data=new JSONObject(dataStr);
 					if(!data.getBoolean("alive")){
 						closeSocket();
 					}
-				}catch(JSONException e){
-					e.printStackTrace();
-					closeSocket();
-					return;
-				}
-				try{
 					sleep(28888);
+				}catch(JSONException e){
+					closeSocket();
 				}catch(InterruptedException e){
 //					e.printStackTrace();
 				}

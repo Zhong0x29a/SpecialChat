@@ -111,7 +111,7 @@ class MyTools{
 					.replaceAll("&#123;","}")
 					.replaceAll("&#42;","*")
 					.replaceAll("&#47;","/")
-					.replaceAll("&#92;","\\")
+					.replaceAll("&#92;","\\\\")
 					.replaceAll("&#46;",".")
 					.replaceAll("&#44;",",")
 					.replaceAll("&#33;","!");
