@@ -136,7 +136,7 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 					null,null,null,null,"last_chat_time desc");
 			List<String[]> data=new ArrayList<>();
 			while(cursor.moveToNext()){
-				String[] temp=new String[5]; //todo
+				String[] temp=new String[5];
 				temp[0]=cursor.getInt(cursor.getColumnIndex("index_num"))+"";
 				temp[1]=cursor.getInt(cursor.getColumnIndex("user_id"))+"";
 				temp[2]=MyTools.resolveSpecialChar(cursor.getString(cursor.getColumnIndex("nickname")));

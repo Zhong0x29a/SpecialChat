@@ -101,10 +101,10 @@ public class NetworkService extends Service{
 //		},8888,25000);
 //	}
 	
-	public static void manuallyStop(){
-		if(refreshMsgTimer!=null){refreshMsgTimer.cancel();}
-		if(syncCL!=null){syncCL.cancel();}
-	}
+//	public static void manuallyStop(){
+//		if(refreshMsgTimer!=null){refreshMsgTimer.cancel();}
+//		if(syncCL!=null){syncCL.cancel();}
+//	}
 	
 	@Override
 	public IBinder onBind(Intent intent){

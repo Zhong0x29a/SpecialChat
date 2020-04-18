@@ -54,6 +54,8 @@ public class SocketWithServerService extends Service{
 	/*
 	* todo next ver：
 	*   Verify the client at the first connection.
+	*   Start another socket to listen live message from server.
+	*       such like refresh messages, etc. .
 	* */
 	static void StartConnection(){ //todo this need to be perfected.
 		try{

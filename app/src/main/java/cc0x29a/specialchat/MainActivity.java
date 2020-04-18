@@ -51,7 +51,7 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity{
 	
-	static int version_number=20040401;
+	static int version_number=20041801;
 	
 	static String user_id;
 	static String token_key;
@@ -484,7 +484,7 @@ public class MainActivity extends AppCompatActivity{
 		}
 	}
 	
-	// def 2 Timer(s)
+	// def 1 Timer(s)
 	static Timer checkLoginTimer;
 	/**
 	 * Normal mode perform.
