@@ -256,6 +256,7 @@ public class MainActivity extends AppCompatActivity{
 				}
 			});
 			
+			
 			View.OnClickListener top_menu_listener=new View.OnClickListener(){
 				@Override
 				public void onClick(View v){
@@ -264,12 +265,43 @@ public class MainActivity extends AppCompatActivity{
 							startActivity(new Intent(MainActivity.this,SearchNewContact.class));
 							cancelRefreshTimers();
 							break;
-						case R.id.main_menu_stop_refresh:
-							cancelRefreshTimers();
-							stopService(new Intent(MainActivity.this,BackgroundTaskService.class));
-							stopService(new Intent(MainActivity.this,NetworkService.class));
-							unregisterReceiver(receiver);
-							Toast.makeText(MainActivity.this,"Auto refresh stopped.",Toast.LENGTH_LONG).show();
+						case R.id.main_menu_stopOrStart_refresh:
+							// Yeah, pretty clear here are terrible shit like codes...
+							// What am I doing?
+							// Perhaps I'm a bit of boring.
+							// Someday may edit them...I guess so.
+							TextView tv=findViewById(R.id.main_menu_stopOrStart_refresh);
+							char[] a=new char[]{'S','t','a','r','t',' ','a','u','t','o',' ','r','e','f','r','e','s','h'};
+							
+							if(!tv.getText().toString().equals("Start auto refresh")){
+								cancelRefreshTimers();
+								stopService(new Intent(MainActivity.this,BackgroundTaskService.class));
+								stopService(new Intent(MainActivity.this,NetworkService.class));
+								if(receiver.isInitialStickyBroadcast())unregisterReceiver(receiver);
+								tv.setText(a,0,a.length);
+								Toast.makeText(MainActivity.this,"Auto refresh stopped.",Toast.LENGTH_LONG).show();
+							}else{
+								// set (or reset) timer tasks
+								checkLoginTimer=new Timer();
+								// Check login status per 2 minutes.
+								checkLoginTimer.schedule(new TimerTask(){
+									@Override public void run(){
+										try{
+											checkLogin();
+										}catch(Exception e){
+											e.printStackTrace();
+										}
+									}
+								},17,90000);
+								startService(new Intent(MainActivity.this,BackgroundTaskService.class));
+								// listen to messages from background task service
+								receiver= new MainBroadcastReceiver();
+								IntentFilter filter = new IntentFilter();
+								filter.addAction("backgroundTask.action");
+								registerReceiver(receiver, filter);
+								tv.setText(R.string.stop_auto_refresh);
+								Toast.makeText(MainActivity.this,"Auto refresh started.",Toast.LENGTH_LONG).show();
+							}
 							break;
 						case R.id.main_menu_logout:
 							Toast.makeText(MainActivity.this,"Chat records will not be cleared.",Toast.LENGTH_SHORT).show();
@@ -302,7 +334,7 @@ public class MainActivity extends AppCompatActivity{
 			};
 			// bind.
 			findViewById(R.id.main_menu_add_contact).setOnClickListener(top_menu_listener);
-			findViewById(R.id.main_menu_stop_refresh).setOnClickListener(top_menu_listener);
+			findViewById(R.id.main_menu_stopOrStart_refresh).setOnClickListener(top_menu_listener);
 			findViewById(R.id.main_menu_logout).setOnClickListener(top_menu_listener);
 			findViewById(R.id.main_menu_about).setOnClickListener(top_menu_listener);
 		}

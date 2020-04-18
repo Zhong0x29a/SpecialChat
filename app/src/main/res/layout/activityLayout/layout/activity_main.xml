@@ -324,7 +324,7 @@
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:id="@+id/main_menu_stop_refresh"
+                    android:id="@+id/main_menu_stopOrStart_refresh"
                     android:text="@string/stop_auto_refresh"
                     android:textSize="16sp"
                     android:textAllCaps="false"
