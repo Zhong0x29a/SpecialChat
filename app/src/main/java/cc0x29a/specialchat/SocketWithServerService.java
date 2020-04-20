@@ -15,6 +15,19 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
+/*
+ * todo：
+ *   1.Verify the client at the first connection.
+ *   2.socket全双工通信。
+ *
+ * */
+
+/*
+* draft:
+*   Socket 成功连接后 开启两条线程， 分别进行读、写操作。
+*   client 先向server发送user_id和token_key 进行身份认证。
+* */
+
 public class SocketWithServerService extends Service{
 	
 	@Override
@@ -51,12 +64,7 @@ public class SocketWithServerService extends Service{
 		closeSocket();
 	}
 	
-	/*
-	* todo next ver：
-	*   Verify the client at the first connection.
-	*   Start another socket to listen live message from server.
-	*       such like refresh messages, etc. .
-	* */
+	
 	static void StartConnection(){ //todo this need to be perfected.
 		try{
 			if(tryingConnect){ return; }
