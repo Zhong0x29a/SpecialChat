@@ -28,6 +28,12 @@ import java.nio.charset.StandardCharsets;
 *   client 先向server发送user_id和token_key 进行身份认证。
 * */
 
+/*
+* note：
+*   ill today... :(
+*   will get better soon.
+* */
+
 public class SocketWithServerService extends Service{
 	
 	@Override
