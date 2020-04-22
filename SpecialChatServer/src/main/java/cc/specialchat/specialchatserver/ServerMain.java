@@ -14,7 +14,8 @@ import java.util.Map;
 
 public class ServerMain{
 	
-	private static Map<String,ServerThread> serverThreadMap;
+	private static ServerSocket serverSocket;
+	static Map<String,ServerThread> serverThreadMap;
 	
 	public static void main(String[] args){
 		// test code.
@@ -46,7 +47,7 @@ public class ServerMain{
 	
 	private static void MainServer(){
 		try{
-			ServerSocket serverSocket = new ServerSocket(21027);
+			serverSocket = new ServerSocket(21027);
 			System.out.println("------ Special Chat Server started ------\n");
 			int count=1;
 			
