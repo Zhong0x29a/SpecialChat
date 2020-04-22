@@ -1,10 +1,10 @@
 package cc.specialchat.specialchatserver;
 
 import com.alibaba.fastjson.JSONObject;
+import com.sun.istack.internal.NotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -19,11 +19,13 @@ public class ServerThread extends Thread {
 	private BufferedReader br;
 	private OutputStream os;
 	
-	ServerThread(Socket socket) throws IOException{
+	ServerThread(Socket socket,BufferedReader br,OutputStream os){
 		this.socket = socket;
-		socket.setSoTimeout(30000);
-		br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
-		os=socket.getOutputStream();
+		this.br=br;
+		this.os=os;
+//		socket.setSoTimeout(30000);
+//		br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
+//		os=socket.getOutputStream();
 	}
 	
 	@Override
@@ -47,7 +49,7 @@ public class ServerThread extends Thread {
 		}
 	}
 	
-	private String ProcessData(String dataString){
+	private String ProcessData(@NotNull String dataString){
 		System.out.println(dataString);
 		JSONObject dataJsonReturn=JSONObject.parseObject(dataString);
 		String msgSend;
@@ -106,7 +108,7 @@ public class ServerThread extends Thread {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-			msgSend="{'exception':'!'}";
+			msgSend="{'exception':'JSON Error.'}";
 		}
 		
 		System.out.println(msgSend+"\n");

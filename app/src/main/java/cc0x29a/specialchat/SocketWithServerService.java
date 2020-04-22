@@ -2,6 +2,7 @@ package cc0x29a.specialchat;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 
 import org.json.JSONException;
@@ -42,6 +43,9 @@ public class SocketWithServerService extends Service{
 		throw new UnsupportedOperationException("Not yet implemented");
 	}
 	
+	static String user_id;
+	static String token_key;
+	
 	static Socket socket;
 	
 	public static BufferedReader br;
@@ -55,6 +59,13 @@ public class SocketWithServerService extends Service{
 	
 	@Override
 	public void onCreate(){
+		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
+		user_id=preferences.getString("user_id",null);
+		token_key=preferences.getString("token_key",null);
+		if(user_id==null || token_key==null){ //todo: bug here, if user not login or Signing up.. etc.
+			stopSelf();
+		}
+		
 		startService(new Intent(SocketWithServerService.this,NetworkService.class));
 		
 		new Thread(new Runnable(){
@@ -87,6 +98,9 @@ public class SocketWithServerService extends Service{
 				
 				br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
 				os=socket.getOutputStream();
+				
+				//todo verify client
+				sendData("{'user_id':'"+user_id+"','token_key':'"+token_key+"'}");
 				
 				// a thread that Send "heartbeat" to server.
 				heart=new heart();
