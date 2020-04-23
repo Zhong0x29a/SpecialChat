@@ -63,7 +63,9 @@ public class SocketWithServerService extends Service{
 		user_id=preferences.getString("user_id",null);
 		token_key=preferences.getString("token_key",null);
 		if(user_id==null || token_key==null){ //todo: case bug here, if user not login or Signing up.. etc.
-			stopSelf();
+//			stopSelf();
+			user_id=""; //todo: complete; control the permission!!!!
+			token_key="";
 		}
 		
 		startService(new Intent(SocketWithServerService.this,NetworkService.class));
