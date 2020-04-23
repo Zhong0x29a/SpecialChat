@@ -62,7 +62,7 @@ public class SocketWithServerService extends Service{
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 		user_id=preferences.getString("user_id",null);
 		token_key=preferences.getString("token_key",null);
-		if(user_id==null || token_key==null){ //todo: bug here, if user not login or Signing up.. etc.
+		if(user_id==null || token_key==null){ //todo: case bug here, if user not login or Signing up.. etc.
 			stopSelf();
 		}
 		
@@ -99,8 +99,9 @@ public class SocketWithServerService extends Service{
 				br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
 				os=socket.getOutputStream();
 				
+				// font-process
 				//todo verify client
-				sendData("{'user_id':'"+user_id+"','token_key':'"+token_key+"'}");
+				String data=sendData("{'user_id':'"+user_id+"','token_key':'"+token_key+"'}");
 				
 				// a thread that Send "heartbeat" to server.
 				heart=new heart();

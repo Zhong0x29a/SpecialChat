@@ -10,7 +10,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Created by Administrator on 2018/5/3.
+ * 2020.03
  */
 public class ServerThread extends Thread {
 	
@@ -24,14 +24,14 @@ public class ServerThread extends Thread {
 		this.br=br;
 		this.os=os;
 		
-		ServerMain.serverThreadMap.get("123456").hasNewMessage();// todo example code, not use here.
 //		socket.setSoTimeout(30000);
 //		br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
 //		os=socket.getOutputStream();
 	}
 	
-	private void hasNewMessage(){
+	void hasNewMessage(){
 		//todo: complete
+		// send os.write(...);
 	}
 	
 	@Override
@@ -114,12 +114,12 @@ public class ServerThread extends Thread {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-			msgSend="{'exception':'JSON Error.'}";
+			msgSend="{'exception':'Error.'}";
 		}
 		
 		System.out.println(msgSend+"\n");
 		
-		return msgSend.replaceAll("\n","<br>");
+		return msgSend;
 	}
 	
 }

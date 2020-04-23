@@ -59,15 +59,16 @@ public class ServerMain{
 				BufferedReader br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
 				OutputStream os=socket.getOutputStream();
 				
-				//todo : verify client.
 				String userData;
+				// font-process
 				if((userData=br.readLine())!=null){
 					JSONObject userDataJson=JSONObject.parseObject(userData);
 					try{
 						String user_id=userDataJson.getString("user_id");
 						String token_key=userDataJson.getString("token_key");
 						if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
-							//todo: add to Hash map
+							//todo: case bug when user haven't logged in or is signing up...etc.
+							
 							ServerThread serverThread = new ServerThread(socket,br,os);
 							
 							serverThreadMap.put(user_id,serverThread);

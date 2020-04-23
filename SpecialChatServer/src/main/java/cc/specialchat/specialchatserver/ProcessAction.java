@@ -132,6 +132,9 @@ class ProcessAction{
 			int send_time;
 			if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key) &&
 					(send_time=MsgCacheSQLite.insertNewMsg(user_id,to_id,msg_content))!=0){
+				//todo:
+				// try , if not online , cancel it.
+				ServerMain.serverThreadMap.get(to_id).hasNewMessage();// todo example code
 				return "{'status':'true','send_time':'"+send_time+"'}";
 			}
 			return "{'status':'false','msg':'login info error! (PA1004)'}";
