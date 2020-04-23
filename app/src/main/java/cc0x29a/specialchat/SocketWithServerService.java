@@ -104,6 +104,9 @@ public class SocketWithServerService extends Service{
 				// font-process
 				//todo verify client
 				String data=sendData("{'user_id':'"+user_id+"','token_key':'"+token_key+"'}");
+				if(!data.equals("{'network':'error'}")){
+					//todo
+				}
 				
 				// a thread that Send "heartbeat" to server.
 				heart=new heart();
