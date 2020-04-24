@@ -34,7 +34,7 @@ public class ServerThread extends Thread {
 	
 	void hasNewMessage(){
 		//todo: complete
-		// send os.write(...);
+		// os.write(...);
 	}
 	
 	@Override

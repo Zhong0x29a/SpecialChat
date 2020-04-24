@@ -14,7 +14,6 @@ import java.util.Map;
 
 public class ServerMain{
 	
-	private static ServerSocket serverSocket;
 	static Map<String,ServerThread> serverThreadMap;
 	
 	public static void main(String[] args){
@@ -47,7 +46,7 @@ public class ServerMain{
 	
 	private static void MainServer(){
 		try{
-			serverSocket = new ServerSocket(21027);
+			ServerSocket serverSocket=new ServerSocket(21027);
 			System.out.println("------ Special Chat Server started ------\n");
 			
 			while(true){
@@ -74,7 +73,9 @@ public class ServerMain{
 						
 						if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
 							serverThreadMap.put(user_id,serverThread);
+							os.write("true".getBytes(StandardCharsets.UTF_8));
 						}else{
+							os.write("false".getBytes(StandardCharsets.UTF_8));
 							// todo:
 							//  non-login client.
 							//  control the permission.
