@@ -49,45 +49,48 @@ public class ServerMain{
 		try{
 			serverSocket = new ServerSocket(21027);
 			System.out.println("------ Special Chat Server started ------\n");
-			int count=1;
 			
-//			Socket socket;
 			while(true){
 				Socket socket=serverSocket.accept();
 				
 				socket.setSoTimeout(30000);
+				
 				BufferedReader br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
 				OutputStream os=socket.getOutputStream();
 				
 				String userData;
+				ServerThread serverThread;
 				// font-process
 				if((userData=br.readLine())!=null){
+					
+					System.out.println(userData);
+					
 					JSONObject userDataJson=JSONObject.parseObject(userData);
 					try{
 						String user_id=userDataJson.getString("user_id");
 						String token_key=userDataJson.getString("token_key");
+						
+						serverThread = new ServerThread(socket,br,os,user_id);
+						
 						if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
-							//todo: case bug when user haven't logged in or is signing up...etc.
-							
-							ServerThread serverThread = new ServerThread(socket,br,os);
-							
 							serverThreadMap.put(user_id,serverThread);
+						}else{
+							// todo:
+							//  non-login client.
+							//  control the permission.
 						}
 					}catch(JSONException e){
 						System.out.println("User info header error. ");
-						break;
+						serverThread = new ServerThread(socket,br,os,"000");
+						//break;
 					}
 				}else{
 					System.out.println("Connection broke.");
 					break;
 				}
 				
-				ServerThread serverThread = new ServerThread(socket,br,os);
-				
-				System.out.println("New connection: " + socket.getInetAddress().getHostAddress() +" ("+count+")\n");
 				serverThread.start();
-				
-				count++;
+				System.out.println("New connection: " + socket.getInetAddress().getHostAddress() +" \n");
 			}
 		}catch(Exception ex){
 			System.out.println("--- Just occurred a ERROR... ---\n---- Special Chat Server restarted ----\n");

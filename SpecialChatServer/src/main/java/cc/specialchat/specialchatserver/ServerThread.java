@@ -19,10 +19,13 @@ public class ServerThread extends Thread {
 	private BufferedReader br;
 	private OutputStream os;
 	
-	ServerThread(Socket socket,BufferedReader br,OutputStream os){
+	private String user_id;
+	
+	ServerThread(Socket socket,BufferedReader br,OutputStream os,String user_id){
 		this.socket = socket;
 		this.br=br;
 		this.os=os;
+		this.user_id=user_id;
 		
 //		socket.setSoTimeout(30000);
 //		br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
@@ -47,6 +50,7 @@ public class ServerThread extends Thread {
 		}catch(Exception e){
 			try{
 				socket.close();
+				ServerMain.serverThreadMap.remove(this.user_id); //todo: test
 				System.out.println("Connection closed. ");
 			}catch(IOException ex){
 				ex.printStackTrace();

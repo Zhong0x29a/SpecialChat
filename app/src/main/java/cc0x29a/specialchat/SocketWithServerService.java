@@ -59,16 +59,16 @@ public class SocketWithServerService extends Service{
 	
 	@Override
 	public void onCreate(){
+		// todo: restart this service after logging in!
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 		user_id=preferences.getString("user_id",null);
 		token_key=preferences.getString("token_key",null);
-		if(user_id==null || token_key==null){ //todo: case bug here, if user not login or Signing up.. etc.
-//			stopSelf();
-			user_id=""; //todo: complete; control the permission!!!!
-			token_key="";
+		if(user_id==null || token_key==null){
+			user_id="000"; //todo: control the permission !!!!
+			token_key="000";
+		}else{
+			startService(new Intent(SocketWithServerService.this,NetworkService.class));
 		}
-		
-		startService(new Intent(SocketWithServerService.this,NetworkService.class));
 		
 		new Thread(new Runnable(){
 			@Override
@@ -80,9 +80,9 @@ public class SocketWithServerService extends Service{
 	}
 	
 	public void onDestroy(){
+		stopService(new Intent(SocketWithServerService.this,NetworkService.class));
 		closeSocket();
 	}
-	
 	
 	static void StartConnection(){ //todo this need to be perfected.
 		try{

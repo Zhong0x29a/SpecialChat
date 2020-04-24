@@ -171,6 +171,11 @@ public class LoginActivity extends AppCompatActivity{
 								
 								Toast.makeText(LoginActivity.this,"Login succeed! \n"+"Enjoy your time~",Toast.LENGTH_LONG).show();
 								
+								//todo: test this code.
+								Intent intent=new Intent(LoginActivity.this,SocketWithServerService.class);
+								stopService(intent);
+								startService(intent);
+								
 								startActivity(new Intent(LoginActivity.this,MainActivity.class));
 								finish();
 							}else if(data.getString("status").equals("false")){
