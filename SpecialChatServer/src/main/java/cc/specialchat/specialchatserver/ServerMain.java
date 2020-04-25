@@ -52,7 +52,7 @@ public class ServerMain{
 			while(true){
 				Socket socket=serverSocket.accept();
 				
-				socket.setSoTimeout(30000);
+				socket.setSoTimeout(26666);
 				
 				BufferedReader br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
 				OutputStream os=socket.getOutputStream();
@@ -82,8 +82,8 @@ public class ServerMain{
 						}
 					}catch(JSONException e){
 						System.out.println("User info header error. ");
-						serverThread = new ServerThread(socket,br,os,"000");
-						//break;
+//						serverThread = new ServerThread(socket,br,os,"000");
+						break;
 					}
 				}else{
 					System.out.println("Connection broke.");

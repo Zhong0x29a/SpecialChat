@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 
 /*
  * todo：
@@ -96,28 +97,33 @@ public class SocketWithServerService extends Service{
 //						socket.connect(new InetSocketAddress("server.specialchat.cn",21027),1111);
 				socket.connect(new InetSocketAddress("192.168.1.18",21027),1111);
 				
-				socket.setSoTimeout(30000);
+				socket.setSoTimeout(26666);
 				
 				br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
 				os=socket.getOutputStream();
 				
 				// font-process
-				//todo verify client
-				String data=sendData("{'user_id':'"+user_id+"','token_key':'"+token_key+"'}");
+				// verify client
+				String data=sendData("{" +
+						"'client':'SCC-1.0'," +
+						"'user_id':'"+user_id+"'," +
+						"'token_key':'"+token_key+"'," +
+						"'timestamp':'"+MyTools.getCurrentTime()+"'" +
+						"}");
 				
-				//todo.
-				if(data.equals("true")){
-					//...
-				}else{
-					//...
-				}
-				
-				if(!data.equals("{'network':'error'}")){ // String from method sendData.
+				if(!data.equals("{'network':'error'}") && !data.equals("{'Error':'IO too busy!'}")){ // String from method: sendData.
 					// a thread that Send "heartbeat" to server.
 					heart=new heart();
 					heart.start();
-				}
+					
+					//todo.
+//					if(data.equals("true")){
+//						//...
+//					}else{ // non-login client.
+//						//...
+//					}
 				
+				}
 				
 			}
 		}catch(Exception e){
@@ -126,6 +132,20 @@ public class SocketWithServerService extends Service{
 		}finally{
 			tryingConnect=false;
 		}
+	}
+	
+	public static class DataManager{
+		private HashMap<String,String> dataSet=new HashMap<>();
+		private HashMap<String,HashMap> s;
+		
+		public String getDataByKey(String key){
+			return dataSet.get(key);
+		}
+		
+		public void addData(String key,String data){
+			dataSet.put(key, data);
+		}
+		
 	}
 	
 	/**
@@ -138,10 +158,12 @@ public class SocketWithServerService extends Service{
 			while(isIOBusy){
 				Thread.sleep(333);
 				if( MyTools.getCurrentTime() > (startTime+4) ) {
-					System.out.println("IO busy! ");
-					return "{'Error':'IO busy! '}";
+					System.out.println("IO too busy!");
+					return "{'Error':'IO too busy!'}";
 				}
 			}
+			
+//			wait();
 			
 			isIOBusy=true;
 			os.write((data.replaceAll("\n","<br>")+"\n").getBytes(StandardCharsets.UTF_8));
@@ -172,7 +194,7 @@ public class SocketWithServerService extends Service{
 					if(!data.getBoolean("alive")){
 						closeSocket();
 					}
-					sleep(28888);
+					sleep(23333);
 				}catch(JSONException e){
 					closeSocket();
 				}catch(InterruptedException e){

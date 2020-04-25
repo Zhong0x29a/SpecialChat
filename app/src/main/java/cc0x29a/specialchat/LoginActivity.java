@@ -171,8 +171,11 @@ public class LoginActivity extends AppCompatActivity{
 								
 								Toast.makeText(LoginActivity.this,"Login succeed! \n"+"Enjoy your time~",Toast.LENGTH_LONG).show();
 								
+								Thread.sleep(233);
+								
 								//todo: test this code.
 								Intent intent=new Intent(LoginActivity.this,SocketWithServerService.class);
+								
 								stopService(intent);
 								startService(intent);
 								
@@ -185,7 +188,7 @@ public class LoginActivity extends AppCompatActivity{
 							}else{
 								Toast.makeText(LoginActivity.this,"Unknown ERROR! (LA0002)",Toast.LENGTH_LONG).show();
 							}
-						}catch(JSONException e){
+						}catch(JSONException|InterruptedException e){
 							e.printStackTrace();
 							Toast.makeText(LoginActivity.this,"Unknown ERROR! (LA0002+)",Toast.LENGTH_LONG).show();
 						}
