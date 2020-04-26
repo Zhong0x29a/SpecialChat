@@ -139,6 +139,7 @@ public class SocketWithServerService extends Service{
 		}
 	}
 	
+	// todo: use static class?
 	static class ReaderThread extends Thread{
 		DataManager dataManager=new DataManager(); // todo bug.
 		
