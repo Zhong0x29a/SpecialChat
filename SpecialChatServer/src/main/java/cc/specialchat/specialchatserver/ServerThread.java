@@ -65,7 +65,8 @@ public class ServerThread extends Thread {
 						sleep(20);
 					}
 					isOSBusy=true;
-					os.write( (ProcessData(temp.replaceAll("<br>","\n")).replaceAll("\n","<br>") +"\n").getBytes(StandardCharsets.UTF_8));
+					String dataSend=ProcessData(temp.replaceAll("<br>","\n")); //todo: may case bug when user send "<br>"!
+					os.write( (dataSend.replaceAll("\n","<br>") +"\n").getBytes(StandardCharsets.UTF_8));
 					isOSBusy=false;
 				}
 			}
@@ -90,6 +91,9 @@ public class ServerThread extends Thread {
 			switch(dataJsonReturn.getString("action")){
 				case "beat": // heartbeat.
 					msgSend="{'alive':true}";
+					break;
+				case "recall":
+					msgSend=null;
 					break;
 				case "CheckUpdate": // check update
 					msgSend=ProcessAction.action_checkUpdate(dataJsonReturn);

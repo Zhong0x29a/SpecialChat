@@ -82,11 +82,21 @@ public class ServerMain{
 						}
 					}catch(JSONException e){
 						System.out.println("User info header error. ");
+						try{
+							socket.close();
+						}catch(Exception ex){
+//						    e.printStackTrace();
+						}
 //						serverThread = new ServerThread(socket,br,os,"000");
 						break;
 					}
 				}else{
 					System.out.println("Connection broke.");
+					try{
+						socket.close();
+					}catch(Exception e){
+//						e.printStackTrace();
+					}
 					break;
 				}
 				

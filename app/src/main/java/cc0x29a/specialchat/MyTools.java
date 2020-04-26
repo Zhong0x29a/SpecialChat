@@ -57,7 +57,7 @@ class MyTools{
 	 * make a simple toast
 	 * @param info information to show
 	 */
-	static void showToast(final Context context,final String info,final int duration) throws Exception {
+	static void showToast(final Context context,final String info,final int duration){
 		Handler toastHandler=new Handler();
 		toastHandler.post(new Runnable() {
 			@Override

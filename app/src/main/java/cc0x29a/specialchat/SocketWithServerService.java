@@ -54,7 +54,7 @@ public class SocketWithServerService extends Service{
 	
 	public static heart heart;
 	
-	public static boolean isIOBusy;
+	public static boolean isOSBusy;
 	
 	static boolean tryingConnect=false;
 	
@@ -104,20 +104,25 @@ public class SocketWithServerService extends Service{
 				
 				// font-process
 				// verify client
-				String data=sendData("{" +
-						"'client':'SCC-1.0'," +
-						"'user_id':'"+user_id+"'," +
-						"'token_key':'"+token_key+"'," +
-						"'timestamp':'"+MyTools.getCurrentTime()+"'" +
-						"}");
+//				String data=sendData();
+				os.write(
+							("{" +
+							"'client':'SCC-1.0'," +
+							"'user_id':'"+user_id+"'," +
+							"'token_key':'"+token_key+"'," +
+							"'timestamp':'"+MyTools.getCurrentTime()+"'" +
+							"}").getBytes(StandardCharsets.UTF_8));
 				
-				if(!data.equals("{'network':'error'}") && !data.equals("{'Error':'IO too busy!'}")){ // String from method: sendData.
+				String str=br.readLine();
+				
+				
+				if(str!=null && str.length()>0){ // String from method: sendData.
 					// a thread that Send "heartbeat" to server.
 					heart=new heart();
 					heart.start();
 					
 					//todo.
-//					if(data.equals("true")){
+//					if(str.equals("true")){
 //						//...
 //					}else{ // non-login client.
 //						//...
@@ -134,9 +139,26 @@ public class SocketWithServerService extends Service{
 		}
 	}
 	
+	static class ReaderThread extends Thread{
+		DataManager dataManager=new DataManager(); // todo bug.
+		
+		@Override
+		public void run(){
+			while(true){
+			
+			}
+		}
+	}
+	
 	public static class DataManager{
 		private HashMap<String,String> dataSet=new HashMap<>();
-		private HashMap<String,HashMap> s;
+//		private HashMap<String,HashMap> s;
+
+//		DataManager() throws IOException{
+//			String str=br.readLine();
+//			System.out.println(str);
+////			return str != null ? str.replaceAll("<br>","\n") : "{'network':'error'}";
+//		}
 		
 		public String getDataByKey(String key){
 			return dataSet.get(key);
@@ -152,26 +174,30 @@ public class SocketWithServerService extends Service{
 	 * @param data , the data send to server
 	 * @return data returned from server.
 	 */
-	public static String sendData(String data){
+	public static void sendData(String data){
 		try{
 			int startTime=MyTools.getCurrentTime();
-			while(isIOBusy){
+			while(isOSBusy){
 				Thread.sleep(333);
 				if( MyTools.getCurrentTime() > (startTime+4) ) {
 					System.out.println("IO too busy!");
-					return "{'Error':'IO too busy!'}";
+//					return "{'Error':'IO too busy!'}";
 				}
 			}
 			
 //			wait();
 			
-			isIOBusy=true;
+			isOSBusy=true;
+			//todo: may case bug when user send "<br>"!
+			// solve method: may use base64 encrypt the data!
 			os.write((data.replaceAll("\n","<br>")+"\n").getBytes(StandardCharsets.UTF_8));
-			String str=br.readLine();
-			System.out.println(data+"\n"+str);
-			isIOBusy=false;
 			
-			return str != null ? str.replaceAll("<br>","\n") : "{'network':'error'}";
+//			String str=br.readLine();
+//			System.out.println(data+"\n"+str);
+
+//			isOSBusy=false;
+			
+//			return str != null ? str.replaceAll("<br>","\n") : "{'network':'error'}";
 		}catch(IOException|InterruptedException|NullPointerException e){
 			new Thread(new Runnable(){
 				@Override
@@ -180,8 +206,8 @@ public class SocketWithServerService extends Service{
 				}
 			},"StartConnectionThread").start();
 		}
-		isIOBusy=false;
-		return "{'network':'error'}";
+		isOSBusy=false;
+//		return "{'network':'error'}";
 	}
 	
 	public static class heart extends Thread{

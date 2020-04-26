@@ -6,8 +6,8 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Some often used tools packed in methods below.
  * @author  Zhong Wenliang
- * @mail    CuberWenliang@163.com
- * @date    20.03
+ * mail    CuberWenliang@163.com
+ * date    20.03
  */
 
 class MyTools{
