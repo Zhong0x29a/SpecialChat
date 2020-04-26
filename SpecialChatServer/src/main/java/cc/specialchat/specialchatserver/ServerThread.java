@@ -19,6 +19,8 @@ public class ServerThread extends Thread {
 	private BufferedReader br;
 	private OutputStream os;
 	
+	private Boolean isOSBusy=false;
+	
 	private String user_id;
 	
 	ServerThread(Socket socket,BufferedReader br,OutputStream os,String user_id){
@@ -26,15 +28,31 @@ public class ServerThread extends Thread {
 		this.br=br;
 		this.os=os;
 		this.user_id=user_id;
-		
-//		socket.setSoTimeout(30000);
-//		br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
-//		os=socket.getOutputStream();
 	}
 	
 	void hasNewMessage(){
 		//todo: complete
 		// os.write(...);
+		if(isOSBusy){
+			try{
+				sleep(20);
+			}catch(InterruptedException e){
+				e.printStackTrace();
+				return;
+			}
+			isOSBusy=true;
+			try{
+				os.write("".getBytes(StandardCharsets.UTF_8));
+			}catch(IOException e){
+				e.printStackTrace();
+				try{
+					socket.close();
+				}catch(IOException ex){
+					ex.printStackTrace();
+				}
+			}
+			isOSBusy=false;
+		}
 	}
 	
 	@Override
@@ -43,8 +61,12 @@ public class ServerThread extends Thread {
 			while(socket!=null && !socket.isClosed() && socket.isConnected()){
 				String temp;
 				while((temp=br.readLine())!=null){
+					if(isOSBusy){
+						sleep(20);
+					}
+					isOSBusy=true;
 					os.write( (ProcessData(temp.replaceAll("<br>","\n")).replaceAll("\n","<br>") +"\n").getBytes(StandardCharsets.UTF_8));
-					sleep(88);
+					isOSBusy=false;
 				}
 			}
 		}catch(Exception e){
