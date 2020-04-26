@@ -40,7 +40,7 @@ public class ServerThread extends Thread {
 				e.printStackTrace();
 				return;
 			}
-			isOSBusy=true;
+			isOSBusy=true; //todo: may not be like this.
 			try{
 				os.write("".getBytes(StandardCharsets.UTF_8));
 			}catch(IOException e){
