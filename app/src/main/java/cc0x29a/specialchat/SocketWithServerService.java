@@ -164,8 +164,14 @@ public class SocketWithServerService extends Service{
 				try{
 					String str=br.readLine();
 					//todo: font-process, get the request key.
-					addData("","");
-				}catch(IOException e){
+					JSONObject object=new  JSONObject(str);
+					if(object.getString("method").equals("return")){//todo
+						addData(object.getString("rid"),object.getString("data"));
+					}else if(object.getString("method").equals("newMsg")){
+						//todo: balabala...
+					}
+					
+				}catch(IOException|JSONException e){
 					e.printStackTrace();
 				}
 			}
