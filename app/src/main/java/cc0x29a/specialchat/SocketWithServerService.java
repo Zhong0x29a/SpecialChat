@@ -58,6 +58,22 @@ public class SocketWithServerService extends Service{
 	
 	static boolean tryingConnect=false;
 	
+	private static HashMap<String,String> dataSet=new HashMap<>();
+	//		private HashMap<String,HashMap> s;
+	
+	//		DataManager() throws IOException{
+	//			System.out.println(str);
+	////			return str != null ? str.replaceAll("<br>","\n") : "{'network':'error'}";
+	//		}
+	
+	public static String getDataByKey(String key){
+		return dataSet.get(key);
+	}
+	
+	public static void addData(String key,String data){
+		dataSet.put(key, data);
+	}
+	
 	@Override
 	public void onCreate(){
 		// todo: restart this service after logging in!
@@ -141,35 +157,21 @@ public class SocketWithServerService extends Service{
 	
 	// todo: use static class?
 	static class ReaderThread extends Thread{
-		DataManager dataManager=new DataManager(); // todo bug.
 		
 		@Override
 		public void run(){
 			while(true){
-			
+				try{
+					String str=br.readLine();
+					//todo: font-process, get the request key.
+					addData("","");
+				}catch(IOException e){
+					e.printStackTrace();
+				}
 			}
 		}
 	}
 	
-	public static class DataManager{
-		private HashMap<String,String> dataSet=new HashMap<>();
-//		private HashMap<String,HashMap> s;
-
-//		DataManager() throws IOException{
-//			String str=br.readLine();
-//			System.out.println(str);
-////			return str != null ? str.replaceAll("<br>","\n") : "{'network':'error'}";
-//		}
-		
-		public String getDataByKey(String key){
-			return dataSet.get(key);
-		}
-		
-		public void addData(String key,String data){
-			dataSet.put(key, data);
-		}
-		
-	}
 	
 	/**
 	 * @param data , the data send to server
