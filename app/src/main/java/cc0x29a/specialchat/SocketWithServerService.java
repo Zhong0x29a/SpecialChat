@@ -62,7 +62,7 @@ public class SocketWithServerService extends Service{
 	private static HashMap<String,String> dataSet=new HashMap<>();
 	private static HashMap<String,DataManager> dataManagerHashMap=new HashMap<>();
 	
-	public class DataManager{
+	public static class DataManager{
 		String rid;
 		
 		DataManager(){
@@ -124,7 +124,7 @@ public class SocketWithServerService extends Service{
 		closeSocket();
 	}
 	
-	void StartConnection(){ //todo this need to be perfected.
+	static void StartConnection(){ //todo this need to be perfected.
 		try{
 			if(tryingConnect){ return; }
 			tryingConnect=true;
@@ -180,7 +180,7 @@ public class SocketWithServerService extends Service{
 		}
 	}
 	
-	class ReaderThread extends Thread{
+	static class ReaderThread extends Thread{
 		@Override
 		public void run(){
 			while(true){
@@ -212,7 +212,7 @@ public class SocketWithServerService extends Service{
 	 * @param data , the data send to server
 	 * @return data returned from server.
 	 */
-	public void sendData(String data){
+	public static void sendData(String data){
 		try{
 			int startTime=MyTools.getCurrentTime();
 			while(isOSBusy){
@@ -247,7 +247,7 @@ public class SocketWithServerService extends Service{
 //		return "{'network':'error'}";
 	}
 	
-	public class heart extends Thread{
+	public static class heart extends Thread{
 		@Override
 		public void run(){
 			while(isSocketOn()){

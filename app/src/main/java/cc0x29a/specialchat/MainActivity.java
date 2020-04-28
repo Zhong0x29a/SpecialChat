@@ -206,7 +206,11 @@ public class MainActivity extends AppCompatActivity{
 			@Override
 			public void run(){
 				String DataSend="{'action':'CheckUpdate','version_number':'"+version_number+"'}";
-				final String dataStr=SocketWithServerService.sendData(DataSend);
+				
+				SocketWithServerService.DataManager dataManager=new SocketWithServerService.DataManager();
+				final String dataStr=dataManager.startRequest(DataSend);
+				
+//				final String dataStr=SocketWithServerService.sendData(DataSend);
 				
 				MainActivity.this.runOnUiThread(new Runnable(){
 					@Override
