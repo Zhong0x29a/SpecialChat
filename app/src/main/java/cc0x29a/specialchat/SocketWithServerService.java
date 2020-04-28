@@ -69,7 +69,7 @@ public class SocketWithServerService extends Service{
 			this.rid=generateRid();
 		}
 		
-		public String startRequest(String data){
+		String startRequest(String data){
 			dataManagerHashMap.put(rid,this);
 			sendData(data);
 			
@@ -95,14 +95,6 @@ public class SocketWithServerService extends Service{
 		private String generateRid(){
 			return String.valueOf(MyTools.getRandomNum(99999999,10000000));
 		}
-	}
-	
-	public String getDataByKey(String key){
-		return dataSet.get(key);
-	}
-	
-	public void addData(String key,String data){
-		dataSet.put(key, data);
 	}
 	
 	@Override
@@ -198,7 +190,8 @@ public class SocketWithServerService extends Service{
 					JSONObject object=new  JSONObject(str);
 					if(object.getString("type").equals("return")){//todo
 						String rid=object.getString("rid");
-						addData(rid,object.getString("data"));
+						
+						dataSet.put(rid, object.getString("data"));
 						
 						DataManager manager=dataManagerHashMap.get(rid);
 						if(manager!=null){
