@@ -16,7 +16,6 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.Objects;
 
 /*
  * todo：
@@ -66,8 +65,8 @@ public class SocketWithServerService extends Service{
 	public class DataManager{
 		String rid;
 		
-		DataManager(String rid){
-			this.rid=rid;
+		DataManager(){
+			this.rid=generateRid();
 		}
 		
 		public String startRequest(String data){
@@ -80,22 +79,30 @@ public class SocketWithServerService extends Service{
 				e.printStackTrace();
 			}
 			
+			dataManagerHashMap.remove(rid);
+			
 			String temp=dataSet.get(rid);
+			dataSet.remove(rid);
+			
 			if(temp!=null){
 				return temp;
 			}else{
-				return "error";
+				return "{'error':'DataManager'}";
 			}
+			
+		}
+		
+		private String generateRid(){
+			return String.valueOf(MyTools.getRandomNum(99999999,10000000));
 		}
 	}
 	
-	public static String getDataByKey(String key){
+	public String getDataByKey(String key){
 		return dataSet.get(key);
 	}
 	
-	public static void addData(String key,String data){
+	public void addData(String key,String data){
 		dataSet.put(key, data);
-		Objects.requireNonNull(dataManagerHashMap.get(key)).notify();
 	}
 	
 	@Override
@@ -125,7 +132,7 @@ public class SocketWithServerService extends Service{
 		closeSocket();
 	}
 	
-	static void StartConnection(){ //todo this need to be perfected.
+	void StartConnection(){ //todo this need to be perfected.
 		try{
 			if(tryingConnect){ return; }
 			tryingConnect=true;
@@ -157,6 +164,8 @@ public class SocketWithServerService extends Service{
 				
 				
 				if(str!=null && str.length()>0){ // String from method: sendData.
+					new ReaderThread().start();
+					
 					// a thread that Send "heartbeat" to server.
 					heart=new heart();
 					heart.start();
@@ -179,9 +188,7 @@ public class SocketWithServerService extends Service{
 		}
 	}
 	
-	// todo: use static class?
-	static class ReaderThread extends Thread{
-		
+	class ReaderThread extends Thread{
 		@Override
 		public void run(){
 			while(true){
@@ -208,12 +215,11 @@ public class SocketWithServerService extends Service{
 		}
 	}
 	
-	
 	/**
 	 * @param data , the data send to server
 	 * @return data returned from server.
 	 */
-	public static void sendData(String data){
+	public void sendData(String data){
 		try{
 			int startTime=MyTools.getCurrentTime();
 			while(isOSBusy){
@@ -248,12 +254,14 @@ public class SocketWithServerService extends Service{
 //		return "{'network':'error'}";
 	}
 	
-	public static class heart extends Thread{
+	public class heart extends Thread{
 		@Override
 		public void run(){
 			while(isSocketOn()){
 				try{
-					String dataStr=sendData("{'action':'beat'}");
+					DataManager manager=new DataManager();
+					String dataStr=manager.startRequest("{'action':'beat'}");
+					
 					JSONObject data=new JSONObject(dataStr);
 					if(!data.getBoolean("alive")){
 						closeSocket();
