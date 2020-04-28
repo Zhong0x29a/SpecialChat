@@ -16,6 +16,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Objects;
 
 /*
  * todo：
@@ -58,13 +59,35 @@ public class SocketWithServerService extends Service{
 	
 	static boolean tryingConnect=false;
 	
+	// key: rid (request id) , data (data return from server)
 	private static HashMap<String,String> dataSet=new HashMap<>();
-	//		private HashMap<String,HashMap> s;
+	private static HashMap<String,DataManager> dataManagerHashMap=new HashMap<>();
 	
-	//		DataManager() throws IOException{
-	//			System.out.println(str);
-	////			return str != null ? str.replaceAll("<br>","\n") : "{'network':'error'}";
-	//		}
+	public class DataManager{
+		String rid;
+		
+		DataManager(String rid){
+			this.rid=rid;
+		}
+		
+		public String startRequest(String data){
+			dataManagerHashMap.put(rid,this);
+			sendData(data);
+			
+			try{
+				wait();
+			}catch(InterruptedException e){
+				e.printStackTrace();
+			}
+			
+			String temp=dataSet.get(rid);
+			if(temp!=null){
+				return temp;
+			}else{
+				return "error";
+			}
+		}
+	}
 	
 	public static String getDataByKey(String key){
 		return dataSet.get(key);
@@ -72,6 +95,7 @@ public class SocketWithServerService extends Service{
 	
 	public static void addData(String key,String data){
 		dataSet.put(key, data);
+		Objects.requireNonNull(dataManagerHashMap.get(key)).notify();
 	}
 	
 	@Override
@@ -165,9 +189,15 @@ public class SocketWithServerService extends Service{
 					String str=br.readLine();
 					//todo: font-process, get the request key.
 					JSONObject object=new  JSONObject(str);
-					if(object.getString("method").equals("return")){//todo
-						addData(object.getString("rid"),object.getString("data"));
-					}else if(object.getString("method").equals("newMsg")){
+					if(object.getString("type").equals("return")){//todo
+						String rid=object.getString("rid");
+						addData(rid,object.getString("data"));
+						
+						DataManager manager=dataManagerHashMap.get(rid);
+						if(manager!=null){
+							manager.notify();
+						}
+					}else if(object.getString("type").equals("newMsg")){
 						//todo: balabala...
 					}
 					
@@ -194,8 +224,6 @@ public class SocketWithServerService extends Service{
 				}
 			}
 			
-//			wait();
-			
 			isOSBusy=true;
 			//todo: may case bug when user send "<br>"!
 			// solve method: may use base64 encrypt the data!
@@ -214,8 +242,9 @@ public class SocketWithServerService extends Service{
 					StartConnection();
 				}
 			},"StartConnectionThread").start();
+		}finally{
+			isOSBusy=false;
 		}
-		isOSBusy=false;
 //		return "{'network':'error'}";
 	}
 	

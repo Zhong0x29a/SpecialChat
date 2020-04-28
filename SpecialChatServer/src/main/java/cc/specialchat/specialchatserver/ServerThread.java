@@ -55,6 +55,9 @@ public class ServerThread extends Thread {
 		}
 	}
 	
+	/**
+	 * Keep listening to the request from client.
+	 */
 	@Override
 	public void run() {
 		try{

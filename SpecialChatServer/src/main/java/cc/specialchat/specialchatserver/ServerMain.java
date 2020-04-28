@@ -59,7 +59,8 @@ public class ServerMain{
 				
 				String userData;
 				ServerThread serverThread;
-				// font-process
+				
+				// First shake hand.
 				if((userData=br.readLine())!=null){
 					
 					System.out.println(userData);
