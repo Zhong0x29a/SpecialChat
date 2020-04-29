@@ -247,7 +247,7 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 			new Thread(new Runnable(){
 				@Override
 				public void run(){
-//					StartConnection();
+//	todo				StartConnection();
 				}
 			},"StartConnectionThread").start();
 		}finally{
