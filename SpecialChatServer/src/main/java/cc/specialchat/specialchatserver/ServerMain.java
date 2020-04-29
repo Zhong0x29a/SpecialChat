@@ -102,7 +102,7 @@ public class ServerMain{
 				}
 				
 				serverThread.start();
-				System.out.println("New connection: " + socket.getInetAddress().getHostAddress() +" \n");
+				System.out.println("New connection: " + socket.getInetAddress().getHostAddress() +"\nOnline num: "+serverThreadMap.size());
 			}
 		}catch(Exception ex){
 			System.out.println("--- Just occurred a ERROR... ---\n---- Special Chat Server restarted ----\n");

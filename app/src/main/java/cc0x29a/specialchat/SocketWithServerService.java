@@ -58,43 +58,46 @@ public class SocketWithServerService extends Service{
 	static boolean tryingConnect=false;
 	
 	// key: rid (request id) , data (data return from server)
-	private static HashMap<String,String> dataSet=new HashMap<>();
-	private static HashMap<String,DataManager> dataManagerHashMap=new HashMap<>();
+	static HashMap<String,String> dataSet=new HashMap<>();
+	static HashMap<String,SocketDataManager> dataManagerHashMap=new HashMap<>();
 	
-	public static class DataManager{
-		String rid;
-		
-		DataManager(){
-			this.rid=generateRid();
-		}
-		
-		String startRequest(String data){
-			dataManagerHashMap.put(rid,this);
-			sendData(data);
-			
-			try{
-				wait();
-			}catch(InterruptedException e){
-				e.printStackTrace();
-			}
-			
-			dataManagerHashMap.remove(rid);
-			
-			String temp=dataSet.get(rid);
-			dataSet.remove(rid);
-			
-			if(temp!=null){
-				return temp;
-			}else{
-				return "{'error':'DataManager'}";
-			}
-			
-		}
-		
-		private String generateRid(){
-			return String.valueOf(MyTools.getRandomNum(99999999,10000000));
-		}
-	}
+//	public class DataManager{
+//		String rid;
+//
+//		DataManager(){
+//			this.rid=generateRid();
+//		}
+//
+//		String startRequest(String data){
+//			synchronized(this){
+//				dataManagerHashMap.put(rid,this);
+//			}
+//			sendData(data);
+//			String temp;
+//			synchronized(this){
+//				try{
+//					wait();
+//				}catch(InterruptedException e){
+//					e.printStackTrace();
+//				}
+//				dataManagerHashMap.remove(rid);
+//
+//				temp=dataSet.get(rid);
+//				dataSet.remove(rid);
+//
+//			}
+//			if(temp!=null){
+//				return temp;
+//			}else{
+//				return "{'error':'DataManager'}";
+//			}
+//
+//		}
+//
+//		private String generateRid(){
+//			return String.valueOf(MyTools.getRandomNum(99999999,10000000));
+//		}
+//	}
 	
 	@Override
 	public void onCreate(){
@@ -123,7 +126,7 @@ public class SocketWithServerService extends Service{
 		closeSocket();
 	}
 	
-	static void StartConnection(){ //todo this may need to be perfected.
+	void StartConnection(){ //todo this may need to be perfected.
 		try{
 			if(tryingConnect){ return; }
 			tryingConnect=true;
@@ -131,15 +134,17 @@ public class SocketWithServerService extends Service{
 				closeSocket();
 				System.out.println("Retry for new connection.");
 				
-				socket=new Socket();
-//						socket.connect(new InetSocketAddress("server.specialchat.cn",21027),1111);
-				socket.connect(new InetSocketAddress("192.168.1.18",21027),1111);
-				
-				socket.setSoTimeout(26666);
-				
-				br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
-				os=socket.getOutputStream();
-				
+				synchronized(this){
+					
+					socket=new Socket();
+					//						socket.connect(new InetSocketAddress("server.specialchat.cn",21027),1111);
+					socket.connect(new InetSocketAddress("192.168.1.18",21027),1111);
+					
+					socket.setSoTimeout(26666);
+					
+					br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
+					os=socket.getOutputStream();
+				}
 				// font-process
 				// verify client
 //				String data=sendData();
@@ -149,7 +154,7 @@ public class SocketWithServerService extends Service{
 						"'user_id':'"+user_id+"'," +
 						"'token_key':'"+token_key+"'," +
 						"'timestamp':'"+MyTools.getCurrentTime()+"'" +
-						"}"
+						"}\n"
 				).getBytes(StandardCharsets.UTF_8));
 				
 				String str=br.readLine();
@@ -163,11 +168,13 @@ public class SocketWithServerService extends Service{
 					heart.start();
 					
 					//todo.
-//					if(str.equals("true")){
-//						//...
-//					}else{ // non-login client.
-//						//...
-//					}
+					if(str.equals("true")){
+						//...
+						System.out.println("True\n");
+					}else{ // non-login client.
+						//...
+						System.out.println("Not True\n");
+					}
 				
 				}
 				
@@ -180,7 +187,7 @@ public class SocketWithServerService extends Service{
 		}
 	}
 	
-	static class ReaderThread extends Thread{
+	class ReaderThread extends Thread{
 		@Override
 		public void run(){
 			while(true){
@@ -191,16 +198,18 @@ public class SocketWithServerService extends Service{
 					if(object.getString("type").equals("return")){//todo
 						String rid=object.getString("rid");
 						
-						dataSet.put(rid, object.getString("data"));
-						
-						DataManager manager=dataManagerHashMap.get(rid);
-						if(manager!=null){
-							manager.notify();
+						SocketDataManager manager;
+						synchronized(this){
+							dataSet.put(rid,object.getString("data"));
+							manager=dataManagerHashMap.get(rid);
+							if(manager!=null){
+								manager.notify();
+							}
 						}
+						
 					}else if(object.getString("type").equals("newMsg")){
 						//todo: balabala...
 					}
-					
 				}catch(IOException|JSONException e){
 					e.printStackTrace();
 				}
@@ -247,12 +256,12 @@ public class SocketWithServerService extends Service{
 //		return "{'network':'error'}";
 	}
 	
-	public static class heart extends Thread{
+	public class heart extends Thread{
 		@Override
 		public void run(){
 			while(isSocketOn()){
 				try{
-					DataManager manager=new DataManager();
+					SocketDataManager manager=new SocketDataManager();
 					String dataStr=manager.startRequest("{'action':'beat'}");
 					
 					JSONObject data=new JSONObject(dataStr);

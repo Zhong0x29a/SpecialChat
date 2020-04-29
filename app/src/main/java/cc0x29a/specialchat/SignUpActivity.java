@@ -71,7 +71,7 @@ public class SignUpActivity extends AppCompatActivity{
 					new Thread(new Runnable(){
 						@Override
 						public void run(){
-							SocketWithServerService.DataManager dataManager=new SocketWithServerService.DataManager();
+							SocketDataManager dataManager=new SocketDataManager();
 							final String dataStr=dataManager.startRequest(DataSend);
 //							final String dataStr=SocketWithServerService.sendData(DataSend);
 							
@@ -198,7 +198,7 @@ public class SignUpActivity extends AppCompatActivity{
 				public void run(){
 					String DataSend="{'action':'0005','user_id':'"+user_id+"'}";
 					
-					SocketWithServerService.DataManager dataManager=new SocketWithServerService.DataManager();
+					SocketDataManager dataManager=new SocketDataManager();
 					final String dataStr=dataManager.startRequest(DataSend);
 					
 //					final String dataStr=SocketWithServerService.sendData(DataSend);

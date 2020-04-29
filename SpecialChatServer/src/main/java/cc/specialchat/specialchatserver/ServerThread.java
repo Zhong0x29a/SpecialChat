@@ -42,6 +42,7 @@ public class ServerThread extends Thread {
 			isOSBusy=true; //todo: may not be like this.
 			try{
 				os.write("".getBytes(StandardCharsets.UTF_8));
+				// todo: wait for recall.
 			}catch(IOException e){
 				e.printStackTrace();
 				try{

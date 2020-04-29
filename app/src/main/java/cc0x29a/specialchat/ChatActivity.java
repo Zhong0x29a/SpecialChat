@@ -234,7 +234,7 @@ public class ChatActivity extends AppCompatActivity{
 						new Thread(new Runnable(){
 							@Override
 							public void run(){
-								SocketWithServerService.DataManager dataManager=new SocketWithServerService.DataManager();
+								SocketDataManager dataManager=new SocketDataManager();
 								final String dataStr=dataManager.startRequest(DataSend);
 								
 //								final String dataStr=SocketWithServerService.sendData(DataSend);
