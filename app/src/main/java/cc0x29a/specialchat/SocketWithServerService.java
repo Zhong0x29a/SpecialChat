@@ -35,7 +35,7 @@ import java.util.HashMap;
 *   will get better soon.
 * */
 
-public class SocketWithServerService extends Service{
+public class SocketWithServerService extends Service{ //todo: not use Service??
 	
 	@Override
 	public IBinder onBind(Intent intent){
@@ -247,7 +247,7 @@ public class SocketWithServerService extends Service{
 			new Thread(new Runnable(){
 				@Override
 				public void run(){
-					StartConnection();
+//					StartConnection();
 				}
 			},"StartConnectionThread").start();
 		}finally{

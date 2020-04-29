@@ -63,7 +63,7 @@ public class SearchNewContact extends AppCompatActivity{
 								"'search_id':'"+uid+"'" +
 								"}";
 						
-						SocketWithServerService.DataManager dataManager=new SocketWithServerService.DataManager();
+						SocketDataManager dataManager=new SocketDataManager();
 						final String dataStr=dataManager.startRequest(DataSend);
 //						final String dataStr=SocketWithServerService.sendData(DataSend);
 						

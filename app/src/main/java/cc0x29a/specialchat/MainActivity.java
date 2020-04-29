@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity{
 			public void run(){
 				String DataSend="{'action':'CheckUpdate','version_number':'"+version_number+"'}";
 				
-				SocketWithServerService.DataManager dataManager=new SocketWithServerService.DataManager();
+				SocketDataManager dataManager=new SocketDataManager();
 				final String dataStr=dataManager.startRequest(DataSend);
 				
 //				final String dataStr=SocketWithServerService.sendData(DataSend);
@@ -741,7 +741,7 @@ public class MainActivity extends AppCompatActivity{
 									"\"new_user_phone\":\""+new_user_phone+"\""+
 									"}";
 								
-								SocketWithServerService.DataManager dataManager=new SocketWithServerService.DataManager();
+								SocketDataManager dataManager=new SocketDataManager();
 								final String dataStr=dataManager.startRequest(DataSend);
 								
 //								final String dataStr=SocketWithServerService.sendData(DataSend);
@@ -860,7 +860,7 @@ public class MainActivity extends AppCompatActivity{
 						"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
 						"}";
 				
-				SocketWithServerService.DataManager dataManager=new SocketWithServerService.DataManager();
+				SocketDataManager dataManager=new SocketDataManager();
 				final String dataStr=dataManager.startRequest(DataSend);
 				
 //				final String dataStr=SocketWithServerService.sendData(DataSend);

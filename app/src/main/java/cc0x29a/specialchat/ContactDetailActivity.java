@@ -71,7 +71,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 								"'token_key':'"+token_key+"'" +
 								"}";
 							
-							SocketWithServerService.DataManager dataManager=new SocketWithServerService.DataManager();
+							SocketDataManager dataManager=new SocketDataManager();
 							final String dataStr=dataManager.startRequest(DataSend);
 							
 //							final String dataStr=SocketWithServerService.sendData(DataSend);
@@ -117,7 +117,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 					"'secret':'I love you.'" +
 					"}";
 				
-				SocketWithServerService.DataManager dataManager=new SocketWithServerService.DataManager();
+				SocketDataManager dataManager=new SocketDataManager();
 				final String dataStr=dataManager.startRequest(DataSend);
 //				final String dataStr=SocketWithServerService.sendData(DataSend);
 				
@@ -167,7 +167,7 @@ public class ContactDetailActivity extends AppCompatActivity{
 					"'secret':'I love you.'" +
 					"}";
 				
-				SocketWithServerService.DataManager dataManager=new SocketWithServerService.DataManager();
+				SocketDataManager dataManager=new SocketDataManager();
 				final String dataStr=dataManager.startRequest(DataSend);
 //				final String dataStr=SocketWithServerService.sendData(DataSend);
 				

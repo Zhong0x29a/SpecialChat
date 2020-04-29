@@ -165,7 +165,7 @@ public class NetworkService extends Service{
 									"\"timestamp\":\""+MyTools.getCurrentTime()+"\""+
 								"}";
 				
-				SocketWithServerService.DataManager dataManager=new SocketWithServerService.DataManager();
+				SocketDataManager dataManager=new SocketDataManager();
 				final String dataStr=dataManager.startRequest(DataSend);
 //				final String dataStr=SocketWithServerService.sendData(DataSend);
 				
@@ -296,7 +296,7 @@ public class NetworkService extends Service{
 				@Override
 				public void run(){
 					String DataSend="{"+"'client':'SCC-1.0',"+"'action':'0010',"+"'user_id':'"+user_id+"',"+"'token_key':'"+token_key+"',"+"\"timestamp\":\""+MyTools.getCurrentTime()+"\""+"}";
-					SocketWithServerService.DataManager dataManager=new SocketWithServerService.DataManager();
+					SocketDataManager dataManager=new SocketDataManager();
 					final String dataStr=dataManager.startRequest(DataSend);
 //					final String dataStr=SocketWithServerService.sendData(DataSend);
 					Looper.prepare();
