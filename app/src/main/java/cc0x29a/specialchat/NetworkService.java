@@ -164,7 +164,10 @@ public class NetworkService extends Service{
 									"\"token_key\":\""+token_key+"\","+
 									"\"timestamp\":\""+MyTools.getCurrentTime()+"\""+
 								"}";
-				final String dataStr=SocketWithServerService.sendData(DataSend);
+				
+				SocketWithServerService.DataManager dataManager=new SocketWithServerService.DataManager();
+				final String dataStr=dataManager.startRequest(DataSend);
+//				final String dataStr=SocketWithServerService.sendData(DataSend);
 				
 				try{
 					JSONObject data=new JSONObject(dataStr);
@@ -293,7 +296,9 @@ public class NetworkService extends Service{
 				@Override
 				public void run(){
 					String DataSend="{"+"'client':'SCC-1.0',"+"'action':'0010',"+"'user_id':'"+user_id+"',"+"'token_key':'"+token_key+"',"+"\"timestamp\":\""+MyTools.getCurrentTime()+"\""+"}";
-					final String dataStr=SocketWithServerService.sendData(DataSend);
+					SocketWithServerService.DataManager dataManager=new SocketWithServerService.DataManager();
+					final String dataStr=dataManager.startRequest(DataSend);
+//					final String dataStr=SocketWithServerService.sendData(DataSend);
 					Looper.prepare();
 					new Handler().post(new Runnable(){
 						@Override

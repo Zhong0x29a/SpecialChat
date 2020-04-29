@@ -62,7 +62,10 @@ public class SearchNewContact extends AppCompatActivity{
 								"'user_id':'"+user_id+"'," +
 								"'search_id':'"+uid+"'" +
 								"}";
-						final String dataStr=SocketWithServerService.sendData(DataSend);
+						
+						SocketWithServerService.DataManager dataManager=new SocketWithServerService.DataManager();
+						final String dataStr=dataManager.startRequest(DataSend);
+//						final String dataStr=SocketWithServerService.sendData(DataSend);
 						
 						SearchNewContact.this.runOnUiThread(new Runnable(){
 							@Override

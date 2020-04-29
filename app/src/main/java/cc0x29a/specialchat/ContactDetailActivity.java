@@ -70,7 +70,11 @@ public class ContactDetailActivity extends AppCompatActivity{
 								"'user_id':'"+user_id+"'," +
 								"'token_key':'"+token_key+"'" +
 								"}";
-							final String dataStr=SocketWithServerService.sendData(DataSend);
+							
+							SocketWithServerService.DataManager dataManager=new SocketWithServerService.DataManager();
+							final String dataStr=dataManager.startRequest(DataSend);
+							
+//							final String dataStr=SocketWithServerService.sendData(DataSend);
 							ContactDetailActivity.this.runOnUiThread(new Runnable(){
 								@Override
 								public void run(){
@@ -112,7 +116,10 @@ public class ContactDetailActivity extends AppCompatActivity{
 					"'ta_id':'"+ta_id+"'," +
 					"'secret':'I love you.'" +
 					"}";
-				final String dataStr=SocketWithServerService.sendData(DataSend);
+				
+				SocketWithServerService.DataManager dataManager=new SocketWithServerService.DataManager();
+				final String dataStr=dataManager.startRequest(DataSend);
+//				final String dataStr=SocketWithServerService.sendData(DataSend);
 				
 				ContactDetailActivity.this.runOnUiThread(new Runnable(){
 					@Override
@@ -159,7 +166,10 @@ public class ContactDetailActivity extends AppCompatActivity{
 					"'ta_id':'"+ta_id+"'," +
 					"'secret':'I love you.'" +
 					"}";
-				final String dataStr=SocketWithServerService.sendData(DataSend);
+				
+				SocketWithServerService.DataManager dataManager=new SocketWithServerService.DataManager();
+				final String dataStr=dataManager.startRequest(DataSend);
+//				final String dataStr=SocketWithServerService.sendData(DataSend);
 				
 				ContactDetailActivity.this.runOnUiThread(new Runnable(){
 					@Override

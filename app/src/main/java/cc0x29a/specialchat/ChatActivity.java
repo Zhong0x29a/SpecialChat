@@ -221,7 +221,7 @@ public class ChatActivity extends AppCompatActivity{
 					}
 					
 					if(my_id!=null && token_key!=null){
-						final String dataToSend="{" +
+						final String DataSend="{" +
 								"'client':'SCC-1.0'," +
 								"'action':'0004'," +
 								"'user_id':'"+my_id+"'," +
@@ -234,7 +234,10 @@ public class ChatActivity extends AppCompatActivity{
 						new Thread(new Runnable(){
 							@Override
 							public void run(){
-								final String dataStr=SocketWithServerService.sendData(dataToSend);
+								SocketWithServerService.DataManager dataManager=new SocketWithServerService.DataManager();
+								final String dataStr=dataManager.startRequest(DataSend);
+								
+//								final String dataStr=SocketWithServerService.sendData(DataSend);
 								ChatActivity.this.runOnUiThread(new Runnable(){
 									@Override
 									public void run(){

@@ -740,7 +740,11 @@ public class MainActivity extends AppCompatActivity{
 									"\"new_user_name\":\""+new_user_name+"\"," +
 									"\"new_user_phone\":\""+new_user_phone+"\""+
 									"}";
-								final String dataStr=SocketWithServerService.sendData(DataSend);
+								
+								SocketWithServerService.DataManager dataManager=new SocketWithServerService.DataManager();
+								final String dataStr=dataManager.startRequest(DataSend);
+								
+//								final String dataStr=SocketWithServerService.sendData(DataSend);
 								
 								MainActivity.this.runOnUiThread(new Runnable(){
 									@Override
@@ -855,7 +859,11 @@ public class MainActivity extends AppCompatActivity{
 						"\"token_key\":\""+token_key+"\"," +
 						"\"timestamp\":\""+MyTools.getCurrentTime()+"\"" +
 						"}";
-				final String dataStr=SocketWithServerService.sendData(DataSend);
+				
+				SocketWithServerService.DataManager dataManager=new SocketWithServerService.DataManager();
+				final String dataStr=dataManager.startRequest(DataSend);
+				
+//				final String dataStr=SocketWithServerService.sendData(DataSend);
 				
 				MainActivity.this.runOnUiThread(new Runnable(){
 					@Override

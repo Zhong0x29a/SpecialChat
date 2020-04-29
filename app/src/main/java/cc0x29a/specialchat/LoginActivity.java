@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity{
 				String user_id="";
 				
 				if(IdOrPhone.length()>8){
-					final String data_send="{" +
+					final String DataSend="{" +
 							"'client':'SCC-1.0'," +
 							"'action':'0012'," +
 							"'secret':'I love you.'," +
@@ -62,7 +62,11 @@ public class LoginActivity extends AppCompatActivity{
 					new Thread(new Runnable(){
 						@Override
 						public void run(){
-							final String dataStr=SocketWithServerService.sendData(data_send);
+							
+							SocketWithServerService.DataManager dataManager=new SocketWithServerService.DataManager();
+							final String dataStr=dataManager.startRequest(DataSend);
+							
+//							final String dataStr=SocketWithServerService.sendData(DataSend);
 							
 							LoginActivity.this.runOnUiThread(new Runnable(){
 								@Override
@@ -140,7 +144,7 @@ public class LoginActivity extends AppCompatActivity{
 	
 	public void startLogin(String user_id,String password){
 		// start login
-		final String dataToSend="{" +
+		final String DataSend="{" +
 				"\"client\":\"SCC-1.0\"," +
 				"\"action\":\"0002\"," +
 				"\"user_id\":\""+user_id+"\"," +
@@ -150,7 +154,9 @@ public class LoginActivity extends AppCompatActivity{
 		new Thread(new Runnable(){
 			@Override
 			public void run(){
-				final String dataStr=SocketWithServerService.sendData(dataToSend);
+				SocketWithServerService.DataManager dataManager=new SocketWithServerService.DataManager();
+				final String dataStr=dataManager.startRequest(DataSend);
+//				final String dataStr=SocketWithServerService.sendData(DataSend);
 				
 				LoginActivity.this.runOnUiThread(new Runnable(){
 					@Override

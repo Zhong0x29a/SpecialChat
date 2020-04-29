@@ -1,7 +1,6 @@
 package cc.specialchat.specialchatserver;
 
 import com.alibaba.fastjson.JSONObject;
-import com.sun.istack.internal.NotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -85,7 +84,7 @@ public class ServerThread extends Thread {
 		}
 	}
 	
-	private String ProcessData(@NotNull String dataString){
+	private String ProcessData(String dataString){
 		System.out.println(dataString);
 		JSONObject dataJsonReturn=JSONObject.parseObject(dataString);
 		String msgSend;
