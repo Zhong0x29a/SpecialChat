@@ -18,7 +18,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 /*
- * todo：
  *   1.Verify the client at the first connection.
  *   2.socket全双工通信。
  *
@@ -124,7 +123,7 @@ public class SocketWithServerService extends Service{
 		closeSocket();
 	}
 	
-	static void StartConnection(){ //todo this need to be perfected.
+	static void StartConnection(){ //todo this may need to be perfected.
 		try{
 			if(tryingConnect){ return; }
 			tryingConnect=true;
@@ -144,13 +143,14 @@ public class SocketWithServerService extends Service{
 				// font-process
 				// verify client
 //				String data=sendData();
-				os.write(
-							("{" +
-							"'client':'SCC-1.0'," +
-							"'user_id':'"+user_id+"'," +
-							"'token_key':'"+token_key+"'," +
-							"'timestamp':'"+MyTools.getCurrentTime()+"'" +
-							"}").getBytes(StandardCharsets.UTF_8));
+				os.write((
+						"{" +
+						"'client':'SCC-1.0'," +
+						"'user_id':'"+user_id+"'," +
+						"'token_key':'"+token_key+"'," +
+						"'timestamp':'"+MyTools.getCurrentTime()+"'" +
+						"}"
+				).getBytes(StandardCharsets.UTF_8));
 				
 				String str=br.readLine();
 				
@@ -186,7 +186,7 @@ public class SocketWithServerService extends Service{
 			while(true){
 				try{
 					String str=br.readLine();
-					//todo: font-process, get the request key.
+					// font-process, get the request key.
 					JSONObject object=new  JSONObject(str);
 					if(object.getString("type").equals("return")){//todo
 						String rid=object.getString("rid");

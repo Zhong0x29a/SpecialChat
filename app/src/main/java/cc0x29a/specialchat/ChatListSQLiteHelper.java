@@ -90,7 +90,7 @@ public class ChatListSQLiteHelper extends SQLiteOpenHelper{
 		try{
 			Cursor cursor=db.query("chat_list",new String[]{"user_id"},
 					"user_id="+user_id,null,null,null,null);
-			if(cursor.moveToNext()){ // todo bug here.
+			if(cursor.moveToNext()){
 				cursor.close();
 				String SQL="update chat_list set nickname='"+nickname+"' where user_id='"+user_id+"'";
 				db.execSQL(SQL);

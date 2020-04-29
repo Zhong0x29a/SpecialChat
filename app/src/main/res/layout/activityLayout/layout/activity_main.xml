@@ -246,7 +246,7 @@
                         android:textColor="#eee"/>
                 </LinearLayout>
 
-                <!-- todo : some ver enable this! -->
+                <!-- todo : some ver, enable this! -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
