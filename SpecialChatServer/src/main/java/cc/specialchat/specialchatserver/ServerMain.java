@@ -62,7 +62,7 @@ public class ServerMain{
 				
 				// First shake hand.
 				if((userData=br.readLine())!=null){
-					
+//					userData=Base64.base64Decode(userData);
 					System.out.println(userData);
 					
 					JSONObject userDataJson=JSONObject.parseObject(userData);

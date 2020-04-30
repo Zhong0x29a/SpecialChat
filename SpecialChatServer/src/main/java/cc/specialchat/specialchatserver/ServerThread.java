@@ -1,6 +1,7 @@
 package cc.specialchat.specialchatserver;
 
 import com.alibaba.fastjson.JSONObject;
+import com.sun.xml.internal.messaging.saaj.util.Base64;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,8 +19,6 @@ public class ServerThread extends Thread {
 	private BufferedReader br;
 	private OutputStream os;
 	
-	private Boolean isOSBusy=false;
-	
 	private String user_id;
 	
 	ServerThread(Socket socket,BufferedReader br,OutputStream os,String user_id){
@@ -32,26 +31,24 @@ public class ServerThread extends Thread {
 	void hasNewMessage(){
 		//todo: complete
 		// os.write(...);
-		if(isOSBusy){
-			try{
-				sleep(20);
-			}catch(InterruptedException e){
-				e.printStackTrace();
-				return;
-			}
-			isOSBusy=true; //todo: may not be like this.
-			try{
+		try{
+			sleep(20);
+		}catch(InterruptedException e){
+			e.printStackTrace();
+			return;
+		}
+		try{
+			synchronized(this){
 				os.write("".getBytes(StandardCharsets.UTF_8));
-				// todo: wait for recall.
-			}catch(IOException e){
-				e.printStackTrace();
-				try{
-					socket.close();
-				}catch(IOException ex){
-					ex.printStackTrace();
-				}
 			}
-			isOSBusy=false;
+			// todo: wait for recall in "run()".
+		}catch(IOException e){
+			e.printStackTrace();
+			try{
+				socket.close();
+			}catch(IOException ex){
+				ex.printStackTrace();
+			}
 		}
 	}
 	
@@ -64,19 +61,19 @@ public class ServerThread extends Thread {
 			while(socket!=null && !socket.isClosed() && socket.isConnected()){
 				String temp;
 				while((temp=br.readLine())!=null){
-					if(isOSBusy){
-						sleep(20);
+					
+					temp=Base64.base64Decode(temp);
+					String dataSend=new String( Base64.encode(ProcessData(temp).getBytes()) );
+					
+					synchronized(this){
+						os.write((dataSend+"\n").getBytes(StandardCharsets.UTF_8));
 					}
-					isOSBusy=true;
-					String dataSend=ProcessData(temp.replaceAll("<br>","\n")); //todo: may case bug when user send "<br>"!
-					os.write( (dataSend.replaceAll("\n","<br>") +"\n").getBytes(StandardCharsets.UTF_8));
-					isOSBusy=false;
 				}
 			}
 		}catch(Exception e){
 			try{
 				socket.close();
-				ServerMain.serverThreadMap.remove(this.user_id); //todo: test
+				ServerMain.serverThreadMap.remove(this.user_id);
 				System.out.println("Connection closed. ");
 			}catch(IOException ex){
 				ex.printStackTrace();
@@ -156,65 +153,3 @@ public class ServerThread extends Thread {
 	}
 	
 }
-
-
-//	private class ReadingData extends Thread{
-//		@Override
-//		public void run(){
-//			while( !socket.isClosed() ){
-//				StringBuilder DataGet=new StringBuilder();
-//
-//				InputStream inputStream=null;
-//				InputStreamReader inputStreamReader=null;
-//				BufferedReader bufferedReader=null;
-//
-//				try{
-//
-//					inputStream=socket.getInputStream();
-//					inputStreamReader=new InputStreamReader(inputStream);
-//					bufferedReader=new BufferedReader(inputStreamReader);
-//
-//					String temp;
-//					while((temp=bufferedReader.readLine())!=null){
-//						DataGet.append("\n").append(temp);
-//					}
-//
-//					if(DataGet.length()>0){
-//						JSONObject jsonData=JSONObject.parseObject(DataGet.toString());
-//
-//						// Output, send data to client.
-//						OutputStream outputStream = socket.getOutputStream();
-//						outputStream.write(ProcessData(jsonData).getBytes(StandardCharsets.UTF_8));
-//						outputStream.flush();
-//
-//					}else{
-//						socket.close();
-//					}
-//
-//				}catch(Exception e){
-//					e.printStackTrace();
-//				}finally{
-//					try{
-//						if(bufferedReader != null){
-//							bufferedReader.close();
-//						}
-//						if(inputStreamReader != null){
-//							inputStreamReader.close();
-//						}
-//						if(inputStream != null){
-//							inputStream.close();
-//						}
-//						if(!socket.isInputShutdown()){
-//							socket.shutdownInput();
-//						}
-//						if(!socket.isOutputShutdown()){
-//							socket.shutdownOutput();
-//						}
-//					}catch(IOException e){
-//						e.printStackTrace();
-//					}
-//				}
-//
-//			}
-//		}
-//	}

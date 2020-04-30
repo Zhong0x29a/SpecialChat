@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.util.Base64;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,7 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 /*
- *   1.Verify the client at the first connection.
+ *   1.Verify the client at the first connection.---done.
  *   2.socket全双工通信。
  *
  * */
@@ -27,12 +28,6 @@ import java.util.HashMap;
 * draft:
 *   Socket 成功连接后 开启两条线程， 分别进行读、写操作。
 *   client 先向server发送user_id和token_key 进行身份认证。
-* */
-
-/*
-* note：
-*   ill today... :(
-*   will get better soon.
 * */
 
 public class SocketWithServerService extends Service{ //todo: not use Service??
@@ -60,44 +55,6 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 	// key: rid (request id) , data (data return from server)
 	static HashMap<String,String> dataSet=new HashMap<>();
 	static HashMap<String,SocketDataManager> dataManagerHashMap=new HashMap<>();
-	
-//	public class DataManager{
-//		String rid;
-//
-//		DataManager(){
-//			this.rid=generateRid();
-//		}
-//
-//		String startRequest(String data){
-//			synchronized(this){
-//				dataManagerHashMap.put(rid,this);
-//			}
-//			sendData(data);
-//			String temp;
-//			synchronized(this){
-//				try{
-//					wait();
-//				}catch(InterruptedException e){
-//					e.printStackTrace();
-//				}
-//				dataManagerHashMap.remove(rid);
-//
-//				temp=dataSet.get(rid);
-//				dataSet.remove(rid);
-//
-//			}
-//			if(temp!=null){
-//				return temp;
-//			}else{
-//				return "{'error':'DataManager'}";
-//			}
-//
-//		}
-//
-//		private String generateRid(){
-//			return String.valueOf(MyTools.getRandomNum(99999999,10000000));
-//		}
-//	}
 	
 	@Override
 	public void onCreate(){
@@ -134,17 +91,17 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 				closeSocket();
 				System.out.println("Retry for new connection.");
 				
-				synchronized(this){
+//				synchronized(this){
 					
-					socket=new Socket();
-					//						socket.connect(new InetSocketAddress("server.specialchat.cn",21027),1111);
-					socket.connect(new InetSocketAddress("192.168.1.18",21027),1111);
-					
-					socket.setSoTimeout(26666);
-					
-					br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
-					os=socket.getOutputStream();
-				}
+				socket=new Socket();
+				// socket.connect(new InetSocketAddress("server.specialchat.cn",21027),1111);
+				socket.connect(new InetSocketAddress("192.168.1.18",21027),1111);
+				
+				socket.setSoTimeout(26666);
+				
+				br=new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
+				os=socket.getOutputStream();
+//				}
 				// font-process
 				// verify client
 //				String data=sendData();
@@ -187,17 +144,16 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 		}
 	}
 	
-	class ReaderThread extends Thread{
+	static class ReaderThread extends Thread{
 		@Override
 		public void run(){
 			while(true){
 				try{
-					String str=br.readLine();
+					String str=new String(Base64.decode(br.readLine(),Base64.DEFAULT));
 					// font-process, get the request key.
-					JSONObject object=new  JSONObject(str);
-					if(object.getString("type").equals("return")){//todo
+					JSONObject object=new JSONObject(str);
+					if(object.getString("type").equals("return")){
 						String rid=object.getString("rid");
-						
 						SocketDataManager manager;
 						synchronized(this){
 							dataSet.put(rid,object.getString("data"));
@@ -206,7 +162,6 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 								manager.notify();
 							}
 						}
-						
 					}else if(object.getString("type").equals("newMsg")){
 						//todo: balabala...
 					}
@@ -234,17 +189,13 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 			isOSBusy=true;
 			//todo: may case bug when user send "<br>"!
 			// solve method: may use base64 encrypt the data!
-			os.write((data.replaceAll("\n","<br>")+"\n").getBytes(StandardCharsets.UTF_8));
+			data=Base64.encodeToString(data.getBytes(),Base64.DEFAULT);
+			os.write((data+"\n").getBytes(StandardCharsets.UTF_8));
 			
-//			String str=br.readLine();
-//			System.out.println(data+"\n"+str);
-//			isOSBusy=false;
-//			return str != null ? str.replaceAll("<br>","\n") : "{'network':'error'}";
 		}catch(IOException|InterruptedException|NullPointerException e){
 			new Thread(new Runnable(){
 				@Override
 				public void run(){
-//	todo
 					StartConnection();
 				}
 			},"StartConnectionThread").start();
@@ -253,7 +204,7 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 		}
 	}
 	
-	public class heart extends Thread{
+	public static class heart extends Thread{
 		@Override
 		public void run(){
 			while(isSocketOn()){
@@ -276,7 +227,7 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 	}
 	
 	/**
-	 * @return  Weather the socket started.
+	 * @return  Weather the socket started. (Not always correct.)
 	 */
 	public static boolean isSocketOn(){
 		if(socket == null){
@@ -286,11 +237,6 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 	}
 	
 	public static void closeSocket(){
-//		try{
-//			NetworkService.manuallyStop();
-//		}catch(Exception e){
-//			e.printStackTrace();
-//		}
 		try{
 			socket.shutdownInput();
 			socket.shutdownOutput();
