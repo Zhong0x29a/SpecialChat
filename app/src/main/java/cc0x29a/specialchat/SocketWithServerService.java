@@ -147,8 +147,8 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 	static class ReaderThread extends Thread{
 		@Override
 		public void run(){
-			while(true){
-				try{
+			try{
+				while(true){
 					String str=new String(Base64.decode(br.readLine(),Base64.DEFAULT));
 					// font-process, get the request key.
 					JSONObject object=new JSONObject(str);
@@ -165,9 +165,9 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 					}else if(object.getString("type").equals("newMsg")){
 						//todo: balabala...
 					}
-				}catch(IOException|JSONException e){
-					e.printStackTrace();
 				}
+			}catch(IOException|JSONException e){
+				e.printStackTrace();
 			}
 		}
 	}
@@ -190,6 +190,8 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 			//todo: may case bug when user send "<br>"!
 			// solve method: may use base64 encrypt the data!
 			data=Base64.encodeToString(data.getBytes(),Base64.DEFAULT);
+			
+			
 			os.write((data+"\n").getBytes(StandardCharsets.UTF_8));
 			
 		}catch(IOException|InterruptedException|NullPointerException e){

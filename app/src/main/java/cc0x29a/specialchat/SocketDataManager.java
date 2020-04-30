@@ -1,7 +1,7 @@
 package cc0x29a.specialchat;
 
 public class SocketDataManager{
-	String rid;
+	private String rid;
 	
 	SocketDataManager(){
 		this.rid=generateRid();
@@ -11,6 +11,7 @@ public class SocketDataManager{
 		synchronized(this){
 			SocketWithServerService.dataManagerHashMap.put(rid,SocketDataManager.this);
 		}
+		data="{'data':['rid':'"+rid+"','string':'"+data+"']}";
 		SocketWithServerService.sendData(data);
 		String temp;
 		synchronized(this){
