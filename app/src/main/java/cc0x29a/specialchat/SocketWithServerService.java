@@ -126,7 +126,7 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 		closeSocket();
 	}
 	
-	void StartConnection(){ //todo this may need to be perfected.
+	static void StartConnection(){ //todo this may need to be perfected.
 		try{
 			if(tryingConnect){ return; }
 			tryingConnect=true;
@@ -228,7 +228,6 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 				Thread.sleep(333);
 				if( MyTools.getCurrentTime() > (startTime+4) ) {
 					System.out.println("IO too busy!");
-//					return "{'Error':'IO too busy!'}";
 				}
 			}
 			
@@ -239,21 +238,19 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 			
 //			String str=br.readLine();
 //			System.out.println(data+"\n"+str);
-
 //			isOSBusy=false;
-			
 //			return str != null ? str.replaceAll("<br>","\n") : "{'network':'error'}";
 		}catch(IOException|InterruptedException|NullPointerException e){
 			new Thread(new Runnable(){
 				@Override
 				public void run(){
-//	todo				StartConnection();
+//	todo
+					StartConnection();
 				}
 			},"StartConnectionThread").start();
 		}finally{
 			isOSBusy=false;
 		}
-//		return "{'network':'error'}";
 	}
 	
 	public class heart extends Thread{
