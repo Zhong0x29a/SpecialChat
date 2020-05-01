@@ -72,14 +72,12 @@ public class SignUpActivity extends AppCompatActivity{
 						@Override
 						public void run(){
 							SocketDataManager dataManager=new SocketDataManager();
-							final String dataStr=dataManager.startRequest(DataSend);
-//							final String dataStr=SocketWithServerService.sendData(DataSend);
+							final JSONObject data=dataManager.startRequest(DataSend);
 							
 							SignUpActivity.this.runOnUiThread(new Runnable(){
 								@Override
 								public void run(){
 									try{
-										JSONObject data=new JSONObject(dataStr);
 										if(data.getString("status").equals("true")){
 											Toast.makeText(SignUpActivity.this,"Congratulations!!! \n"+"You are now one of Special Chat's VIPs!! ",Toast.LENGTH_LONG).show();
 											
@@ -199,14 +197,12 @@ public class SignUpActivity extends AppCompatActivity{
 					String DataSend="{'action':'0005','user_id':'"+user_id+"'}";
 					
 					SocketDataManager dataManager=new SocketDataManager();
-					final String dataStr=dataManager.startRequest(DataSend);
+					final JSONObject data=dataManager.startRequest(DataSend);
 					
-//					final String dataStr=SocketWithServerService.sendData(DataSend);
 					SignUpActivity.this.runOnUiThread(new Runnable(){
 						@Override
 						public void run(){
 							try{
-								JSONObject data=new JSONObject(dataStr);
 								if(data.getString("status").equals("true")){
 									TextView textView=findViewById(R.id.sign_user_id);
 									textView.setText(data.getString("new_id"));

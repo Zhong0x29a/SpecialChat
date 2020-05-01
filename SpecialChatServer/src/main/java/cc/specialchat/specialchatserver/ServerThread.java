@@ -1,7 +1,6 @@
 package cc.specialchat.specialchatserver;
 
 import com.alibaba.fastjson.JSONObject;
-import com.sun.xml.internal.messaging.saaj.util.Base64;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -62,8 +61,11 @@ public class ServerThread extends Thread {
 				String temp;
 				while((temp=br.readLine())!=null){
 					
-					temp=Base64.base64Decode(temp);
-					String dataSend=new String( Base64.encode(ProcessData(temp).getBytes()) );
+//					temp=Base64.base64Decode(temp);
+					temp=new String(java.util.Base64.getDecoder().decode(temp));
+					
+//					String dataSend=new String( Base64.encode(ProcessData(temp).getBytes()) );
+					String dataSend=new String(java.util.Base64.getEncoder().encode(ProcessData(temp).getBytes()));
 					
 					synchronized(this){
 						os.write((dataSend+"\n").getBytes(StandardCharsets.UTF_8));

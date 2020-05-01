@@ -208,15 +208,12 @@ public class MainActivity extends AppCompatActivity{
 				String DataSend="{'action':'CheckUpdate','version_number':'"+version_number+"'}";
 				
 				SocketDataManager dataManager=new SocketDataManager();
-				final String dataStr=dataManager.startRequest(DataSend);
-				
-//				final String dataStr=SocketWithServerService.sendData(DataSend);
+				final JSONObject data=dataManager.startRequest(DataSend);
 				
 				MainActivity.this.runOnUiThread(new Runnable(){
 					@Override
 					public void run(){
 						try{
-							JSONObject data=new JSONObject(dataStr);
 							if(data.getString("status").equals("true")&&data.getString("is_update").equals("true")){
 								Uri uri=Uri.parse("https://github.com/Galaxy-cube/SpecialChat/releases"); //todo
 								Intent intent=new Intent(Intent.ACTION_VIEW,uri);
@@ -742,15 +739,12 @@ public class MainActivity extends AppCompatActivity{
 									"}";
 								
 								SocketDataManager dataManager=new SocketDataManager();
-								final String dataStr=dataManager.startRequest(DataSend);
-								
-//								final String dataStr=SocketWithServerService.sendData(DataSend);
+								final JSONObject data=dataManager.startRequest(DataSend);
 								
 								MainActivity.this.runOnUiThread(new Runnable(){
 									@Override
 									public void run(){
 										try{
-											JSONObject data=new JSONObject(dataStr);
 											if(data.getString("status").equals("true")&&data.getString("is_updated").equals("true")){
 												SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 												SharedPreferences.Editor editor=preferences.edit();
@@ -861,15 +855,12 @@ public class MainActivity extends AppCompatActivity{
 						"}";
 				
 				SocketDataManager dataManager=new SocketDataManager();
-				final String dataStr=dataManager.startRequest(DataSend);
-				
-//				final String dataStr=SocketWithServerService.sendData(DataSend);
+				final JSONObject data=dataManager.startRequest(DataSend);
 				
 				MainActivity.this.runOnUiThread(new Runnable(){
 					@Override
 					public void run(){
 						try{
-							JSONObject data=new JSONObject(dataStr);
 							if(data.getString("status").equals("true")){
 								if(preferences.getInt("is_login",0)!=1){
 									SharedPreferences.Editor editor=preferences.edit();

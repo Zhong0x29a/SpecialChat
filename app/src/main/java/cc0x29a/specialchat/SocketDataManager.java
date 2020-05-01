@@ -1,5 +1,8 @@
 package cc0x29a.specialchat;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class SocketDataManager{
 	private String rid;
 	
@@ -7,13 +10,13 @@ public class SocketDataManager{
 		this.rid=generateRid();
 	}
 	
-	String startRequest(String data){
+	JSONObject startRequest(String data){
 		synchronized(this){
 			SocketWithServerService.dataManagerHashMap.put(rid,SocketDataManager.this);
 		}
-		data="{'data':['rid':'"+rid+"','string':'"+data+"']}";
+		data="{'header':{'type':'request','rid':'"+rid+"'},'body':"+data+" }";
 		SocketWithServerService.sendData(data);
-		String temp;
+		JSONObject temp;
 		synchronized(this){
 			try{
 				wait();
@@ -29,9 +32,13 @@ public class SocketDataManager{
 		if(temp!=null){
 			return temp;
 		}else{
-			return "{'error':'DataManager'}";
+			try{
+				return new JSONObject("{'error':'DataManager'}");
+			}catch(JSONException e){
+				e.printStackTrace();
+			}
 		}
-		
+		return null;
 	}
 	
 	private String generateRid(){

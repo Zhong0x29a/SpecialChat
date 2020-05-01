@@ -64,30 +64,29 @@ public class SearchNewContact extends AppCompatActivity{
 								"}";
 						
 						SocketDataManager dataManager=new SocketDataManager();
-						final String dataStr=dataManager.startRequest(DataSend);
+						final JSONObject data=dataManager.startRequest(DataSend);
 //						final String dataStr=SocketWithServerService.sendData(DataSend);
 						
 						SearchNewContact.this.runOnUiThread(new Runnable(){
 							@Override
 							public void run(){
 								try{
-									JSONObject data_temp=new JSONObject(dataStr);
-									if(data_temp.getString("status").equals("true")){
-										int number=Integer.parseInt(data_temp.getString("number"));
-										String[][] data=new String[number][2];
+									if(data.getString("status").equals("true")){ //todo: change to JsonArray!
+										int number=Integer.parseInt(data.getString("number"));
+										String[][] MsgData=new String[number][2];
 										//to do: debug
 										JSONObject temp;
 										for(int i=0;i<number;i++){
-											temp=new JSONObject(data_temp.getString("index_"+(i+1)));
-											data[i][0]=temp.getString("user_id");
-											data[i][1]=MyTools.resolveSpecialChar(temp.getString("user_name"));
+											temp=new JSONObject(data.getString("index_"+(i+1)));
+											MsgData[i][0]=temp.getString("user_id");
+											MsgData[i][1]=MyTools.resolveSpecialChar(temp.getString("user_name"));
 										}
 										
 										RecyclerView recyclerView=findViewById(R.id.search_recyclerView);
 										LinearLayoutManager layoutManager=new LinearLayoutManager(SearchNewContact.this);
 										recyclerView.setLayoutManager(layoutManager);
 										
-										SearchContactAdapter adapter=new SearchContactAdapter(data);
+										SearchContactAdapter adapter=new SearchContactAdapter(MsgData);
 										adapter.count=number;
 										
 										recyclerView.setAdapter(adapter);

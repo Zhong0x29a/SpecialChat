@@ -72,14 +72,13 @@ public class ContactDetailActivity extends AppCompatActivity{
 								"}";
 							
 							SocketDataManager dataManager=new SocketDataManager();
-							final String dataStr=dataManager.startRequest(DataSend);
+							final JSONObject data=dataManager.startRequest(DataSend);
 							
 //							final String dataStr=SocketWithServerService.sendData(DataSend);
 							ContactDetailActivity.this.runOnUiThread(new Runnable(){
 								@Override
 								public void run(){
 									try{
-										JSONObject data=new JSONObject(dataStr);
 										if(data.getString("status").equals("true")){
 											// insert data into contact list.
 											ContactListSQLiteHelper helper=new ContactListSQLiteHelper(ContactDetailActivity.this,"contact_list.db",1);
@@ -118,14 +117,12 @@ public class ContactDetailActivity extends AppCompatActivity{
 					"}";
 				
 				SocketDataManager dataManager=new SocketDataManager();
-				final String dataStr=dataManager.startRequest(DataSend);
-//				final String dataStr=SocketWithServerService.sendData(DataSend);
+				final JSONObject data=dataManager.startRequest(DataSend);
 				
 				ContactDetailActivity.this.runOnUiThread(new Runnable(){
 					@Override
 					public void run(){
 						try{
-							JSONObject data=new JSONObject(dataStr);
 							if(data.getString("status").equals("true")){
 								TextView tv_user_name=findViewById(R.id.detail_userName);
 								TextView tv_user_phone=findViewById(R.id.detail_userPhone);
@@ -168,15 +165,13 @@ public class ContactDetailActivity extends AppCompatActivity{
 					"}";
 				
 				SocketDataManager dataManager=new SocketDataManager();
-				final String dataStr=dataManager.startRequest(DataSend);
-//				final String dataStr=SocketWithServerService.sendData(DataSend);
+				final JSONObject data=dataManager.startRequest(DataSend);
 				
 				ContactDetailActivity.this.runOnUiThread(new Runnable(){
 					@Override
 					public void run(){
 						try{
-							JSONObject data=new JSONObject(dataStr);
-							if(data.getString("status").equals("true")&&data.getString("is_friend").equals("true")){
+							if(data.getString("status").equals("true") && data.getString("is_friend").equals("true")){
 								Button btn=findViewById(R.id.btn_add_or_chat);
 								btn.setText("Chat");
 								btn_mode=1;

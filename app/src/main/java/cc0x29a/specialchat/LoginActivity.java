@@ -64,7 +64,7 @@ public class LoginActivity extends AppCompatActivity{
 						public void run(){
 							
 							SocketDataManager dataManager=new SocketDataManager();
-							final String dataStr=dataManager.startRequest(DataSend);
+							final JSONObject data=dataManager.startRequest(DataSend);
 							
 //							final String dataStr=SocketWithServerService.sendData(DataSend);
 							
@@ -72,7 +72,6 @@ public class LoginActivity extends AppCompatActivity{
 								@Override
 								public void run(){
 									try{
-										JSONObject data=new JSONObject(dataStr);
 										String user_id;
 										if(data.getString("status").equals("true")&&!(user_id=data.getString("user_id")).equals("")){
 											Toast.makeText(LoginActivity.this,"Using mobile phone to login.",Toast.LENGTH_SHORT).show();
@@ -155,14 +154,12 @@ public class LoginActivity extends AppCompatActivity{
 			@Override
 			public void run(){
 				SocketDataManager dataManager=new SocketDataManager();
-				final String dataStr=dataManager.startRequest(DataSend);
-//				final String dataStr=SocketWithServerService.sendData(DataSend);
+				final JSONObject data=dataManager.startRequest(DataSend);
 				
 				LoginActivity.this.runOnUiThread(new Runnable(){
 					@Override
 					public void run(){
 						try{
-							JSONObject data=new JSONObject(dataStr);
 							if(data.getString("status").equals("true")){
 								SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
 								SharedPreferences.Editor editor=preferences.edit();

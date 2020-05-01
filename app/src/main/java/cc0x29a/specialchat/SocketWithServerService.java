@@ -53,7 +53,7 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 	static boolean tryingConnect=false;
 	
 	// key: rid (request id) , data (data return from server)
-	static HashMap<String,String> dataSet=new HashMap<>();
+	static HashMap<String,JSONObject> dataSet=new HashMap<>();
 	static HashMap<String,SocketDataManager> dataManagerHashMap=new HashMap<>();
 	
 	@Override
@@ -124,7 +124,6 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 					heart=new heart();
 					heart.start();
 					
-					//todo.
 					if(str.equals("true")){
 						//...
 						System.out.println("True\n");
@@ -152,17 +151,17 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 					String str=new String(Base64.decode(br.readLine(),Base64.DEFAULT));
 					// font-process, get the request key.
 					JSONObject object=new JSONObject(str);
-					if(object.getString("type").equals("return")){
-						String rid=object.getString("rid");
+					if(object.getJSONObject("header").getString("type").equals("return")){
+						String rid=object.getJSONObject("header").getString("rid");
 						SocketDataManager manager;
 						synchronized(this){
-							dataSet.put(rid,object.getString("data"));
+							dataSet.put(rid,object.getJSONObject("body"));
 							manager=dataManagerHashMap.get(rid);
 							if(manager!=null){
 								manager.notify();
 							}
 						}
-					}else if(object.getString("type").equals("newMsg")){
+					}else if(object.getJSONObject("header").getString("type").equals("newMsg")){
 						//todo: balabala...
 					}
 				}
@@ -191,7 +190,6 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 			// solve method: may use base64 encrypt the data!
 			data=Base64.encodeToString(data.getBytes(),Base64.DEFAULT);
 			
-			
 			os.write((data+"\n").getBytes(StandardCharsets.UTF_8));
 			
 		}catch(IOException|InterruptedException|NullPointerException e){
@@ -212,9 +210,8 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 			while(isSocketOn()){
 				try{
 					SocketDataManager manager=new SocketDataManager();
-					String dataStr=manager.startRequest("{'action':'beat'}");
+					JSONObject data=manager.startRequest("{'action':'beat'}");
 					
-					JSONObject data=new JSONObject(dataStr);
 					if(!data.getBoolean("alive")){
 						closeSocket();
 					}

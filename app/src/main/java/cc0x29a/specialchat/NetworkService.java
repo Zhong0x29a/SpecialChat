@@ -10,9 +10,7 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
@@ -166,11 +164,9 @@ public class NetworkService extends Service{
 								"}";
 				
 				SocketDataManager dataManager=new SocketDataManager();
-				final String dataStr=dataManager.startRequest(DataSend);
-//				final String dataStr=SocketWithServerService.sendData(DataSend);
+				final JSONObject data=dataManager.startRequest(DataSend);
 				
 				try{
-					JSONObject data=new JSONObject(dataStr);
 					if(data.getString("is_new_msg").equals("true")){
 						int new_msg_num=Integer.parseInt(data.getString("new_msg_num"));
 						ChatListSQLiteHelper clh=new ChatListSQLiteHelper(NetworkService.this,"chat_list.db",1);
@@ -297,45 +293,36 @@ public class NetworkService extends Service{
 				public void run(){
 					String DataSend="{"+"'client':'SCC-1.0',"+"'action':'0010',"+"'user_id':'"+user_id+"',"+"'token_key':'"+token_key+"',"+"\"timestamp\":\""+MyTools.getCurrentTime()+"\""+"}";
 					SocketDataManager dataManager=new SocketDataManager();
-					final String dataStr=dataManager.startRequest(DataSend);
-//					final String dataStr=SocketWithServerService.sendData(DataSend);
-					Looper.prepare();
-					new Handler().post(new Runnable(){
-						@Override
-						public void run(){
-							try{
-								JSONObject data=new JSONObject(dataStr);
-								
-								ContactListSQLiteHelper helper=new ContactListSQLiteHelper(NetworkService.this,"contact_list.db",1);
-								ChatListSQLiteHelper helper2=new ChatListSQLiteHelper(NetworkService.this,"chat_list.db",1);
-								
-								// parse data;
-								if(data.getString("status").equals("true")){
-									for(int i=1;i<=Integer.parseInt(data.getString("number"));i++){
-										// Save/update SQLite data
-										JSONObject temp=new JSONObject(data.getString("index_"+i));
-										helper.updateContactList(helper.getReadableDatabase(),temp.getString("user_id"),temp.getString("nickname"));
-										helper2.fixNickname(helper2.getReadableDatabase(),temp.getString("user_id"),temp.getString("nickname"));
-									}
-									
-									// Send broadcast to MainActivity.
-									Intent intent=new Intent();
-									intent.putExtra("todo_action","reLoadContactList");
-									intent.setAction("backgroundTask.action");
-									sendBroadcast(intent);
-									
-									Intent intent2=new Intent();
-									intent2.putExtra("todo_action","reLoadChatList");
-									intent2.setAction("backgroundTask.action");
-									sendBroadcast(intent2);
-								}
-								
-							}catch(JSONException e){
-								e.printStackTrace();
+					final JSONObject data=dataManager.startRequest(DataSend);
+					
+					try{
+						ContactListSQLiteHelper helper=new ContactListSQLiteHelper(NetworkService.this,"contact_list.db",1);
+						ChatListSQLiteHelper helper2=new ChatListSQLiteHelper(NetworkService.this,"chat_list.db",1);
+						
+						// parse data;
+						if(data.getString("status").equals("true")){
+							for(int i=1;i<=Integer.parseInt(data.getString("number"));i++){
+								// Save/update SQLite data
+								JSONObject temp=new JSONObject(data.getString("index_"+i));
+								helper.updateContactList(helper.getReadableDatabase(),temp.getString("user_id"),temp.getString("nickname"));
+								helper2.fixNickname(helper2.getReadableDatabase(),temp.getString("user_id"),temp.getString("nickname"));
 							}
+							
+							// Send broadcast to MainActivity.
+							Intent intent=new Intent();
+							intent.putExtra("todo_action","reLoadContactList");
+							intent.setAction("backgroundTask.action");
+							sendBroadcast(intent);
+							
+							Intent intent2=new Intent();
+							intent2.putExtra("todo_action","reLoadChatList");
+							intent2.setAction("backgroundTask.action");
+							sendBroadcast(intent2);
 						}
-					});
-					Looper.loop();
+						
+					}catch(JSONException e){
+						e.printStackTrace();
+					}
 				}
 			}).start();
 			

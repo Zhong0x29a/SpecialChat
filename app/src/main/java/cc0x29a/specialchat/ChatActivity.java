@@ -235,14 +235,11 @@ public class ChatActivity extends AppCompatActivity{
 							@Override
 							public void run(){
 								SocketDataManager dataManager=new SocketDataManager();
-								final String dataStr=dataManager.startRequest(DataSend);
-								
-//								final String dataStr=SocketWithServerService.sendData(DataSend);
+								final JSONObject data=dataManager.startRequest(DataSend);
 								ChatActivity.this.runOnUiThread(new Runnable(){
 									@Override
 									public void run(){
 										try{
-											JSONObject data=new JSONObject(dataStr);
 											if(data.getString("status").equals("true")){
 												// store into msg SQLite
 												MsgSQLiteHelper msgSQLiteHelper=new MsgSQLiteHelper(ChatActivity.this,"msg_"+ta_id+".db",1);
