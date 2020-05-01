@@ -78,6 +78,10 @@ public class ServerThread extends Thread {
 					
 					String dataSend=ProcessData(body);
 					
+					if(dataSend==null){
+						continue;
+					}
+					
 					dataSend="{'header':{'type':'return','rid':'"+header.getString("rid")+"'},'body':"+dataSend+"}";
 					dataSend=new String(Base64.getEncoder().encode(dataSend.getBytes()) ).replaceAll("\n","");
 					
@@ -110,7 +114,7 @@ public class ServerThread extends Thread {
 				case "beat": // heartbeat.
 					msgSend="{'alive':true}";
 					break;
-				case "recall":
+				case "recall": //todo: notice this?
 					msgSend=null;
 					break;
 				case "CheckUpdate": // check update
