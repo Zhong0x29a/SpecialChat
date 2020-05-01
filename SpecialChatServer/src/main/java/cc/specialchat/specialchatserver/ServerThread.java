@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 /**
  * 2020.03
@@ -60,12 +61,22 @@ public class ServerThread extends Thread {
 			while(socket!=null && !socket.isClosed() && socket.isConnected()){
 				String temp;
 				while((temp=br.readLine())!=null){
+//					System.out.println(temp);
 					
-//					temp=Base64.base64Decode(temp);
 					temp=new String(java.util.Base64.getDecoder().decode(temp));
 					
-//					String dataSend=new String( Base64.encode(ProcessData(temp).getBytes()) );
-					String dataSend=new String(java.util.Base64.getEncoder().encode(ProcessData(temp).getBytes()));
+					System.out.println(temp);
+					// Phrase the header.
+					JSONObject header=JSONObject.parseObject(temp).getJSONObject("header");
+					
+					JSONObject body=JSONObject.parseObject(temp).getJSONObject("body");
+					
+					String dataSend=ProcessData(body);
+					
+					dataSend="{'header':{'type':'return','rid':'"+header.getString("rid")+"'},'body':"+dataSend+"}";
+					dataSend=new String(Base64.getEncoder().encode(dataSend.getBytes()) ).replaceAll("\n","");
+					
+					System.out.println(dataSend);
 					
 					synchronized(this){
 						os.write((dataSend+"\n").getBytes(StandardCharsets.UTF_8));
@@ -84,9 +95,9 @@ public class ServerThread extends Thread {
 		}
 	}
 	
-	private String ProcessData(String dataString){
-		System.out.println(dataString);
-		JSONObject dataJsonReturn=JSONObject.parseObject(dataString);
+	private String ProcessData(JSONObject dataJsonReturn){
+//		System.out.println(dataJsonReturn);
+		
 		String msgSend;
 		
 		try{
@@ -142,14 +153,13 @@ public class ServerThread extends Thread {
 				default: // action code error.
 					msgSend="{\"msg\":\"ERROR!! (ST1000)\"}";
 					break;
-				
 			}
 		}catch(Exception e){
 			e.printStackTrace();
 			msgSend="{'exception':'Error.'}";
 		}
 		
-		System.out.println(msgSend+"\n");
+//		System.out.println(msgSend+"\n");
 		
 		return msgSend;
 	}

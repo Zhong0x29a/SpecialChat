@@ -104,7 +104,6 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 //				}
 				// font-process
 				// verify client
-//				String data=sendData();
 				os.write((
 						"{" +
 						"'client':'SCC-1.0'," +
@@ -151,6 +150,7 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 					String str=new String(Base64.decode(br.readLine(),Base64.DEFAULT));
 					// font-process, get the request key.
 					JSONObject object=new JSONObject(str);
+					
 					if(object.getJSONObject("header").getString("type").equals("return")){
 						String rid=object.getJSONObject("header").getString("rid");
 						SocketDataManager manager;
@@ -158,10 +158,14 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 							dataSet.put(rid,object.getJSONObject("body"));
 							manager=dataManagerHashMap.get(rid);
 							if(manager!=null){
-								manager.notify();
+								synchronized(manager){
+									manager.notify();
+								}
 							}
 						}
-					}else if(object.getJSONObject("header").getString("type").equals("newMsg")){
+//					}else if(object.getJSONObject("header").getString("type").equals("newMsg")){
+					}else if(object.getJSONObject("header").getString("type").equals("request")){
+						
 						//todo: balabala...
 					}
 				}
@@ -190,7 +194,9 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 			// solve method: may use base64 encrypt the data!
 			data=Base64.encodeToString(data.getBytes(),Base64.DEFAULT);
 			
-			os.write((data+"\n").getBytes(StandardCharsets.UTF_8));
+			System.out.println(data);
+			
+			os.write((data.replaceAll("\n","")+"\n").getBytes(StandardCharsets.UTF_8));
 			
 		}catch(IOException|InterruptedException|NullPointerException e){
 			new Thread(new Runnable(){
@@ -247,4 +253,19 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 		}
 	}
 	
+//	public static class dataProcessor{
+//		private JSONObject data;
+//
+//		dataProcessor(String rawData) throws JSONException{
+//			this.data=new JSONObject(rawData);
+//		}
+//
+//		dataProcessor(JSONObject data){
+//			this.data=data;
+//		}
+//
+//		String a(){
+//			return this.data.toString();
+//		}
+//	}
 }

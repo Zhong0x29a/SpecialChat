@@ -15,6 +15,8 @@ public class SocketDataManager{
 			SocketWithServerService.dataManagerHashMap.put(rid,SocketDataManager.this);
 		}
 		data="{'header':{'type':'request','rid':'"+rid+"'},'body':"+data+" }";
+//		System.out.println(data);
+		
 		SocketWithServerService.sendData(data);
 		JSONObject temp;
 		synchronized(this){
