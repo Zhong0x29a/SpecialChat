@@ -12,6 +12,9 @@ import java.util.Base64;
 /**
  * 2020.03
  */
+/*
+* todo: control the permissions !!!
+* */
 public class ServerThread extends Thread {
 	
 	private Socket socket;
@@ -38,6 +41,8 @@ public class ServerThread extends Thread {
 			return;
 		}
 		try{
+			String virData="{'user_id':'"+this.user_id+"'}"; //no token_key
+			ProcessAction.action_0003(JSONObject.parseObject(virData));
 			synchronized(this){
 				os.write("".getBytes(StandardCharsets.UTF_8));
 			}

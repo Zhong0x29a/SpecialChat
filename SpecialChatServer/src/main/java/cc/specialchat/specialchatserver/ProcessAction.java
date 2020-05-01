@@ -88,8 +88,8 @@ class ProcessAction{
 	static String action_0003(JSONObject JsonData){
 		try{
 			String user_id=JsonData.getString("user_id");
-			String token_key=JsonData.getString("token_key");
-			if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
+//			String token_key=JsonData.getString("token_key");
+//			if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
 				String[][] msg_temp;
 				if((msg_temp=MsgCacheSQLite.fetchMsg(user_id)).length>0){
 					StringBuffer p;
@@ -110,12 +110,12 @@ class ProcessAction{
 				}else{
 					return "{\"is_new_msg\":\"false\"}";
 				}
-			}
+//			}
 		}catch(JSONException e){
 			e.printStackTrace();
 			return "{'status':'false','msg':'login info error! (PA1003)'}";
 		}
-		return "{'status':'false','msg':'login info error! (PA1003+91)'}";
+//		return "{'status':'false','msg':'login info error! (PA1003+91)'}";
 	}
 	
 	/**
