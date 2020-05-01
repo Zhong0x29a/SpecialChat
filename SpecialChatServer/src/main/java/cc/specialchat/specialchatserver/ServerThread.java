@@ -73,6 +73,7 @@ public class ServerThread extends Thread {
 					System.out.println(temp);
 					// Phrase the header.
 					JSONObject header=JSONObject.parseObject(temp).getJSONObject("header");
+					//todo: process the header.
 					
 					JSONObject body=JSONObject.parseObject(temp).getJSONObject("body");
 					
@@ -114,7 +115,7 @@ public class ServerThread extends Thread {
 				case "beat": // heartbeat.
 					msgSend="{'alive':true}";
 					break;
-				case "recall": //todo: notice this?
+				case "recall":
 					msgSend=null;
 					break;
 				case "CheckUpdate": // check update

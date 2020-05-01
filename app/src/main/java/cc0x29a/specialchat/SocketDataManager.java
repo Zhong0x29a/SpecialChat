@@ -19,7 +19,7 @@ public class SocketDataManager{
 		
 		SocketWithServerService.sendData(data);
 		JSONObject temp;
-		synchronized(this){
+		synchronized(this){ //this may not correct??
 			try{
 				wait();
 			}catch(InterruptedException e){

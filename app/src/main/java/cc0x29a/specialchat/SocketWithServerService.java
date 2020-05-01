@@ -202,7 +202,7 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 			new Thread(new Runnable(){
 				@Override
 				public void run(){
-					StartConnection();
+					StartConnection(); //todo: seemed it would not reconnect.
 				}
 			},"StartConnectionThread").start();
 		}finally{
