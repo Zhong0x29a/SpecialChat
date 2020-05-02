@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.List;
 
 class ProcessAction{
 	
@@ -90,23 +91,33 @@ class ProcessAction{
 			String user_id=JsonData.getString("user_id");
 //			String token_key=JsonData.getString("token_key");
 //			if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
-				String[][] msg_temp;
-				if((msg_temp=MsgCacheSQLite.fetchMsg(user_id)).length>0){
+				List<String[]> msg_temp;
+				if((msg_temp=MsgCacheSQLite.fetchMsg(user_id))!=null && msg_temp.size()>0){
 					StringBuffer p;
-					if(msg_temp != null && !msg_temp[0][0].equals("0")){
-						p=new StringBuffer("{\"new_msg_num\":\""+msg_temp[0][0]+"\","); // todo: rebuild the message format, use JSONArray!
-						for(int i=0;i<Integer.parseInt(msg_temp[0][0]);i++){
-							p.append("\"index_").append((i+1)).append("\":" +
-									"\"{'user_id':'").append(msg_temp[i+1][1]).append("'," +
-									"'send_time':'").append(msg_temp[i+1][3]).append("'," +
-									"'msg_content':'").append(msg_temp[i+1][2]).append("'" +
-									"}\",");
-						}
-						p.append("\"is_new_msg\":\"true\"}");
-						return p.toString();
-					}else{
-						return "{\"is_new_msg\":\"false\"}";
+					p=new StringBuffer("{'new_msg_num':'"+msg_temp.size()+"','msg':["); // todo: rebuild the message format, use JSONArray!
+					for(String[] data : msg_temp){
+//						msg_temp.
+						p.append("['"+data[1]+"','"+data[3]+"','"+data[2]+"'],");
 					}
+					for(int i=0; i<msg_temp.size(); i++){
+						/*
+						* {
+						*   'msg':[['from_id','send_time','msg_content'],[...],[...],...]
+						* }
+						* */
+						p.append("['"+msg_temp.get(i)[1]+"','"+msg_temp.get(i)[3]+"']");
+						
+						p.append("\"index_").append((i+1)).append("\":" +
+								"\"{'user_id':'").append(msg_temp[i+1][1]).append("'," +
+								"'send_time':'").append(msg_temp[i+1][3]).append("'," +
+								"'msg_content':'").append(msg_temp[i+1][2]).append("'" +
+								"}\",");
+					}
+					p.append("'is_new_msg':'true'}");
+					
+					MsgCacheSQLite.isFetchedMsg(user_id);
+					
+					return p.toString();
 				}else{
 					return "{\"is_new_msg\":\"false\"}";
 				}

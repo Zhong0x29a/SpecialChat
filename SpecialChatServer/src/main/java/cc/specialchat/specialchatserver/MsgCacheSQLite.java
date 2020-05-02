@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Message Cache SQLite Manager
@@ -97,33 +99,53 @@ class MsgCacheSQLite{
 	 * @param user_id String
 	 * @return String[][] fetched msg and info
 	 */
-	static String[][] fetchMsg(String user_id){
+	static List<String[]> fetchMsg(String user_id){
 		try{
 			Connection connection=getConnection();
 			Statement statement=connection.createStatement();
 			
 			String QUERY_SQL="select * from msg_cache where to_id="+user_id;
 			ResultSet resultSet=statement.executeQuery(QUERY_SQL);
-			String[][] msg=new String[51][4]; // 50 pieces for max each time.
-			String DELETE_SQL;
+			
+			List<String[]> msgList=new ArrayList<>(); // 50 pieces for max each time.;
+			String[] msg=new String[4];
+			
 			int index=0;
 			while(resultSet.next() && index<50){
 				index++;
-				msg[index][0]=resultSet.getInt("msg_index")+"";
-				msg[index][1]=resultSet.getInt("from_id")+"";
-				msg[index][2]=resultSet.getString("msg_content");
-				msg[index][3]=resultSet.getInt("send_time")+"";
+				msg[0]=resultSet.getInt("msg_index")+"";
+				msg[1]=resultSet.getInt("from_id")+"";
+				msg[2]=resultSet.getString("msg_content");
+				msg[3]=resultSet.getInt("send_time")+"";
+				msgList.add(msg);
 			}
 			resultSet.close();
-			DELETE_SQL="delete from msg_cache where to_id="+user_id;
-			statement.executeUpdate(DELETE_SQL);
+			
+//			DELETE_SQL="delete from msg_cache where to_id="+user_id;
+//			statement.executeUpdate(DELETE_SQL);
+			
 			statement.close();
 			connection.close();
-			msg[0][0]=index+"";
-			return msg;
+			
+			return msgList;
 		}catch(SQLException|ClassNotFoundException e){
 			e.printStackTrace();
 			return null;
+		}
+	}
+	
+	static void isFetchedMsg(String user_id){
+		try{
+			Connection connection=getConnection();
+			Statement statement=connection.createStatement();
+			
+			String DELETE_SQL="delete from msg_cache where to_id="+user_id;
+			statement.executeUpdate(DELETE_SQL);
+			
+			statement.close();
+			connection.close();
+		}catch(SQLException|ClassNotFoundException e){
+			e.printStackTrace();
 		}
 	}
 }

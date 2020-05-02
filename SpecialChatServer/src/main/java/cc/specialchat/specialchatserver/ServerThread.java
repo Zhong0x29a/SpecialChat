@@ -45,8 +45,10 @@ public class ServerThread extends Thread {
 		try{
 //			String virData="{'user_id':'"+this.user_id+"'}"; //no token_key
 //			ProcessAction.action_0003(JSONObject.parseObject(virData)); todo: do not delete message immediately.
+			//todo: fetch message.
+			
 			synchronized(os){
-				os.write("".getBytes(StandardCharsets.UTF_8));
+				os.write("{}".getBytes(StandardCharsets.UTF_8));
 			}
 			// todo: wait for recall in "run()".
 		}catch(IOException e){
@@ -188,6 +190,10 @@ public class ServerThread extends Thread {
 //		System.out.println(msgSend+"\n");
 		
 		return msgSend;
+	}
+	
+	private String generateRid(){
+		return String.valueOf(MyTools.getRandomNum(99999999,10000000));
 	}
 	
 }
