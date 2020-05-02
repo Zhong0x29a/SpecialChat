@@ -126,19 +126,16 @@ class ProcessAction{
 	static String action_0004(JSONObject JsonData){
 		try{
 			String user_id=JsonData.getString("user_id");
-			String token_key=JsonData.getString("token_key");
 			String to_id=JsonData.getString("to");
 			String msg_content=JsonData.getString("msg_content");
 			int send_time;
-			if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key) &&
-					(send_time=MsgCacheSQLite.insertNewMsg(user_id,to_id,msg_content))!=0){
+			if( (send_time=MsgCacheSQLite.insertNewMsg(user_id,to_id,msg_content))!=0 ){
 				//todo:
 				// try , if not online , cancel it.
 				ServerThread targetThread=ServerMain.serverThreadMap.get(to_id);
 				if(targetThread!=null){
-					targetThread.hasNewMessage();// todo: test.
+					targetThread.hasNewMessage();
 				}
-				
 				return "{'status':'true','send_time':'"+send_time+"'}";
 			}
 			return "{'status':'false','msg':'login info error! (PA1004)'}";
@@ -204,20 +201,15 @@ class ProcessAction{
 	static String action_0007(JSONObject JsonData){
 		try{
 			String user_id=JsonData.getString("user_id");
-			String token_key=JsonData.getString("token_key");
 			String ta_id=JsonData.getString("ta_id");
-			if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
-				String[] my_info=UserInfoSQLite.fetchUserInfo(user_id);
-				String[] ta_info=UserInfoSQLite.fetchUserInfo(ta_id);
-				if(my_info!=null && ta_info!=null &&
-						!ContactListSQLite.checkIsFriend(my_info[1],ta_info[1]) &&
-						ContactListSQLite.addNewContact(my_info[1],ta_info[1],my_info[3],ta_info[3])){
-					return "{'status':'true'}";
-				}else{
-					return "{'status':'false','msg':'Error(PA1007+inn+inn)'}";
-				}
+			String[] my_info=UserInfoSQLite.fetchUserInfo(user_id);
+			String[] ta_info=UserInfoSQLite.fetchUserInfo(ta_id);
+			if(my_info!=null && ta_info!=null &&
+					!ContactListSQLite.checkIsFriend(my_info[1],ta_info[1]) &&
+					ContactListSQLite.addNewContact(my_info[1],ta_info[1],my_info[3],ta_info[3])){
+				return "{'status':'true'}";
 			}else{
-				return "{'status':'false','msg':'Error(PA1007+inn)'}";
+				return "{'status':'false','msg':'Error(PA1007+inn+inn)'}";
 			}
 		}catch(JSONException|NullPointerException e){
 			e.printStackTrace();
@@ -257,12 +249,9 @@ class ProcessAction{
 	 */
 	static String action_0009(JSONObject JsonData){
 		try{
-			String user_id=JsonData.getString("user_id");
-			String token_key=JsonData.getString("token_key");
 			String search_id=JsonData.getString("search_id");
 			String[][] data;
-			if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)
-				&& (data=UserInfoSQLite.searchUsers(search_id))!=null){
+			if( (data=UserInfoSQLite.searchUsers(search_id))!=null ){
 				StringBuilder temp_msg=new StringBuilder("{'status':'true','number':'"+data[0][0]+"'" );
 				for(int i=1;i<=Integer.parseInt(data[0][0]);i++){
 //					temp_msg.append(",\"index_"+i+"\":\"{'user_id':'"+data[i][1]+"','user_name':'"+data[i][3]+"'}\"");
@@ -270,7 +259,6 @@ class ProcessAction{
 							.append("','user_name':'").append(data[i][3]).append("'}\"");
 				}
 				temp_msg.append("}");
-				
 				return temp_msg.toString();
 			}else{
 				return "{'status':'false','msg':'something error!'}";
@@ -290,10 +278,8 @@ class ProcessAction{
 	static String action_0010(JSONObject JsonData){
 		try{
 			String user_id=JsonData.getString("user_id");
-			String token_key=JsonData.getString("token_key");
 			String[][] contacts;
-			if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key) &&
-					(contacts=ContactListSQLite.fetchContacts(user_id))!=null
+			if( (contacts=ContactListSQLite.fetchContacts(user_id))!=null
 					&& !contacts[0][0].equals("0")){
 				StringBuilder msg=new StringBuilder("{'status':'true',");
 				for(int i=1;i<=Integer.parseInt(contacts[0][0]);i++){
@@ -360,12 +346,10 @@ class ProcessAction{
 	static String action_0013(JSONObject JsonData){
 		try{
 			String user_id=JsonData.getString("user_id");
-			String token_key=JsonData.getString("token_key");
 			String new_user_name=JsonData.getString("new_user_name");
 			String new_user_phone=JsonData.getString("new_user_phone");
 			if( JsonData.getString("secret").equals("I love you.") &&
 					new_user_name!=null && new_user_phone!=null &&
-					UserInfoSQLite.verifyUserTokenKey(user_id,token_key) &&
 					UserInfoSQLite.updateUserInfo(user_id,new_user_name,new_user_phone)){
 				return "{'status':'true','is_updated':'true'}";
 			}else{

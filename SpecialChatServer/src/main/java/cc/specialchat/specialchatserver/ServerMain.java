@@ -17,9 +17,6 @@ public class ServerMain{
 	static Map<String,ServerThread> serverThreadMap;
 	
 	public static void main(String[] args){
-		// test code.
-
-		// test code upon
 		
 		// init server.
 		init();
@@ -75,12 +72,12 @@ public class ServerMain{
 						if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
 							serverThreadMap.put(user_id,serverThread);
 							os.write("true".getBytes(StandardCharsets.UTF_8));
+							serverThread.isLogged=true;
 						}else{
 							os.write("false".getBytes(StandardCharsets.UTF_8));
-							// todo:
-							//  non-login client.
-							//  control the permission.
+							serverThread.isLogged=false;
 						}
+						System.out.println("New connection: "+socket.getInetAddress().getHostAddress());
 					}catch(JSONException e){
 						System.out.println("User info header error. ");
 						try{
@@ -88,21 +85,20 @@ public class ServerMain{
 						}catch(Exception ex){
 //						    e.printStackTrace();
 						}
-//						serverThread = new ServerThread(socket,br,os,"000");
-						break;
+						continue;
 					}
 				}else{
-					System.out.println("Connection broke.");
+					System.out.println("Connection not completed.");
 					try{
 						socket.close();
 					}catch(Exception e){
 //						e.printStackTrace();
 					}
-					break;
+					continue;
 				}
 				
 				serverThread.start();
-				System.out.println("New connection: " + socket.getInetAddress().getHostAddress() +"\nOnline num: "+serverThreadMap.size());
+				System.out.println("Online num: "+serverThreadMap.size());
 			}
 		}catch(Exception ex){
 			System.out.println("--- Just occurred a ERROR... ---\n---- Special Chat Server restarted ----\n");

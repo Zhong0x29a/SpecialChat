@@ -20,9 +20,11 @@ public class ServerThread extends Thread {
 	private Socket socket;
 	
 	private BufferedReader br;
-	private OutputStream os;
+	private final OutputStream os;
 	
 	private String user_id;
+	
+	boolean isLogged; // whether the client is logged in.
 	
 	ServerThread(Socket socket,BufferedReader br,OutputStream os,String user_id){
 		this.socket = socket;
@@ -41,9 +43,9 @@ public class ServerThread extends Thread {
 			return;
 		}
 		try{
-			String virData="{'user_id':'"+this.user_id+"'}"; //no token_key
-			ProcessAction.action_0003(JSONObject.parseObject(virData));
-			synchronized(this){
+//			String virData="{'user_id':'"+this.user_id+"'}"; //no token_key
+//			ProcessAction.action_0003(JSONObject.parseObject(virData)); todo: do not delete message immediately.
+			synchronized(os){
 				os.write("".getBytes(StandardCharsets.UTF_8));
 			}
 			// todo: wait for recall in "run()".
@@ -88,7 +90,7 @@ public class ServerThread extends Thread {
 					
 					System.out.println(dataSend);
 					
-					synchronized(this){
+					synchronized(os){
 						os.write((dataSend+"\n").getBytes(StandardCharsets.UTF_8));
 					}
 				}
@@ -108,15 +110,14 @@ public class ServerThread extends Thread {
 	private String ProcessData(JSONObject dataJsonReturn){
 //		System.out.println(dataJsonReturn);
 		
-		String msgSend;
+		String msgSend=null;
 		
 		try{
 			switch(dataJsonReturn.getString("action")){
 				case "beat": // heartbeat.
 					msgSend="{'alive':true}";
 					break;
-				case "recall":
-					msgSend=null;
+				case "recall": // recall
 					break;
 				case "CheckUpdate": // check update
 					msgSend=ProcessAction.action_checkUpdate(dataJsonReturn);
@@ -128,10 +129,14 @@ public class ServerThread extends Thread {
 					msgSend=ProcessAction.action_0002(dataJsonReturn);
 					break;
 				case "0003": // client refresh message.
-					msgSend=ProcessAction.action_0003(dataJsonReturn);
+					if(isLogged){
+						msgSend=ProcessAction.action_0003(dataJsonReturn);
+					}
 					break;
 				case "0004": // send message.
-					msgSend=ProcessAction.action_0004(dataJsonReturn);
+					if(isLogged){
+						msgSend=ProcessAction.action_0004(dataJsonReturn);
+					}
 					break;
 				case "0005": // check ID usability.
 					msgSend=ProcessAction.action_0005(dataJsonReturn);
@@ -140,28 +145,39 @@ public class ServerThread extends Thread {
 					msgSend=ProcessAction.action_0006(dataJsonReturn);
 					break;
 				case "0007": // add new contact.
-					msgSend=ProcessAction.action_0007(dataJsonReturn);
+					if(isLogged){
+						msgSend=ProcessAction.action_0007(dataJsonReturn);
+					}
 					break;
 				case "0008": // fetch contact info.
-					msgSend=ProcessAction.action_0008(dataJsonReturn);
+					if(isLogged){
+						msgSend=ProcessAction.action_0008(dataJsonReturn);
+					}
 					break;
 				case "0009": // search contact.
-					msgSend=ProcessAction.action_0009(dataJsonReturn);
+					if(isLogged){
+						msgSend=ProcessAction.action_0009(dataJsonReturn);
+					}
 					break;
 				case "0010": // fetch contacts.
 					msgSend=ProcessAction.action_0010(dataJsonReturn);
 					break;
 				case "0011": // check if is friend.
-					msgSend=ProcessAction.action_0011(dataJsonReturn);
+					if(isLogged){
+						msgSend=ProcessAction.action_0011(dataJsonReturn);
+					}
 					break;
 				case "0012": // fetch user_id by phone.
-					msgSend=ProcessAction.action_0012(dataJsonReturn);
+					if(isLogged){
+						msgSend=ProcessAction.action_0012(dataJsonReturn);
+					}
 					break;
 				case "0013": // edit user profile.
-					msgSend=ProcessAction.action_0013(dataJsonReturn);
+					if(isLogged){
+						msgSend=ProcessAction.action_0013(dataJsonReturn);
+					}
 					break;
 				default: // action code error.
-					msgSend="{\"msg\":\"ERROR!! (ST1000)\"}";
 					break;
 			}
 		}catch(Exception e){

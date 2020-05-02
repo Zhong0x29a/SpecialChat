@@ -53,8 +53,8 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 	static boolean tryingConnect=false;
 	
 	// key: rid (request id) , data (data return from server)
-	static HashMap<String,JSONObject> dataSet=new HashMap<>();
-	static HashMap<String,SocketDataManager> dataManagerHashMap=new HashMap<>();
+	static final HashMap<String,JSONObject> dataSet=new HashMap<>();
+	static final HashMap<String,SocketDataManager> dataManagerHashMap=new HashMap<>();
 	
 	@Override
 	public void onCreate(){
@@ -90,8 +90,6 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 			if(!isSocketOn()){
 				closeSocket();
 				System.out.println("Retry for new connection.");
-				
-//				synchronized(this){
 					
 				socket=new Socket();
 				// socket.connect(new InetSocketAddress("server.specialchat.cn",21027),1111);
@@ -146,24 +144,25 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 		@Override
 		public void run(){
 			try{
-				while(true){
-					String str=new String(Base64.decode(br.readLine(),Base64.DEFAULT));
+				String str;
+				while( (str=br.readLine())!=null ){
+					str=new String(Base64.decode(str,Base64.DEFAULT));
 					// font-process, get the request key.
 					JSONObject object=new JSONObject(str);
 					
 					if(object.getJSONObject("header").getString("type").equals("return")){
 						String rid=object.getJSONObject("header").getString("rid");
 						SocketDataManager manager;
-						synchronized(this){
+						synchronized(dataSet){
 							dataSet.put(rid,object.getJSONObject("body"));
+						}
+						synchronized(dataManagerHashMap){
 							manager=dataManagerHashMap.get(rid);
 							if(manager!=null){
-								synchronized(manager){
-									manager.notify();
-								}
+								manager.notify();
 							}
 						}
-//					}else if(object.getJSONObject("header").getString("type").equals("newMsg")){
+						
 					}else if(object.getJSONObject("header").getString("type").equals("request")){
 						
 						//todo: balabala...
@@ -196,8 +195,9 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 			
 			System.out.println(data);
 			
-			os.write((data.replaceAll("\n","")+"\n").getBytes(StandardCharsets.UTF_8));
-			
+			synchronized(os){
+				os.write((data.replaceAll("\n","")+"\n").getBytes(StandardCharsets.UTF_8));
+			}
 		}catch(IOException|InterruptedException|NullPointerException e){
 			new Thread(new Runnable(){
 				@Override
