@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.List;
 
 /**
  * 2020.03
@@ -45,10 +46,16 @@ public class ServerThread extends Thread {
 		try{
 //			String virData="{'user_id':'"+this.user_id+"'}"; //no token_key
 //			ProcessAction.action_0003(JSONObject.parseObject(virData)); todo: do not delete message immediately.
-			//todo: fetch message.
+			
+			List<String[]> temp=MsgCacheSQLite.fetchMsg(this.user_id);
+			String jsonArr="[['..','..','..'],[...]]";//todo....
+			
+			String dataStr="{'header':{'action':'',},'body':{'data':"+jsonArr+"}}";
+			
+			dataStr=new String(Base64.getEncoder().encode(dataStr.getBytes(StandardCharsets.UTF_8)) ).replaceAll("\n","");
 			
 			synchronized(os){
-				os.write("{}".getBytes(StandardCharsets.UTF_8));
+				os.write( (dataStr+"\n").getBytes(StandardCharsets.UTF_8));
 			}
 			// todo: wait for recall in "run()".
 		}catch(IOException e){
@@ -88,7 +95,7 @@ public class ServerThread extends Thread {
 					}
 					
 					dataSend="{'header':{'type':'return','rid':'"+header.getString("rid")+"'},'body':"+dataSend+"}";
-					dataSend=new String(Base64.getEncoder().encode(dataSend.getBytes()) ).replaceAll("\n","");
+					dataSend=new String(Base64.getEncoder().encode(dataSend.getBytes(StandardCharsets.UTF_8)) ).replaceAll("\n","");
 					
 					System.out.println(dataSend);
 					

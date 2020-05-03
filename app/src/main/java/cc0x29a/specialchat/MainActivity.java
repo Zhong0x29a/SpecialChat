@@ -9,7 +9,6 @@ package cc0x29a.specialchat;
 *
 * */
 
-
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
