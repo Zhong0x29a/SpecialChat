@@ -121,8 +121,8 @@ class MsgCacheSQLite{
 			}
 			resultSet.close();
 			
-			String UPDATE_IS_READ="update msg_cache set is_read=1 where to_id="+user_id+";";
-			statement.executeUpdate(UPDATE_IS_READ);
+//			String UPDATE_IS_READ="update msg_cache set is_read=1 where to_id="+user_id+";";
+//			statement.executeUpdate(UPDATE_IS_READ);
 			
 //			DELETE_SQL="delete from msg_cache where to_id="+user_id;
 //			statement.executeUpdate(DELETE_SQL);
@@ -137,7 +137,22 @@ class MsgCacheSQLite{
 		}
 	}
 	
-	static void isFetchedMsg(String user_id){
+	static void MsgFetched(String user_id){
+		try{
+			Connection connection=getConnection();
+			Statement statement=connection.createStatement();
+			
+			String UPDATE_IS_READ="update msg_cache set is_read=1 where to_id="+user_id+";";
+			statement.executeUpdate(UPDATE_IS_READ);
+			
+			statement.close();
+			connection.close();
+		}catch(SQLException|ClassNotFoundException e){
+			e.printStackTrace();
+		}
+	}
+	
+	static void deleteFetchedMsg(String user_id){
 		try{
 			Connection connection=getConnection();
 			Statement statement=connection.createStatement();

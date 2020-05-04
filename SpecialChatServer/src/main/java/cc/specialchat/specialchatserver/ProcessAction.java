@@ -115,7 +115,9 @@ class ProcessAction{
 					}
 					p.append("'is_new_msg':'true'}");
 					
-					MsgCacheSQLite.isFetchedMsg(user_id);
+					MsgCacheSQLite.MsgFetched(user_id);
+					
+					MsgCacheSQLite.deleteFetchedMsg(user_id);
 					
 					return p.toString();
 				}else{
