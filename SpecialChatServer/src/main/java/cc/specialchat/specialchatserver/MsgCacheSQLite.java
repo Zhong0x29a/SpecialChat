@@ -121,6 +121,9 @@ class MsgCacheSQLite{
 			}
 			resultSet.close();
 			
+			String UPDATE_IS_READ="update msg_cache set is_read=1 where to_id="+user_id+";";
+			statement.executeUpdate(UPDATE_IS_READ);
+			
 //			DELETE_SQL="delete from msg_cache where to_id="+user_id;
 //			statement.executeUpdate(DELETE_SQL);
 			
@@ -139,7 +142,7 @@ class MsgCacheSQLite{
 			Connection connection=getConnection();
 			Statement statement=connection.createStatement();
 			
-			String DELETE_SQL="delete from msg_cache where to_id="+user_id;
+			String DELETE_SQL="delete from msg_cache where to_id="+user_id+" and is_read=1;";
 			statement.executeUpdate(DELETE_SQL);
 			
 			statement.close();

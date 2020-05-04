@@ -48,8 +48,14 @@ public class ServerThread extends Thread {
 //			ProcessAction.action_0003(JSONObject.parseObject(virData)); todo: do not delete message immediately.
 			
 			List<String[]> temp=MsgCacheSQLite.fetchMsg(this.user_id);
-			String jsonArr="[['..','..','..'],[...]]";//todo....
+			if(temp==null){
+				return;
+			}
+			StringBuilder jsonArr=new StringBuilder("[");//todo....
 			
+			for(String[] b: temp){
+				jsonArr.append("["+b[1]+"]");
+			}
 			String dataStr="{'header':{'action':'',},'body':{'data':"+jsonArr+"}}";
 			
 			dataStr=new String(Base64.getEncoder().encode(dataStr.getBytes(StandardCharsets.UTF_8)) ).replaceAll("\n","");
