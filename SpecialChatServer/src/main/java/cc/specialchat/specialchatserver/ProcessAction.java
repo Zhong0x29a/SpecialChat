@@ -1,7 +1,10 @@
 package cc.specialchat.specialchatserver;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -94,30 +97,27 @@ class ProcessAction{
 				List<String[]> msg_temp;
 				if((msg_temp=MsgCacheSQLite.fetchMsg(user_id))!=null && msg_temp.size()>0){
 					StringBuffer p;
-					p=new StringBuffer("{'new_msg_num':'"+msg_temp.size()+"','msg':["); // todo: rebuild the message format, use JSONArray!
-					for(String[] data : msg_temp){
-//						msg_temp.
-						p.append("['"+data[1]+"','"+data[3]+"','"+data[2]+"'],");
-					}
-					for(int i=0; i<msg_temp.size(); i++){
-						/*
-						* {
-						*   'msg':[['from_id','send_time','msg_content'],[...],[...],...]
-						* }
-						* */
-						p.append("['"+msg_temp.get(i)[1]+"','"+msg_temp.get(i)[3]+"']");
-						
-						p.append("\"index_").append((i+1)).append("\":" +
-								"\"{'user_id':'").append(msg_temp[i+1][1]).append("'," +
-								"'send_time':'").append(msg_temp[i+1][3]).append("'," +
-								"'msg_content':'").append(msg_temp[i+1][2]).append("'" +
-								"}\",");
-					}
-					p.append("'is_new_msg':'true'}");
+					p=new StringBuffer("{'new_msg_num':'"+msg_temp.size()+"','msg':"); // todo: rebuild the message format, use JSONArray!
 					
-					MsgCacheSQLite.MsgFetched(user_id);
+					JSONArray a=new JSONArray();
+					a.addAll(msg_temp);
+					p.append(JSON.toJSONString(a,SerializerFeature.DisableCircularReferenceDetect));
+//					for(int i=0; i<msg_temp.size(); i++){
+//						/*
+//						* {
+//						*   'msg':[['from_id','send_time','msg_content'],[...],[...],...]
+//						* }
+//						* */
+//						p.append("['"+msg_temp.get(i)[1]+"','"+msg_temp.get(i)[3]+"']");
+//
+//						p.append("\"index_").append((i+1)).append("\":" +
+////								"\"{'user_id':'").append(msg_temp[i+1][1]).append("'," +
+////								"'send_time':'").append(msg_temp[i+1][3]).append("'," +
+////								"'msg_content':'").append(msg_temp[i+1][2]).append("'" +
+//								"}\",");
+//					}
+					p.append(",'is_new_msg':'true'}");
 					
-					MsgCacheSQLite.deleteFetchedMsg(user_id);
 					
 					return p.toString();
 				}else{

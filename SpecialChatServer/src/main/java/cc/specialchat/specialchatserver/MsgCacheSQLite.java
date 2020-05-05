@@ -108,11 +108,11 @@ class MsgCacheSQLite{
 			ResultSet resultSet=statement.executeQuery(QUERY_SQL);
 			
 			List<String[]> msgList=new ArrayList<>(); // 50 pieces for max each time.;
-			String[] msg=new String[4];
 			
 			int index=0;
 			while(resultSet.next() && index<50){
 				index++;
+				String[] msg=new String[4];
 				msg[0]=resultSet.getInt("msg_index")+"";
 				msg[1]=resultSet.getInt("from_id")+"";
 				msg[2]=resultSet.getString("msg_content");
@@ -121,14 +121,16 @@ class MsgCacheSQLite{
 			}
 			resultSet.close();
 			
-//			String UPDATE_IS_READ="update msg_cache set is_read=1 where to_id="+user_id+";";
-//			statement.executeUpdate(UPDATE_IS_READ);
+			String UPDATE_IS_READ="update msg_cache set is_read=1 where to_id="+user_id+";";
+			statement.executeUpdate(UPDATE_IS_READ);
 			
 //			DELETE_SQL="delete from msg_cache where to_id="+user_id;
 //			statement.executeUpdate(DELETE_SQL);
 			
 			statement.close();
 			connection.close();
+			
+//			deleteFetchedMsg(user_id);todo
 			
 			return msgList;
 		}catch(SQLException|ClassNotFoundException e){
@@ -137,20 +139,20 @@ class MsgCacheSQLite{
 		}
 	}
 	
-	static void MsgFetched(String user_id){
-		try{
-			Connection connection=getConnection();
-			Statement statement=connection.createStatement();
-			
-			String UPDATE_IS_READ="update msg_cache set is_read=1 where to_id="+user_id+";";
-			statement.executeUpdate(UPDATE_IS_READ);
-			
-			statement.close();
-			connection.close();
-		}catch(SQLException|ClassNotFoundException e){
-			e.printStackTrace();
-		}
-	}
+//	static void MsgFetched(String user_id){
+//		try{
+//			Connection connection=getConnection();
+//			Statement statement=connection.createStatement();
+//
+//			String UPDATE_IS_READ="update msg_cache set is_read=1 where to_id="+user_id+";";
+//			statement.executeUpdate(UPDATE_IS_READ);
+//
+//			statement.close();
+//			connection.close();
+//		}catch(SQLException|ClassNotFoundException e){
+//			e.printStackTrace();
+//		}
+//	}
 	
 	static void deleteFetchedMsg(String user_id){
 		try{

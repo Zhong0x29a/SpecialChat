@@ -1,7 +1,10 @@
 package cc.specialchat.specialchatserver;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -10,14 +13,30 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static java.lang.System.exit;
 
 public class ServerMain{
 	
 	static Map<String,ServerThread> serverThreadMap;
 	
 	public static void main(String[] args){
+		List<String[]> temp=MsgCacheSQLite.fetchMsg("123");
+		if(temp==null){
+			return;
+		}
 		
+		JSONArray a=new JSONArray();
+		
+		a.addAll(temp);
+		
+		String dataStr="{'header':{'action':'',},'body':{'data':"+JSON.toJSONString(a,SerializerFeature.DisableCircularReferenceDetect)+"}}";
+		
+		System.out.println(dataStr);
+		
+		exit(0);
 		// init server.
 		init();
 		serverThreadMap=new HashMap<>();

@@ -15,6 +15,7 @@ import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -170,11 +171,21 @@ public class NetworkService extends Service{
 					if(data.getString("is_new_msg").equals("true")){
 						int new_msg_num=Integer.parseInt(data.getString("new_msg_num"));
 						ChatListSQLiteHelper clh=new ChatListSQLiteHelper(NetworkService.this,"chat_list.db",1);
+						
+						JSONArray allMsg=data.getJSONArray("msg");
+						
 						for(int i=1;i<=new_msg_num;i++){
-							JSONObject jsonTemp=new JSONObject(data.getString("index_"+i));
-							String friend_id=jsonTemp.getString("user_id");
-							String send_time=jsonTemp.getString("send_time");
-							String msg_content=jsonTemp.getString("msg_content");
+						
+//							JSONObject jsonTemp=new JSONObject(data.getString("index_"+i));
+							JSONArray b=allMsg.getJSONArray(i-1);
+							
+							String friend_id=b.getString(1);
+							String send_time=b.getString(2);
+							String msg_content=b.getString(3);
+							
+//							String friend_id=jsonTemp.getString("user_id");
+//							String send_time=jsonTemp.getString("send_time");
+//							String msg_content=jsonTemp.getString("msg_content");
 							
 							// insert data to database
 							MsgSQLiteHelper mh=new MsgSQLiteHelper(NetworkService.this,"msg_"+friend_id+".db",1);

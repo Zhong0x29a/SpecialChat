@@ -1,6 +1,9 @@
 package cc.specialchat.specialchatserver;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,7 +41,7 @@ public class ServerThread extends Thread {
 		//todo: complete
 		// os.write(...);
 		try{
-			sleep(20);
+			sleep(88);
 		}catch(InterruptedException e){
 			e.printStackTrace();
 			return;
@@ -48,15 +51,16 @@ public class ServerThread extends Thread {
 //			ProcessAction.action_0003(JSONObject.parseObject(virData)); todo: do not delete message immediately.
 			
 			List<String[]> temp=MsgCacheSQLite.fetchMsg(this.user_id);
-			if(temp==null){
+			if(temp==null || temp.size()<=0){
 				return;
 			}
-			StringBuilder jsonArr=new StringBuilder("[");//todo....
 			
-			for(String[] b: temp){
-				jsonArr.append("["+b[1]+"]");
-			}
-			String dataStr="{'header':{'action':'',},'body':{'data':"+jsonArr+"}}";
+			JSONArray a=new JSONArray();
+			
+			a.addAll(temp);
+			
+			String dataStr="{'header':{'type':'request','action':'0001'},'body':{'data':"+
+					JSON.toJSONString(a,SerializerFeature.DisableCircularReferenceDetect)+"}}";
 			
 			dataStr=new String(Base64.getEncoder().encode(dataStr.getBytes(StandardCharsets.UTF_8)) ).replaceAll("\n","");
 			
@@ -91,6 +95,10 @@ public class ServerThread extends Thread {
 					// Phrase the header.
 					JSONObject header=JSONObject.parseObject(temp).getJSONObject("header");
 					//todo: process the header.
+					if("return".equals(header.getString("type"))){
+						
+						continue;
+					}
 					
 					JSONObject body=JSONObject.parseObject(temp).getJSONObject("body");
 					

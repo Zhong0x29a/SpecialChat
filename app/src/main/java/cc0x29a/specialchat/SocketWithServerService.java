@@ -164,6 +164,13 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 						}
 						
 					}else if(object.getJSONObject("header").getString("type").equals("request")){
+						switch(object.getJSONObject("header").getString("action")){
+							case "0001":
+								//todo:
+								break;
+							default:
+								break;
+						}
 						
 						//todo: balabala...
 					}
