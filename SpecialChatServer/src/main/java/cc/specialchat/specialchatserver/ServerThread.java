@@ -41,7 +41,7 @@ public class ServerThread extends Thread {
 		//todo: complete
 		// os.write(...);
 		try{
-			sleep(88);
+			sleep(66);
 		}catch(InterruptedException e){
 			e.printStackTrace();
 			return;

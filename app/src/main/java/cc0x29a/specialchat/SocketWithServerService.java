@@ -3,9 +3,11 @@ package cc0x29a.specialchat;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.IBinder;
 import android.util.Base64;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -167,6 +169,28 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 						switch(object.getJSONObject("header").getString("action")){
 							case "0001":
 								//todo:
+								JSONArray data=object.getJSONObject("body").getJSONArray("data");
+								for(int i=0;i<data.length();i++){
+									JSONArray oneData=data.getJSONArray(i);
+									
+									String friend_id=oneData.getString(1);
+									String send_time=oneData.getString(2);
+									String msg_content=oneData.getString(3);
+									
+									// insert data to database
+									MsgSQLiteHelper mh=new MsgSQLiteHelper(,"msg_"+friend_id+".db",1);
+									mh.insertNewMsg(mh.getReadableDatabase(),friend_id,send_time,msg_content);
+									
+									mh.close();
+									
+									SQLiteDatabase chat_list_db=clh.getReadableDatabase();
+									// update info.
+									clh.updateChatList(chat_list_db,friend_id,send_time,msg_content);
+									// fetch nickname.
+									String ta_nickname=clh.fetchNickname(chat_list_db,friend_id);
+									// release resource
+									chat_list_db.close();
+								}
 								break;
 							default:
 								break;

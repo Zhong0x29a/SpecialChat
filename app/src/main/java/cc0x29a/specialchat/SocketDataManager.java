@@ -43,6 +43,10 @@ public class SocketDataManager{
 		return null;
 	}
 	
+	void processAction(){
+		
+	}
+	
 	private String generateRid(){
 		return String.valueOf(MyTools.getRandomNum(99999999,10000000));
 	}
