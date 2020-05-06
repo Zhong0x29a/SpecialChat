@@ -1,5 +1,7 @@
 package cc0x29a.specialchat;
 
+import android.os.Message;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,7 +19,14 @@ public class SocketDataManager{
 		data="{'header':{'type':'request','rid':'"+rid+"'},'body':"+data+" }";
 //		System.out.println(data);
 		
-		SocketWithServerService.sendData(data);
+		Message msg=new Message();
+		msg.what=0x1;
+		msg.obj=data;
+		
+		if(SocketWithServerService.handler!=null){
+			SocketWithServerService.handler.sendMessage(msg);
+		}
+		
 		JSONObject temp;
 		synchronized(this){ //this may not correct??
 			try{
@@ -41,10 +50,6 @@ public class SocketDataManager{
 			}
 		}
 		return null;
-	}
-	
-	void processAction(){
-		
 	}
 	
 	private String generateRid(){

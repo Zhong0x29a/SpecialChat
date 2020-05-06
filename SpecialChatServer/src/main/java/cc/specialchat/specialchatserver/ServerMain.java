@@ -1,6 +1,5 @@
 package cc.specialchat.specialchatserver;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 
@@ -12,8 +11,6 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-
-import static java.lang.System.exit;
 
 public class ServerMain{
 	
@@ -34,17 +31,17 @@ public class ServerMain{
 //		System.out.println(dataStr);
 		
 		
-		String json = "[{\"name\":\"张三\",\"code\":\"123\"},{\"name\":\"李四\",\"code\":\"123\"}]";
-		JSONArray jsonArray = JSONArray.parseArray(json);
-		if(jsonArray.size() > 0){
-			for (int i = 0; i < jsonArray.size(); i++) {
-				JSONObject jsonObject = jsonArray.getJSONObject(i);
-				System.out.println("遍历jsonArray,获取数组中的name属性值："+jsonObject.get("name"));
-			}
-		}
-		System.out.println();
-		
-		exit(0);
+//		String json = "[{\"name\":\"张三\",\"code\":\"123\"},{\"name\":\"李四\",\"code\":\"123\"}]";
+//		JSONArray jsonArray = JSONArray.parseArray(json);
+//		if(jsonArray.size() > 0){
+//			for (int i = 0; i < jsonArray.size(); i++) {
+//				JSONObject jsonObject = jsonArray.getJSONObject(i);
+//				System.out.println("遍历jsonArray,获取数组中的name属性值："+jsonObject.get("name"));
+//			}
+//		}
+//		System.out.println();
+//
+//		exit(0);
 		// init server.
 		init();
 		serverThreadMap=new HashMap<>();

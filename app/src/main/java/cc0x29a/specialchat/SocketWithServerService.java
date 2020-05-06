@@ -1,11 +1,17 @@
 package cc0x29a.specialchat;
 
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Base64;
+
+import androidx.annotation.NonNull;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -58,7 +64,9 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 	static final HashMap<String,JSONObject> dataSet=new HashMap<>();
 	static final HashMap<String,SocketDataManager> dataManagerHashMap=new HashMap<>();
 	
-	@Override
+	static Handler handler;
+	
+	@SuppressLint("HandlerLeak")
 	public void onCreate(){
 		// todo: restart this service after logging in!
 		SharedPreferences preferences=getSharedPreferences("user_info",MODE_PRIVATE);
@@ -75,6 +83,23 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 			@Override
 			public void run(){
 				StartConnection();
+				Looper.prepare();
+				handler=new Handler(){
+					@Override
+					public void handleMessage(@NonNull final Message msg){
+						if(msg.what==0x1){
+//							new Thread(new Runnable(){
+//								@Override
+//								public void run(){
+									if(msg.obj!=null){
+										sendData(msg.obj.toString());
+									}
+//								}
+//							}).start();
+						}
+					}
+				};
+				Looper.loop();
 			}
 		},"StartConnectionThread").start();
 		
@@ -85,7 +110,7 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 		closeSocket();
 	}
 	
-	static void StartConnection(){ //todo this may need to be perfected.
+	void StartConnection(){ //todo this may need to be perfected.
 		try{
 			if(tryingConnect){ return; }
 			tryingConnect=true;
@@ -130,9 +155,7 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 						//...
 						System.out.println("Not True\n");
 					}
-				
 				}
-				
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -142,7 +165,7 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 		}
 	}
 	
-	static class ReaderThread extends Thread{
+	class ReaderThread extends Thread{
 		@Override
 		public void run(){
 			try{
@@ -170,6 +193,8 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 							case "0001":
 								//todo:
 								JSONArray data=object.getJSONObject("body").getJSONArray("data");
+								ChatListSQLiteHelper clh=new ChatListSQLiteHelper(SocketWithServerService.this,"chat_list.db",1);
+								
 								for(int i=0;i<data.length();i++){
 									JSONArray oneData=data.getJSONArray(i);
 									
@@ -178,7 +203,7 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 									String msg_content=oneData.getString(3);
 									
 									// insert data to database
-									MsgSQLiteHelper mh=new MsgSQLiteHelper(,"msg_"+friend_id+".db",1);
+									MsgSQLiteHelper mh=new MsgSQLiteHelper(SocketWithServerService.this,"msg_"+friend_id+".db",1);
 									mh.insertNewMsg(mh.getReadableDatabase(),friend_id,send_time,msg_content);
 									
 									mh.close();
@@ -209,7 +234,7 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 	 * @param data , the data send to server
 	 * @return data returned from server.
 	 */
-	public static void sendData(String data){
+	public void sendData(String data){
 		try{
 			int startTime=MyTools.getCurrentTime();
 			while(isOSBusy){
@@ -233,7 +258,8 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 			new Thread(new Runnable(){
 				@Override
 				public void run(){
-					StartConnection(); //todo: seemed it would not reconnect.
+					StartConnection();
+						//todo: seemed it would not reconnect?
 				}
 			},"StartConnectionThread").start();
 		}finally{
