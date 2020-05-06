@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.Message;
 import android.util.Base64;
 
@@ -83,25 +82,24 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 			@Override
 			public void run(){
 				StartConnection();
-				Looper.prepare();
-				handler=new Handler(){
-					@Override
-					public void handleMessage(@NonNull final Message msg){
-						if(msg.what==0x1){
-//							new Thread(new Runnable(){
-//								@Override
-//								public void run(){
-									if(msg.obj!=null){
-										sendData(msg.obj.toString());
-									}
-//								}
-//							}).start();
-						}
-					}
-				};
-				Looper.loop();
 			}
 		},"StartConnectionThread").start();
+		
+		handler=new Handler(){
+			@Override
+			public void handleMessage(@NonNull final Message msg){
+				if(msg.what==0x1){
+					new Thread(new Runnable(){
+						@Override
+						public void run(){
+							if(msg.obj!=null){
+								sendData(msg.obj.toString());
+							}
+								}
+					}).start();
+				}
+			}
+		};
 		
 	}
 	
