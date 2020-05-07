@@ -29,16 +29,7 @@ public class ServerMain{
 //		String dataStr="{'header':{'action':'',},'body':{'data':"+JSON.toJSONString(a,SerializerFeature.DisableCircularReferenceDetect)+"}}";
 //
 //		System.out.println(dataStr);
-		
-		
-//		String json = "[{\"name\":\"张三\",\"code\":\"123\"},{\"name\":\"李四\",\"code\":\"123\"}]";
-//		JSONArray jsonArray = JSONArray.parseArray(json);
-//		if(jsonArray.size() > 0){
-//			for (int i = 0; i < jsonArray.size(); i++) {
-//				JSONObject jsonObject = jsonArray.getJSONObject(i);
-//				System.out.println("遍历jsonArray,获取数组中的name属性值："+jsonObject.get("name"));
-//			}
-//		}
+
 //		System.out.println();
 //
 //		exit(0);
