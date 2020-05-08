@@ -12,6 +12,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * It is quite a pity that the school is starting soon, <br>
+ * so this program may updating very slowly. <br>
+ * But at least, I would not let go, <br>
+ * I will try to perfect it as a pretty memory <br>
+ * during my youth.
+ *
+ * :)
+ *
+ * */
+
 public class ServerMain{
 	
 	static Map<String,ServerThread> serverThreadMap;

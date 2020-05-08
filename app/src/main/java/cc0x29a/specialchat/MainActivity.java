@@ -78,19 +78,7 @@ public class MainActivity extends AppCompatActivity{
 		//test codes
 		
 		// nohup java -jar SpecialChatServer.jar > /dev/null 2> log &
-		
-//		String a="{\"a1\":\"abc1\",\"b\":\"{'c1':'cde1'}\"}";
-//		try{
-//			JSONObject json=new JSONObject(a);
-//			System.out.println(json.getString("a1"));
-//			System.out.println(json.getString("b"));
-//			String b=json.getString("b");
-//			JSONObject json2=new JSONObject(b);
-//			System.out.println(json2.getString("c1"));
-//		}catch(JSONException e){
-//			e.printStackTrace();
-//		}
-//user_id="12365";
+	
 //		Bundle bundle=new Bundle();
 //		bundle.putString("login_id",user_id);
 //		Intent intent=new Intent(MainActivity.this,LoginActivity.class);
@@ -110,7 +98,6 @@ public class MainActivity extends AppCompatActivity{
 //		System.out.println(a.length);
 //		finish();
 		//test codes end
-		
 		
 	}
 	
