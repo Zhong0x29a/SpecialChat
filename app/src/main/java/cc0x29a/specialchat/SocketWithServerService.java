@@ -100,7 +100,7 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 							if(msg.obj!=null){
 								sendData(msg.obj.toString());
 							}
-								}
+						}
 					}).start();
 				}
 			}
