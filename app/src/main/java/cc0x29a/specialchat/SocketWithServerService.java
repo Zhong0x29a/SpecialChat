@@ -37,6 +37,11 @@ import java.util.HashMap;
 *   client 先向server发送user_id和token_key 进行身份认证。
 * */
 
+/**
+ * Todo:
+ *  now problem: Could finish reconnect to server.
+ * */
+
 public class SocketWithServerService extends Service{ //todo: not use Service??
 	
 	@Override
