@@ -32,6 +32,14 @@ import java.util.HashMap;
  * */
 
 /*
+
+20.05.23 Sat.
+
+很绝望，似乎不大记得整到哪，哪有bug了。
+
+ */
+
+/*
 * draft:
 *   Socket 成功连接后 开启两条线程， 分别进行读、写操作。
 *   client 先向server发送user_id和token_key 进行身份认证。
@@ -113,7 +121,7 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 		closeSocket();
 	}
 	
-	void StartConnection(){ //todo this may need to be perfected.
+	void StartConnection(){
 		try{
 			if(tryingConnect){ return; }
 			tryingConnect=true;
