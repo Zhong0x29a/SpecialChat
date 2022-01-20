@@ -9,7 +9,7 @@ public class SocketServer{
 	
 	public static void main(String[] args) throws IOException{
 		ServerSocket serverSocket = new ServerSocket(21027);
-		int cid=0;
+		int cid=0; // Client ID, connections' sum. (not current connection number)
 		Socket socket;
 		HashMap<Integer,Socket> socketPool=new HashMap<>();
 		
@@ -19,7 +19,8 @@ public class SocketServer{
 			cid++;
 			socket = serverSocket.accept();
 			socketPool.put(cid,socket);
-			
+
+			// Display client ip & cid.
 			System.out.println("New connection: " + socket.getInetAddress().getHostAddress() +" ("+cid+")\n");
 			
 			new ServerThread(socket,cid).start();

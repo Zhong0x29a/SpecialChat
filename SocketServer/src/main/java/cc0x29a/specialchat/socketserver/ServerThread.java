@@ -11,12 +11,12 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Created by Administrator on 2018/5/3.
+ * Created by Administrator on 2018/5/3. (???)
  */
 public class ServerThread extends Thread {
 	
 	private Socket socket;
-	private int cid;
+	private int cid;	// client id???
 	
 	ServerThread(Socket socket,int cid) {
 		this.socket = socket;
@@ -68,7 +68,7 @@ public class ServerThread extends Thread {
 					}
 					
 					if(DataGet.length()>0){
-//						ProcessData(DataGet.toString());
+						ProcessData(DataGet.toString());
 					}
 					
 				}catch(IOException e){
@@ -116,6 +116,7 @@ public class ServerThread extends Thread {
 		}catch(IOException e){
 			e.printStackTrace();
 		}finally{
+			// Close all.
 			try{
 				if(bufferedReader != null){
 					bufferedReader.close();

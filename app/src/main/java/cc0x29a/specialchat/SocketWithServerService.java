@@ -57,25 +57,33 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 		// TO DO: Return the communication channel to the service.
 		throw new UnsupportedOperationException("Not yet implemented");
 	}
-	
+
+	// local-stored userID & tokenKey
 	static String user_id;
 	static String token_key;
-	
+
+	// Socket with server
 	static Socket socket;
-	
+
+	// br: Read data from SocketStream
+	// os: Flush data to SocketStream
 	public static BufferedReader br;
 	public static OutputStream os;
-	
+
+	// HeartBeat thread, only one.
 	public static heart heart;
-	
+
+	// OS's status.  if ture, cant use OS.
 	public static boolean isOSBusy;
-	
+
+	// a value for whether continue start a new socket.
 	static boolean tryingConnect=false;
 	
 	// key: rid (request id) , data (data return from server)
 	static final HashMap<String,JSONObject> dataSet=new HashMap<>();
 	static final HashMap<String,SocketDataManager> dataManagerHashMap=new HashMap<>();
-	
+
+	// a handler for
 	static Handler handler;
 	
 	@SuppressLint("HandlerLeak")
@@ -120,10 +128,14 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 		stopService(new Intent(SocketWithServerService.this,NetworkService.class));
 		closeSocket();
 	}
-	
+
+	// start a new socket with server.
 	void StartConnection(){
 		try{
-			if(tryingConnect){ return; }
+			// if there is another thread doing this.
+			if(tryingConnect){
+				return;
+			}
 			tryingConnect=true;
 			if(!isSocketOn()){
 				closeSocket();
@@ -140,14 +152,14 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 //				}
 				// font-process
 				// verify client
-				os.write((
+				os.write( (
 						"{" +
 						"'client':'SCC-1.0'," +
 						"'user_id':'"+user_id+"'," +
 						"'token_key':'"+token_key+"'," +
 						"'timestamp':'"+MyTools.getCurrentTime()+"'" +
 						"}\n"
-				).getBytes(StandardCharsets.UTF_8));
+				).getBytes(StandardCharsets.UTF_8) );
 				
 				String str=br.readLine();
 				
@@ -155,7 +167,7 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 				if(str!=null && str.length()>0){ // String from method: sendData.
 					new ReaderThread().start();
 					
-					// a thread that Send "heartbeat" to server.
+					// start a new thread that send "heartbeat" to server.
 					heart=new heart();
 					heart.start();
 					
@@ -175,7 +187,10 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 			tryingConnect=false;
 		}
 	}
-	
+
+
+	// Keep reading from the Stream,
+	// process the data, put data to the hashMap.
 	class ReaderThread extends Thread{
 		@Override
 		public void run(){
@@ -189,6 +204,7 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 					if(object.getJSONObject("header").getString("type").equals("return")){
 						String rid=object.getJSONObject("header").getString("rid");
 						SocketDataManager manager;
+						// put new data to dataSet.
 						synchronized(dataSet){
 							dataSet.put(rid,object.getJSONObject("body"));
 						}
@@ -242,11 +258,12 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 	}
 	
 	/**
+	 * Main function to send data to server over outputStream.
 	 * @param data , the data send to server
-	 * @return data returned from server.
 	 */
 	public void sendData(String data){
 		try{
+			// if os is busy for over 4 sec, output a logMsg.
 			int startTime=MyTools.getCurrentTime();
 			while(isOSBusy){
 				Thread.sleep(333);
@@ -254,12 +271,13 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 					System.out.println("IO too busy!");
 				}
 			}
-			
+
+			// Mark OS is in use.
 			isOSBusy=true;
-			//todo: may case bug when user send "<br>"!
-			// solve method: may use base64 encrypt the data!
+
 			data=Base64.encodeToString(data.getBytes(),Base64.DEFAULT);
-			
+
+			// for debug.
 			System.out.println(data);
 			
 			synchronized(os){
@@ -274,6 +292,7 @@ public class SocketWithServerService extends Service{ //todo: not use Service??
 				}
 			},"StartConnectionThread").start();
 		}finally{
+			// Cancle the mark: 'busy'.
 			isOSBusy=false;
 		}
 	}

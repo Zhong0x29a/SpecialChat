@@ -35,10 +35,13 @@ import java.util.Map;
  * */
 
 public class ServerMain{
-	
+
+	// to manage pre serverThread
+	// only include logined user's
 	static Map<String,ServerThread> serverThreadMap;
 	
 	public static void main(String[] args){
+
 //		List<String[]> temp=MsgCacheSQLite.fetchMsg("123");
 //		if(temp==null){
 //			return;
@@ -56,6 +59,7 @@ public class ServerMain{
 //
 //		exit(0);
 		// init server.
+
 		init();
 		serverThreadMap=new HashMap<>();
 		
@@ -68,7 +72,8 @@ public class ServerMain{
 		},"MainServerThread").start();
 		
 	}
-	
+
+	// to init SQLite base
 	private static void init(){
 		try{
 			UserInfoSQLite.init();
@@ -107,7 +112,10 @@ public class ServerMain{
 						serverThread = new ServerThread(socket,br,os,user_id);
 						
 						if(UserInfoSQLite.verifyUserTokenKey(user_id,token_key)){
+							// add thread to serverThreadMap.
 							serverThreadMap.put(user_id,serverThread);
+
+							// return status msg.
 							os.write("true".getBytes(StandardCharsets.UTF_8));
 							serverThread.isLogged=true;
 						}else{
@@ -129,12 +137,14 @@ public class ServerMain{
 					try{
 						socket.close();
 					}catch(Exception e){
-//						e.printStackTrace();
+						e.printStackTrace();
 					}
 					continue;
 				}
 				
 				serverThread.start();
+
+				// This only showed logined user number.
 				System.out.println("Online num: "+serverThreadMap.size());
 			}
 		}catch(Exception ex){

@@ -13,7 +13,7 @@ import java.security.NoSuchAlgorithmException;
 class MyTools{
 	
 	/**
-	 * Filter Some not good chars
+	 * Filter some good characters
 	 * @param toBeFilter String to bu filter
 	 * @return a String
 	 */
@@ -39,7 +39,7 @@ class MyTools{
 	}
 	
 	/**
-	 * Resolve the char back
+	 * Resolve the characters back
 	 * @param toBeResolved String to be resolved
 	 * @return resolved string
 	 */
@@ -63,7 +63,8 @@ class MyTools{
 			return "";
 		}
 	}
-	
+
+	//TODO: this may repeat?
 	/**
 	 * Create a new token key
 	 * @return new created token key
